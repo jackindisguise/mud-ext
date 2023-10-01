@@ -6,7 +6,7 @@ fs.readdir("build", (err, files)=>{
 		fs.readFile("build/"+file, "utf8", (err, data)=>{
 			if(err) return;
 			let newPath = file.slice(0,file.lastIndexOf(".js"))+".cjs";
-			let fixed = data.replace(/\.\/string\.js/g, "./string.cjs");
+			let fixed = data.replace(/\.\/string/g, "./string.cjs");
 			fs.writeFile("build/"+newPath, fixed, (err)=>{
 				if(err) return;
 				console.log(`generated ${newPath} from ${file}`);
