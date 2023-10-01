@@ -4,12 +4,12 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "./string.js", "chai"], factory);
+        define(["require", "exports", "./string.cjs", "chai"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const string = require("./string.js");
+    const string = require("./string.cjs");
     const chai_1 = require("chai");
     describe("string.js", () => {
         it("padLeft", (done) => {

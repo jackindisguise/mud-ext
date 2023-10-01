@@ -6,11 +6,11 @@
 	"exports": {
 		".": [
 			{
-				"import": "./es6/build/index.js",
-				"require": "./cjs/build/index.js",
-				"default": "./cjs/build/index.js"
+				"import": "./es6/build/index.mjs",
+				"require": "./cjs/build/index.cjs",
+				"default": "./cjs/build/index.cjs"
 			},
-			"./cjs/build/index.js"
+			"./cjs/build/index.cjs"
 		]
 	},
 	"scripts": {
