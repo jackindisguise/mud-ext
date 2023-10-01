@@ -18,10 +18,10 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "./string.js"], factory);
+        define(["require", "exports", "./string.cjs"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    __exportStar(require("./string.js"), exports);
+    __exportStar(require("./string.cjs"), exports);
 });

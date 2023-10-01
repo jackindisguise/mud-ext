@@ -1,6 +1,6 @@
 {
 	"name": "mud-ext",
-	"version": "1.1.0",
+	"version": "1.0.3",
 	"description": "Provides useful functions for text MUDs.",
 	"typings": "es6/build/index.d.ts",
 	"exports": {
