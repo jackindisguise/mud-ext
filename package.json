@@ -1,6 +1,6 @@
 {
   "name": "mud-ext",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "Provides useful functions for text MUDs.",
   "typings": "es6/build/index.d.ts",
   "exports": {
@@ -15,7 +15,7 @@
   },
   "scripts": {
     "make": "npx tsc -p es6 && npx tsc -p cjs && npm run fix && npm test",
-	"fix": "cd es6 && node fix && cd ../cjs && node fix",
+    "fix": "cd es6 && node fix && cd ../cjs && node fix",
     "test": "npx mocha es6/build && npx mocha cjs/build"
   },
   "author": "jackindisguise",
