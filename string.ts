@@ -32,20 +32,39 @@ export interface BoxStyle{
 }
 
 export const BOX_STYLE: {[key: string]: BoxStyle} = {
+	PLAIN: {
+		horizontal: "-",
+		vertical: "|",
+		corner: "+"
+	},
+	ROUNDED: {
+		horizontal: "-",
+		vertical: "|",
+		top:{
+			corner: "."
+		},
+		bottom:{
+			corner: "'"
+		}
+	},
 	O: {
+		titleBorder: {
+			left: "(",
+			right: ")"
+		},
 		horizontal: "O",
 		vertical: "O",
 	}
 }
 
-export function pad(string:string, size:number, side?:PAD_SIDE, padder?:string){
+export function pad(string:string, size:number, side?:PAD_SIDE, padder?:string): string{
 	if(side===PAD_SIDE.LEFT) return padLeft(string, size, padder);
 	if(side===PAD_SIDE.CENTER) return padCenter(string, size, padder);
 	// defaults to padding the right side
 	return padRight(string, size, padder);
 }
 
-export function padLeft(string:string, size:number, padder=" "){
+export function padLeft(string:string, size:number, padder=" "): string{
 	let csize = string.length;
 	let psize = size-csize;
 	if(psize<1) return string;
@@ -54,7 +73,7 @@ export function padLeft(string:string, size:number, padder=" "){
 	return `${pad}${string}`;
 }
 
-export function padRight(string:string, size:number, padder=" "){
+export function padRight(string:string, size:number, padder=" "): string{
 	let csize = string.length;
 	let psize = size-csize;
 	if(psize<1) return string;
@@ -63,7 +82,7 @@ export function padRight(string:string, size:number, padder=" "){
 	return `${string}${pad}`;
 }
 
-export function padCenter(string:string, size:number, padder=" "){
+export function padCenter(string:string, size:number, padder=" "): string{
 	let ssize = string.length;
 	let psize = size-ssize;
 	if(psize<1) return string;
@@ -76,14 +95,14 @@ export function padCenter(string:string, size:number, padder=" "){
 	return `${lpad}${string}${rpad}`;
 }
 
-export function wrap(string:string, size:number=80){
+export function wrap(string:string, size:number): string[]{
 	let lines:string[] = [];
 	let last = 0;
 	let cursor=size;
 	while(cursor<string.length){
 		let breakpoint = cursor; // assume current point is breakpoint
 		let mid = (cursor+last)/2; // search halfway between last point and current point for whitespace
-		for(let i=cursor;i>mid;i--){ // search for nearby whitespace
+		for(let i=cursor;i>=mid;i--){ // search for nearby whitespace
 			if([" ", "\r", "\n", "\t"].includes(string[i])){
 				breakpoint = i;
 				break;
@@ -109,13 +128,13 @@ export function wrap(string:string, size:number=80){
 }
 
 export interface BoxOptions{
-	style?: BoxStyle;
-	title?: string;
 	input: string[];
 	width: number;
+	title?: string;
+	style?: BoxStyle;
 }
 
-export function box(options:BoxOptions){
+export function box(options:BoxOptions): string[]{
 	let lines:string[] = [];
 
 	// construct top of box

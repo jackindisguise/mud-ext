@@ -1,20 +1,29 @@
 {
-  "name": "mud-ext",
-  "version": "1.0.1",
-  "description": "Provides useful functions for text MUDs.",
-  "main": "build/index.js",
-  "typings": "build/index.d.ts",
-  "scripts": {
-    "test": "npx mocha build/"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/chai": "^4.3.6",
-    "@types/mocha": "^10.0.2",
-    "@types/node": "^20.8.0",
-    "chai": "^4.3.10",
-    "mocha": "^10.2.0",
-    "typescript": "^5.2.2"
-  }
+	"name": "mud-ext",
+	"version": "1.0.1",
+	"description": "Provides useful functions for text MUDs.",
+	"typings": "es6/build/index.d.ts",
+	"exports": {
+		".": [{
+			"import": "./es6/build/index.js",
+			"require": "./cjs/build/index.js",
+			"default": "./cjs/build/index.js"
+		},
+		"./cjs/build/index.js"
+		]
+	},
+	"scripts": {
+		"make": "npx tsc -p es6 && npx tsc -p cjs && npm test",
+		"test": "npx mocha es6/build && npx mocha cjs/build"
+	},
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/chai": "^4.3.6",
+		"@types/mocha": "^10.0.2",
+		"@types/node": "^20.8.0",
+		"chai": "^4.3.10",
+		"mocha": "^10.2.0",
+		"typescript": "^5.2.2"
+	}
 }

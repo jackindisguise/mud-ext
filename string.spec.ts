@@ -1,4 +1,4 @@
-import * as string from "./string";
+import * as string from "./string.js";
 import {expect} from "chai";
 
 describe("string.js", ()=>{
@@ -84,17 +84,17 @@ describe("string.js", ()=>{
 
 	it("box (default)", (done)=>{
 		let generated = string.box({
-			style:string.BOX_STYLE.O,
+			style:string.BOX_STYLE.PLAIN,
 			title:"Box Title",
 			input:["This is a line.", "This is another line."],
 			width:30
 		}).join("\n");
 
 		let expected = [
-			"OO Box Title OOOOOOOOOOOOOOOOO",
-			"O This is a line.            O",
-			"O This is another line.      O",
-			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+			"+- Box Title ----------------+",
+			"| This is a line.            |",
+			"| This is another line.      |",
+			"+----------------------------+"
 		].join("\n");
 
 		expect(generated).is.equal(expected);
@@ -102,16 +102,16 @@ describe("string.js", ()=>{
 	});
 
 	it("box (centered)", (done)=>{
-		// copy O box style
-		let obox = {
-			...string.BOX_STYLE.O,
+		// copy rounded box style
+		let rounded = {
+			...string.BOX_STYLE.ROUNDED,
 			hAlign: string.PAD_SIDE.CENTER,
 			titleHAlign: string.PAD_SIDE.CENTER
 		};
 
-		// generate an O box
+		// generate a rounded box
 		let generated = string.box({
-			style:obox,
+			style:rounded,
 			title:"Box Title",
 			input:["This is a line.", "This is another line."],
 			width:30
@@ -119,10 +119,10 @@ describe("string.js", ()=>{
 
 		// test against expected
 		let expected = [
-			"OOOOOOOOO Box Title OOOOOOOOOO",
-			"O      This is a line.       O",
-			"O   This is another line.    O",
-			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+			".-------- Box Title ---------.",
+			"|      This is a line.       |",
+			"|   This is another line.    |",
+			"'----------------------------'"
 		].join("\n");
 
 		expect(generated).is.equal(expected);
@@ -147,7 +147,7 @@ describe("string.js", ()=>{
 
 		// test against expected
 		let expected = [
-			"OOOOOOOOOOOOOOOOO Box Title OO",
+			"OOOOOOOOOOOOOOO( Box Title )OO",
 			"O            This is a line. O",
 			"O      This is another line. O",
 			"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
