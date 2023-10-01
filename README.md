@@ -172,11 +172,11 @@ console.log(box.join("\n"));
 ### `input`: string[]
 * A list of strings that will appear as separate lines in the box.
 ### `width`: number
-#### The width of the box.
+* The width of the box.
 ### `title?`: string
-#### The title of the box.
+* The title of the box.
 ### `style?`: `BoxStyle`
-#### A BoxStyle object.
+* A `BoxStyle` object.
 
 ## `BoxStyle`
 ### `horizontal`: string
