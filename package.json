@@ -1,15 +1,16 @@
 {
 	"name": "mud-ext",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Provides useful functions for text MUDs.",
 	"typings": "es6/build/index.d.ts",
 	"exports": {
-		".": [{
-			"import": "./es6/build/index.js",
-			"require": "./cjs/build/index.js",
-			"default": "./cjs/build/index.js"
-		},
-		"./cjs/build/index.js"
+		".": [
+			{
+				"import": "./es6/build/index.js",
+				"require": "./cjs/build/index.js",
+				"default": "./cjs/build/index.js"
+			},
+			"./cjs/build/index.js"
 		]
 	},
 	"scripts": {
