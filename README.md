@@ -162,7 +162,7 @@ const box = mudext.box({
 console.log(box.join("\n"));
 ```
 ```text
-.========= This is the title. =========.
+.========> This is the title. <========.
 |     This is the first line, bro!     |
 |       This is the second line!       |
 '======================================'
