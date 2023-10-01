@@ -14,7 +14,8 @@
     ]
   },
   "scripts": {
-    "make": "npx tsc -p es6 && npx tsc -p cjs && npm test",
+    "make": "npx tsc -p es6 && npx tsc -p cjs && npm run fix && npm test",
+	"fix": "cd es6 && node fix && cd ../cjs && node fix",
     "test": "npx mocha es6/build && npx mocha cjs/build"
   },
   "author": "jackindisguise",

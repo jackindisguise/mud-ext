@@ -1,1 +1,1 @@
-export * from "./string.cjs";
+export * from "./string.js";
