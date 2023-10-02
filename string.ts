@@ -9,17 +9,26 @@ export enum PAD_SIDE {
 	CENTER = 3
 }
 
+/**
+ * Describes the borders of box titles.
+ */
 export interface BoxStyleTitleBorder{
 	left?: string;
 	right?: string;
 }
 
+/**
+ * Describes the elements of horizontal edges of boxes.
+ */
 export interface BoxStyleHorizontalEdge{
 	left?: string;
 	right?: string;
 	corner?: string;
 }
 
+/**
+ * Describes all of the elements of boxes.
+ */
 export interface BoxStyle{
 	horizontal?: string;
 	vertical?: string;
@@ -31,6 +40,9 @@ export interface BoxStyle{
 	titleHAlign?: PAD_SIDE;
 }
 
+/**
+ * Some generic boxes I invented due to my ingenuity.
+ */
 export const BOX_STYLE: {[key: string]: BoxStyle} = {
 	PLAIN: {
 		horizontal: "-",
@@ -57,6 +69,14 @@ export const BOX_STYLE: {[key: string]: BoxStyle} = {
 	}
 }
 
+/**
+ * Pad a string to the given size.
+ * @param string The string to pad.
+ * @param size The size the string should be.
+ * @param side Which side to add padding to.
+ * @param padder The string to use as a padder.
+ * @returns {string} The padded string.
+ */
 export function pad(string:string, size:number, side?:PAD_SIDE, padder?:string): string{
 	if(side===PAD_SIDE.LEFT) return padLeft(string, size, padder);
 	if(side===PAD_SIDE.CENTER) return padCenter(string, size, padder);
@@ -64,6 +84,13 @@ export function pad(string:string, size:number, side?:PAD_SIDE, padder?:string):
 	return padRight(string, size, padder);
 }
 
+/**
+ * Pad a string to the given size on the left.
+ * @param string The string to pad.
+ * @param size The size the string should be.
+ * @param padder The string to use as a padder.
+ * @returns {string} The padded string.
+ */
 export function padLeft(string:string, size:number, padder=" "): string{
 	let csize = string.length;
 	let psize = size-csize;
@@ -73,6 +100,13 @@ export function padLeft(string:string, size:number, padder=" "): string{
 	return `${pad}${string}`;
 }
 
+/**
+ * Pad a string to the given size on the right.
+ * @param string The string to pad.
+ * @param size The size the string should be.
+ * @param padder The string to use as a padder.
+ * @returns {string} The padded string.
+ */
 export function padRight(string:string, size:number, padder=" "): string{
 	let csize = string.length;
 	let psize = size-csize;
@@ -82,6 +116,14 @@ export function padRight(string:string, size:number, padder=" "): string{
 	return `${string}${pad}`;
 }
 
+/**
+ * Pad a string to the given size on the left and right.
+ * If the padding is ultimately uneven, the extra padding is added to the right side.
+ * @param string The string to pad.
+ * @param size The size the string should be.
+ * @param padder The string to use as a padder.
+ * @returns {string} The padded string.
+ */
 export function padCenter(string:string, size:number, padder=" "): string{
 	let ssize = string.length;
 	let psize = size-ssize;
@@ -95,6 +137,12 @@ export function padCenter(string:string, size:number, padder=" "): string{
 	return `${lpad}${string}${rpad}`;
 }
 
+/**
+ * Wraps a string to a given size.
+ * @param string The string to wrap.
+ * @param size The maximum width of each line.
+ * @returns {string[]} The lines of the wrapped string in an array.
+ */
 export function wrap(string:string, size:number): string[]{
 	let lines:string[] = [];
 	let last = 0;
@@ -127,6 +175,9 @@ export function wrap(string:string, size:number): string[]{
 	return lines;
 }
 
+/**
+ * Describes the details of the box.
+ */
 export interface BoxOptions{
 	input: string[];
 	width: number;
@@ -134,6 +185,11 @@ export interface BoxOptions{
 	style?: BoxStyle;
 }
 
+/**
+ * Generates a contained box of text.
+ * @param options The options for the box.
+ * @returns {string[]} The lines of the box in an array.
+ */
 export function box(options:BoxOptions): string[]{
 	let lines:string[] = [];
 
