@@ -11,7 +11,7 @@
     Object.defineProperty(exports, "__esModule", { value: true });
     const string = require("./string.cjs");
     const chai_1 = require("chai");
-    describe("string.js", () => {
+    describe("string.ts", () => {
         it("padLeft", (done) => {
             (0, chai_1.expect)(string.padLeft("test", 10)).is.equal("      test");
             (0, chai_1.expect)(string.padLeft("test", 10, "-")).is.equal("------test");

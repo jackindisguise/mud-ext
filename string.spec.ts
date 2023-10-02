@@ -1,7 +1,7 @@
 import * as string from "./string";
 import {expect} from "chai";
 
-describe("string.js", ()=>{
+describe("string.ts", ()=>{
 	it("padLeft", (done)=>{
 		expect(string.padLeft("test", 10)).is.equal("      test");
 		expect(string.padLeft("test", 10, "-")).is.equal("------test");
