@@ -9,7 +9,7 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.roll = exports.randomInt = exports.lerp = void 0;
+    exports.actualRoll = exports.roll = exports.randomInt = exports.lerp = void 0;
     /**
      * Linear interpolation!
      * @param low The low end of the value.
@@ -44,4 +44,17 @@
         return randomInt(die, die * sides);
     }
     exports.roll = roll;
+    /**
+     * Returns the result of each simulated die being rolled.
+     * @param die The number of die to roll.
+     * @param sides The number of sides on each die.
+     * @returns {number[]} The result of the rolls.
+     */
+    function actualRoll(die, sides) {
+        let results = [];
+        for (let i = 0; i < die; i++)
+            results.push(randomInt(1, sides));
+        return results;
+    }
+    exports.actualRoll = actualRoll;
 });

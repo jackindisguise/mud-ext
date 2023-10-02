@@ -30,3 +30,15 @@ export function roll(die: number, sides: number, mod?: number){
 	if(mod) return randomInt(die, die*sides)+mod;
 	return randomInt(die, die*sides);
 }
+
+/**
+ * Returns the result of each simulated die being rolled.
+ * @param die The number of die to roll.
+ * @param sides The number of sides on each die.
+ * @returns {number[]} The result of the rolls.
+ */
+export function actualRoll(die: number, sides: number){
+	let results:number[] = [];
+	for(let i=0;i<die;i++) results.push(randomInt(1,sides));
+	return results;
+}

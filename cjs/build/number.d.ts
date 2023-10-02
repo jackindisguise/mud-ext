@@ -21,3 +21,10 @@ export declare function randomInt(low: number, high: number): number;
  * @returns {number} The result of the dice roll.
  */
 export declare function roll(die: number, sides: number, mod?: number): number;
+/**
+ * Returns the result of each simulated die being rolled.
+ * @param die The number of die to roll.
+ * @param sides The number of sides on each die.
+ * @returns {number[]} The result of the rolls.
+ */
+export declare function actualRoll(die: number, sides: number): number[];

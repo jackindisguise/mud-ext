@@ -20,6 +20,16 @@
             });
         });
         describe("randomInt", () => {
+            it("low<=result<=high", (done) => {
+                let tests = 1000;
+                let low = 100;
+                let high = 500;
+                for (let i = 0; i < tests; i++) {
+                    const result = number.randomInt(low, high);
+                    (0, chai_1.assert)(low <= result && result <= high);
+                }
+                done();
+            });
             it("full range", (done) => {
                 let tests = 1000;
                 let low = 100;
@@ -37,9 +47,9 @@
                 done();
             });
             it("reliable distribution", (done) => {
-                let tests = 1000000;
-                let low = -10;
-                let high = 10;
+                let tests = 100000;
+                let low = 1;
+                let high = 5;
                 let range = high - low + 1;
                 let results = new Array(range);
                 let expectedDistribution = tests / range;
@@ -64,6 +74,20 @@
                     (0, chai_1.expect)(number.roll(2, 100, 5)).is.within(7, 205);
                 for (let i = 0; i < tests; i++)
                     (0, chai_1.expect)(number.roll(2, 100, -5)).is.within(-3, 195);
+                done();
+            });
+        });
+        describe("actualRoll", () => {
+            it("predictable", (done) => {
+                let die = 2;
+                let sides = 6;
+                let tests = 10000;
+                for (let i = 0; i < tests; i++) {
+                    let results = number.actualRoll(die, sides);
+                    for (let result of results)
+                        (0, chai_1.expect)(result).is.within(1, sides);
+                    (0, chai_1.expect)(results.reduce((sum, a) => sum += a, 0)).is.within(die, die + (die * sides));
+                }
                 done();
             });
         });

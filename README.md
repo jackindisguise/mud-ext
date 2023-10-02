@@ -1,15 +1,30 @@
+# Compatability
+Supports both CJS and ES6 import style.
+```javascript
+// CommonJS-style
+const string = require("mud-ext").string;
+
+// ES6 module-style
+import {string} from "mud-ext";
+```
+
+# Install
+`npm i mud-ext`
+
 # API
-## padLeft(`string`: string, `size`: number, `padder`: string=`" "`): string
-* Pads the left side of a string to the given size, using the `padder` string provided to pad it.
+## `string` module
+### Methods
+##### string.padLeft(`string`: string, `size`: number, `padder`: string=`" "`): string
+Pads the left side of a string to the given size, using the `padder` string provided to pad it.
 
 ```javascript
-import * as mudext from "mud-ext";
+// example
 for(let i=1;i<129;i*=2){
-	const ticker = mudext.padLeft(`${i}`, 5, "-");
+	const ticker = string.padLeft(`${i}`, 5, "-");
 	console.log(ticker);
 }
 ```
-```text
+```
 ----1
 ----2
 ----4
@@ -24,7 +39,7 @@ for(let i=1;i<129;i*=2){
 
 ```javascript
 for(let i=1;i<129;i*=2){
-	const ticker = mudext.padLeft(`${i}`, 5, ":.");
+	const ticker = string.padLeft(`${i}`, 5, ":.");
 	console.log(ticker);
 }
 ```
@@ -40,8 +55,8 @@ for(let i=1;i<129;i*=2){
 ```
 
 
-## padRight(`string`: string, `size`: number, `padder`: string=`" "`): string
-* Pads the right side of a string to the given size, using the `padder` string provided to pad it.
+##### string.padRight(`string`: string, `size`: number, `padder`: string=`" "`): string
+Pads the right side of a string to the given size, using the `padder` string provided to pad it.
 
 ```javascript
 let attributes = {Strength:30, Intelligence:50, Agility:120};
@@ -53,10 +68,8 @@ Intelligence: 50
 Agility     : 120
 ```
 
-## padCenter(`string`: string, `size`: number, `padder`: string=`" "`): string
-* Pads the left and right side of a string to the given size, using the `padder` string provided to pad it.
-
-Attempts to center the string, dumping the last extra character on the right side if the size is uneven.
+##### string.padCenter(`string`: string, `size`: number, `padder`: string=`" "`): string
+Pads the left and right side of a string to the given size, using the `padder` string provided to pad it. Attempts to center the string, dumping the last extra character on the right side if the padding size is uneven.
 
 ```javascript
 for(let i=4;i<=10;i++){
@@ -74,24 +87,22 @@ for(let i=4;i<=10;i++){
 >---CAKE---<
 ```
 
-## pad(`string`: string,`size`: number,`side`: PAD_SIDE,`padder`: string): string
-* An alias for the other pad functions, using the `PAD_SIDE` values to determine which side to add padding on.
+##### string.pad(`string`: string,`size`: number,`side`: PAD_SIDE,`padder`: string): string
+An alias for the other pad functions, using the `PAD_SIDE` values to determine which side to add padding on.
 ```javascript
 console.log(`>${mudext.pad("CAKE", 10, mudext.PAD_SIDE.LEFT, "-")}<`);
 console.log(`>${mudext.pad("CAKE", 10, mudext.PAD_SIDE.CENTER, "-")}<`);
 console.log(`>${mudext.pad("CAKE", 10, mudext.PAD_SIDE.RIGHT, "-")}<`);
 ```
-...
 ```
 >------CAKE<
 >---CAKE---<
 >CAKE------<
 ```
 
-## wrap(`string`: string, `size`: number): string[]
-* Wraps a string to the given size, breaking each line out as separate entries in an array.
-
-It is agnostic regarding what style of linefeed you'd like to use with it.
+##### string.wrap(`string`: string, `size`: number): string[]
+Wraps a string to the given size, breaking each line out as separate entries in an array.
+This way the user has easier access to the output and can use whatever linefeed they need.
 ```javascript
 // 30 characters wide:
 //            123456789012345678901234567890
@@ -103,7 +114,7 @@ console.log(wrapped.join("\n"));
 This is a relatively long
 string.
 ```
-* The wrap algorithm will only break long words if they occupy at least 50% of the line starting from the middle of the of the next line.
+The wrap algorithm will only break long words if they occupy at least 50% of the line starting from the middle.
 ```javascript
 // 30 characters wide:
 // character: 123456789012345678901234567890
@@ -129,8 +140,8 @@ aa aa aa aa aaa
 supercalifragilistic
 ````
 
-## box(`options`: `BoxOptions`): string[]
-* Constructs a text box using the options provided.
+##### string.box(`options`: `BoxOptions`): string[]
+Constructs a text box using the options provided.
 ```javascript
 const customBoxStyle = {
 	horizontal: "=",
@@ -169,39 +180,61 @@ console.log(box.join("\n"));
 ```
 
 ## `BoxOptions`
-### `input`: string[]
-* A list of strings that will appear as separate lines in the box.
-### `width`: number
-* The width of the box.
-### `title?`: string
-* The title of the box.
-### `style?`: `BoxStyle`
-* A `BoxStyle` object.
+##### `input`: string[]
+A list of strings that will appear as separate lines in the box.
+##### `width`: number
+The width of the box.
+##### `title?`: string
+The title of the box.
+##### `style?`: `BoxStyle`
+A `BoxStyle` object.
 
 ## `BoxStyle`
-### `horizontal`: string
-* The character/s used for horizontal lines on the box.
-### `vertical?`: string
-* The character/s used for vertical lines on the box.
-### `corner?`: string
-* The character/s used for corners on the box.
-### `titleBorder?`: `BoxStyleTitleBorder`
-* Describes what character/s border the title and the box itself.
-### `top?`: `BoxStyleVerticalEdge`
-* Describes what the top vertical edge of the box should look like.
-### `bottom?`: `BoxStyleVerticalEdge`
-* Describes what the bottom vertical edge of the box should look like.
+##### `horizontal`: string
+The character/s used for horizontal lines on the box.
+##### `vertical?`: string
+The character/s used for vertical lines on the box.
+##### `corner?`: string
+The character/s used for corners on the box.
+##### `titleBorder?`: `BoxStyleTitleBorder`
+Describes what character/s border the title and the box itself.
+##### `top?`: `BoxStyleVerticalEdge`
+Describes what the top vertical edge of the box should look like.
+##### `bottom?`: `BoxStyleVerticalEdge`
+Describes what the bottom vertical edge of the box should look like.
 
 ## `BoxStyleTitleBorder`
-### `left?`: string
-* The left border between the title and the top edge.
-### `right?`: string
-* The right border between the title and the top edge.
+##### `left?`: string
+The left border between the title and the top edge.
+##### `right?`: string
+The right border between the title and the top edge.
 
 ## `BoxStyleVerticalEdge`
-### `left?`: string
-* The left corner of the vertical edge.
-### `right?`: string
-* The right corner of the vertical edge.
-### `corner?`: string
-* The default corner (left and right) of the vertical edge.
+##### `left?`: string
+The left corner of the vertical edge.
+##### `right?`: string
+The right corner of the vertical edge.
+##### `corner?`: string
+The default corner (left and right) of the vertical edge.
+
+## `number` module
+### Methods
+##### number.lerp(`low`: number, `high`: number, `mod`: number): number
+Linear interpolation from `low` to `high`.
+```javascript
+let x = number.lerp(0,50,0.5);
+assert(x === 25);
+```
+##### number.randomInt(`low`: number, `high`: number): number
+Generate a random integer between `low` and `high` inclusively.
+```javascript
+let x = number.randomInt(0,100);
+assert(0<=x&&x<=100);
+```
+
+##### number.roll(`die`: number, `sides`: number): number
+Simulates the rolling of `die` die with `sides` sides.
+```javascript
+let x = number.roll(2,6);
+assert(2<=x&&x<=12);
+```
