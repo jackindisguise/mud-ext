@@ -7,6 +7,9 @@ export var PAD_SIDE;
     /** Pads to the left and right. */
     PAD_SIDE[PAD_SIDE["CENTER"] = 3] = "CENTER";
 })(PAD_SIDE || (PAD_SIDE = {}));
+/**
+ * Some generic boxes I invented due to my ingenuity.
+ */
 export const BOX_STYLE = {
     PLAIN: {
         horizontal: "-",
@@ -32,6 +35,14 @@ export const BOX_STYLE = {
         vertical: "O",
     }
 };
+/**
+ * Pad a string to the given size.
+ * @param string The string to pad.
+ * @param size The size the string should be.
+ * @param side Which side to add padding to.
+ * @param padder The string to use as a padder.
+ * @returns {string} The padded string.
+ */
 export function pad(string, size, side, padder) {
     if (side === PAD_SIDE.LEFT)
         return padLeft(string, size, padder);
@@ -40,6 +51,13 @@ export function pad(string, size, side, padder) {
     // defaults to padding the right side
     return padRight(string, size, padder);
 }
+/**
+ * Pad a string to the given size on the left.
+ * @param string The string to pad.
+ * @param size The size the string should be.
+ * @param padder The string to use as a padder.
+ * @returns {string} The padded string.
+ */
 export function padLeft(string, size, padder = " ") {
     let csize = string.length;
     let psize = size - csize;
@@ -50,6 +68,13 @@ export function padLeft(string, size, padder = " ") {
         pad = pad.slice(0, psize);
     return `${pad}${string}`;
 }
+/**
+ * Pad a string to the given size on the right.
+ * @param string The string to pad.
+ * @param size The size the string should be.
+ * @param padder The string to use as a padder.
+ * @returns {string} The padded string.
+ */
 export function padRight(string, size, padder = " ") {
     let csize = string.length;
     let psize = size - csize;
@@ -60,6 +85,14 @@ export function padRight(string, size, padder = " ") {
         pad = pad.slice(0, psize);
     return `${string}${pad}`;
 }
+/**
+ * Pad a string to the given size on the left and right.
+ * If the padding is ultimately uneven, the extra padding is added to the right side.
+ * @param string The string to pad.
+ * @param size The size the string should be.
+ * @param padder The string to use as a padder.
+ * @returns {string} The padded string.
+ */
 export function padCenter(string, size, padder = " ") {
     let ssize = string.length;
     let psize = size - ssize;
@@ -75,6 +108,12 @@ export function padCenter(string, size, padder = " ") {
         rpad = rpad.slice(0, rsize);
     return `${lpad}${string}${rpad}`;
 }
+/**
+ * Wraps a string to a given size.
+ * @param string The string to wrap.
+ * @param size The maximum width of each line.
+ * @returns {string[]} The lines of the wrapped string in an array.
+ */
 export function wrap(string, size) {
     let lines = [];
     let last = 0;
@@ -104,6 +143,11 @@ export function wrap(string, size) {
     lines.push(string.slice(last));
     return lines;
 }
+/**
+ * Generates a contained box of text.
+ * @param options The options for the box.
+ * @returns {string[]} The lines of the box in an array.
+ */
 export function box(options) {
     var _a, _b, _c, _d, _e, _f, _g;
     let lines = [];

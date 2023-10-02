@@ -23,9 +23,10 @@ export function randomInt(low:number, high:number): number{
  * Simulates a dice roll.
  * @param die The number of die to roll.
  * @param sides The number of sides on each die.
- * @param mod A modifier for the final value.
+ * @param mod? A modifier for the final value.
  * @returns {number} The result of the dice roll.
  */
-export function roll(die: number, sides: number, mod: number){
-	return randomInt(die, die*sides)+mod;
+export function roll(die: number, sides: number, mod?: number){
+	if(mod) return randomInt(die, die*sides)+mod;
+	return randomInt(die, die*sides);
 }
