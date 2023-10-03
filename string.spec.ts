@@ -12,8 +12,8 @@ describe("string.ts", ()=>{
 			expect(string.pad("test", 10, string.PAD_SIDE.RIGHT, "-")).is.equal("test------");
 			expect(string.pad("50.", 10, string.PAD_SIDE.RIGHT, "0")).is.equal("50.0000000");
 			expect(string.pad("test", 10, string.PAD_SIDE.CENTER)).is.equal("   test   ");
-			expect(string.pad("test", 10, string.PAD_SIDE.CENTER, "<>")).is.equal("<><test<><");
-			expect(string.pad("test", 80, string.PAD_SIDE.CENTER, "<->")).is.equal("<-><-><-><-><-><-><-><-><-><-><-><-><-test<-><-><-><-><-><-><-><-><-><-><-><-><-");
+			expect(string.pad("test", 10, string.PAD_SIDE.CENTER, "<>")).is.equal("<><test><>");
+			expect(string.pad("test", 80, string.PAD_SIDE.CENTER, "<->")).is.equal("<-><-><-><-><-><-><-><-><-><-><-><-><-test><-><-><-><-><-><-><-><-><-><-><-><-><");
 			expect(string.pad("test", 10, string.PAD_SIDE.CENTER, "-")).is.equal("---test---");
 			expect(string.pad("test", 11, string.PAD_SIDE.CENTER, "-")).is.equal("---test----");
 			done();
@@ -36,8 +36,8 @@ describe("string.ts", ()=>{
 
 		it("padCenter", (done)=>{
 			expect(string.padCenter("test", 10)).is.equal("   test   ");
-			expect(string.padCenter("test", 10, "<>")).is.equal("<><test<><");
-			expect(string.padCenter("test", 80, "<->")).is.equal("<-><-><-><-><-><-><-><-><-><-><-><-><-test<-><-><-><-><-><-><-><-><-><-><-><-><-");
+			expect(string.padCenter("test", 10, "<>")).is.equal("<><test><>");
+			expect(string.padCenter("test", 80, "<->")).is.equal("<-><-><-><-><-><-><-><-><-><-><-><-><-test><-><-><-><-><-><-><-><-><-><-><-><-><");
 			expect(string.padCenter("test", 10, "-")).is.equal("---test---");
 			expect(string.padCenter("test", 11, "-")).is.equal("---test----");
 			done();

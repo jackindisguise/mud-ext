@@ -113,14 +113,17 @@
         let psize = size - ssize;
         if (psize < 1)
             return string;
+        /*	let lsize = psize%2?Math.floor(psize/2):psize/2;
+            let rsize = psize%2?Math.floor(psize/2)+1:psize/2;
+            let lpad = padder.repeat(Math.ceil(lsize/padder.length));
+            if(lpad.length>lsize) lpad = lpad.slice(0,lsize);
+            let rpad = padder.repeat(Math.ceil(rsize/padder.length));
+            if(rpad.length>rsize) rpad = rpad.slice(0,rsize);*/
+        let tpad = padder.repeat(Math.ceil(psize / padder.length));
         let lsize = psize % 2 ? Math.floor(psize / 2) : psize / 2;
         let rsize = psize % 2 ? Math.floor(psize / 2) + 1 : psize / 2;
-        let lpad = padder.repeat(Math.ceil(lsize / padder.length));
-        if (lpad.length > lsize)
-            lpad = lpad.slice(0, lsize);
-        let rpad = padder.repeat(Math.ceil(rsize / padder.length));
-        if (rpad.length > rsize)
-            rpad = rpad.slice(0, rsize);
+        let lpad = tpad.slice(0, lsize);
+        let rpad = tpad.slice(lsize, lsize + rsize);
         return `${lpad}${string}${rpad}`;
     }
     exports.padCenter = padCenter;
