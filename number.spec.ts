@@ -23,15 +23,15 @@ describe("number.ts", ()=>{
 		});
 
 		it("full range", (done)=>{
-			let tests = 1000;
-			let low = 100;
-			let high = 500;
+			let tests = 10000;
+			let low = 10;
+			let high = 20;
 			let range = high-low+1;
-			let results: number[] = new Array(range);
+			let results: number[] = [];
 			for(let i=0;i<tests;i++){
 				const result = number.randomInt(low, high);
-				if(results[result-low]) results[result-low]++;
-				else results[result-low]=1;
+				if(results.includes(result)) continue;
+				results.push(result);
 			}
 			expect(results.length).is.equal(range);
 			done();
