@@ -169,7 +169,7 @@
      * @returns {string[]} The lines of the box in an array.
      */
     function box(options) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11;
         let lines = [];
         // consolidate top elements
         let topmiddle = ((_b = (_a = options.style) === null || _a === void 0 ? void 0 : _a.top) === null || _b === void 0 ? void 0 : _b.middle) || ((_c = options.style) === null || _c === void 0 ? void 0 : _c.horizontal) || "";
@@ -199,9 +199,9 @@
                 // respect vertical alignment for titles
                 const titleWidth = formattedTitle.length;
                 let start = 0 + offset;
-                if (options.style.titleHAlign === PAD_SIDE.LEFT)
+                if (((_u = options.style) === null || _u === void 0 ? void 0 : _u.titleHAlign) === PAD_SIDE.LEFT)
                     start = ruleWidth - titleWidth - offset;
-                else if (options.style.titleHAlign === PAD_SIDE.CENTER)
+                else if (((_v = options.style) === null || _v === void 0 ? void 0 : _v.titleHAlign) === PAD_SIDE.CENTER)
                     start = Math.floor((ruleWidth - titleWidth) / 2);
                 const titled = safeRule.slice(0, start) + formattedTitle + safeRule.slice(start + titleWidth, ruleWidth);
                 lines.push(`${topleft}${titled}${topright}`);
@@ -212,36 +212,40 @@
             // has a title but no box visual elements
         }
         else if (options.title) {
-            lines.push(pad(options.title, options.width, ((_u = options.style) === null || _u === void 0 ? void 0 : _u.titleHAlign) || PAD_SIDE.RIGHT));
+            lines.push(pad(options.title, options.width, ((_w = options.style) === null || _w === void 0 ? void 0 : _w.titleHAlign) || PAD_SIDE.RIGHT));
         }
         const addLine = (line) => {
             var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
             let formatted = line;
             if (((_a = options.style) === null || _a === void 0 ? void 0 : _a.vertical) || ((_b = options.style) === null || _b === void 0 ? void 0 : _b.left) || ((_c = options.style) === null || _c === void 0 ? void 0 : _c.right)) {
-                const left = `${((_d = options.style) === null || _d === void 0 ? void 0 : _d.left) || ((_e = options.style) === null || _e === void 0 ? void 0 : _e.vertical) || ""}${" ".repeat(((_f = options.style) === null || _f === void 0 ? void 0 : _f.hPadding) || 1)}`;
-                const right = `${" ".repeat(((_g = options.style) === null || _g === void 0 ? void 0 : _g.hPadding) || 1)}${((_h = options.style) === null || _h === void 0 ? void 0 : _h.right) || ((_j = options.style) === null || _j === void 0 ? void 0 : _j.vertical) || ""}`;
+                const leftVert = ((_d = options.style) === null || _d === void 0 ? void 0 : _d.left) || ((_e = options.style) === null || _e === void 0 ? void 0 : _e.vertical) || "";
+                const leftHPadding = leftVert ? ((_f = options.style) === null || _f === void 0 ? void 0 : _f.hPadding) || 1 : 0;
+                const left = leftVert + (" ".repeat(leftHPadding));
+                const rightVert = ((_g = options.style) === null || _g === void 0 ? void 0 : _g.right) || ((_h = options.style) === null || _h === void 0 ? void 0 : _h.vertical) || "";
+                const rightHPadding = rightVert ? ((_j = options.style) === null || _j === void 0 ? void 0 : _j.hPadding) || 1 : 0;
+                const right = (" ".repeat(rightHPadding)) + rightVert;
                 formatted = `${left}${pad(formatted, options.width - left.length - right.length, ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || PAD_SIDE.RIGHT)}${right}`;
             }
             else {
-                const left = `${" ".repeat(((_l = options.style) === null || _l === void 0 ? void 0 : _l.hPadding) || 1)}`;
+                const left = `${" ".repeat(((_l = options.style) === null || _l === void 0 ? void 0 : _l.hPadding) || 0)}`;
                 const right = left;
                 formatted = `${left}${pad(formatted, options.width - left.length - right.length, ((_m = options.style) === null || _m === void 0 ? void 0 : _m.hAlign) || PAD_SIDE.RIGHT)}${right}`;
             }
             lines.push(formatted);
         };
         // construct content lines
-        if ((_v = options.style) === null || _v === void 0 ? void 0 : _v.vPadding)
+        if ((_x = options.style) === null || _x === void 0 ? void 0 : _x.vPadding)
             for (let i = 0; i < options.style.vPadding; i++)
                 addLine("");
         for (let line of options.input)
             addLine(line);
-        if ((_w = options.style) === null || _w === void 0 ? void 0 : _w.vPadding)
+        if ((_y = options.style) === null || _y === void 0 ? void 0 : _y.vPadding)
             for (let i = 0; i < options.style.vPadding; i++)
                 addLine("");
         // consolidate bottom elements
-        let bottommiddle = ((_y = (_x = options.style) === null || _x === void 0 ? void 0 : _x.bottom) === null || _y === void 0 ? void 0 : _y.middle) || ((_z = options.style) === null || _z === void 0 ? void 0 : _z.horizontal) || "";
-        const bottomleft = ((_1 = (_0 = options.style) === null || _0 === void 0 ? void 0 : _0.bottom) === null || _1 === void 0 ? void 0 : _1.left) || ((_3 = (_2 = options.style) === null || _2 === void 0 ? void 0 : _2.bottom) === null || _3 === void 0 ? void 0 : _3.corner) || ((_4 = options.style) === null || _4 === void 0 ? void 0 : _4.corner) || "";
-        const bottomright = ((_6 = (_5 = options.style) === null || _5 === void 0 ? void 0 : _5.bottom) === null || _6 === void 0 ? void 0 : _6.right) || ((_8 = (_7 = options.style) === null || _7 === void 0 ? void 0 : _7.bottom) === null || _8 === void 0 ? void 0 : _8.corner) || ((_9 = options.style) === null || _9 === void 0 ? void 0 : _9.corner) || "";
+        let bottommiddle = ((_0 = (_z = options.style) === null || _z === void 0 ? void 0 : _z.bottom) === null || _0 === void 0 ? void 0 : _0.middle) || ((_1 = options.style) === null || _1 === void 0 ? void 0 : _1.horizontal) || "";
+        const bottomleft = ((_3 = (_2 = options.style) === null || _2 === void 0 ? void 0 : _2.bottom) === null || _3 === void 0 ? void 0 : _3.left) || ((_5 = (_4 = options.style) === null || _4 === void 0 ? void 0 : _4.bottom) === null || _5 === void 0 ? void 0 : _5.corner) || ((_6 = options.style) === null || _6 === void 0 ? void 0 : _6.corner) || "";
+        const bottomright = ((_8 = (_7 = options.style) === null || _7 === void 0 ? void 0 : _7.bottom) === null || _8 === void 0 ? void 0 : _8.right) || ((_10 = (_9 = options.style) === null || _9 === void 0 ? void 0 : _9.bottom) === null || _10 === void 0 ? void 0 : _10.corner) || ((_11 = options.style) === null || _11 === void 0 ? void 0 : _11.corner) || "";
         // do we have any bottom elements?
         if (bottomleft || bottomright || bottommiddle) {
             if ((bottomleft || bottomright) && !bottommiddle)

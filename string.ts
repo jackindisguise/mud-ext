@@ -232,8 +232,8 @@ export function box(options:BoxOptions): string[]{
 			// respect vertical alignment for titles
 			const titleWidth = formattedTitle.length;
 			let start = 0+offset;
-			if(options.style.titleHAlign === PAD_SIDE.LEFT) start=ruleWidth-titleWidth-offset;
-			else if(options.style.titleHAlign === PAD_SIDE.CENTER) start = Math.floor((ruleWidth-titleWidth)/2);
+			if(options.style?.titleHAlign === PAD_SIDE.LEFT) start=ruleWidth-titleWidth-offset;
+			else if(options.style?.titleHAlign === PAD_SIDE.CENTER) start = Math.floor((ruleWidth-titleWidth)/2);
 			const titled = safeRule.slice(0,start)+formattedTitle+safeRule.slice(start+titleWidth, ruleWidth);
 			lines.push(`${topleft}${titled}${topright}`);
 
@@ -248,11 +248,15 @@ export function box(options:BoxOptions): string[]{
 	const addLine = (line)=>{
 		let formatted = line;
 		if(options.style?.vertical || options.style?.left || options.style?.right) {
-			const left = `${options.style?.left||options.style?.vertical||""}${" ".repeat(options.style?.hPadding||1)}`;
-			const right = `${" ".repeat(options.style?.hPadding||1)}${options.style?.right||options.style?.vertical||""}`;
+			const leftVert = options.style?.left||options.style?.vertical||"";
+			const leftHPadding = leftVert ? options.style?.hPadding||1 : 0;
+			const left = leftVert + (" ".repeat(leftHPadding));
+			const rightVert = options.style?.right||options.style?.vertical||"";
+			const rightHPadding = rightVert ? options.style?.hPadding||1 : 0;
+			const right = (" ".repeat(rightHPadding)) + rightVert;
 			formatted = `${left}${pad(formatted, options.width-left.length-right.length, options.style?.hAlign||PAD_SIDE.RIGHT)}${right}`;
 		} else {
-			const left = `${" ".repeat(options.style?.hPadding||1)}`;
+			const left = `${" ".repeat(options.style?.hPadding||0)}`;
 			const right = left;
 			formatted = `${left}${pad(formatted, options.width-left.length-right.length, options.style?.hAlign||PAD_SIDE.RIGHT)}${right}`;
 		}
