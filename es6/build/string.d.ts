@@ -27,6 +27,9 @@ export interface BoxStyleHorizontalEdge {
 export interface BoxStyle {
     horizontal?: string;
     vertical?: string;
+    left?: string;
+    right?: string;
+    padding?: number;
     corner?: string;
     titleBorder?: BoxStyleTitleBorder;
     top?: BoxStyleHorizontalEdge;

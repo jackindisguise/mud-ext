@@ -32,6 +32,9 @@ export interface BoxStyleHorizontalEdge{
 export interface BoxStyle{
 	horizontal?: string;
 	vertical?: string;
+	left?: string;
+	right?: string;
+	padding?: number;
 	corner?: string;
 	titleBorder?: BoxStyleTitleBorder;
 	top?: BoxStyleHorizontalEdge;
@@ -221,9 +224,9 @@ export function box(options:BoxOptions): string[]{
 	// construct content lines
 	for(let line of options.input){
 		let formatted = line;
-		if(options.style?.vertical) {
-			const left = `${options.style.vertical} `;
-			const right = ` ${options.style.vertical}`;
+		if(options.style?.vertical || options.style?.left || options.style?.right) {
+			const left = `${options.style.left||options.style.vertical||""}${" ".repeat(options.style?.padding||1)}`;
+			const right = `${" ".repeat(options.style?.padding||1)}${options.style.right||options.style.vertical||""}`;
 			formatted = `${left}${pad(formatted, options.width-left.length-right.length, options.style.hAlign||PAD_SIDE.RIGHT)}${right}`;
 		} else formatted = pad(formatted, options.width, options.style?.hAlign||PAD_SIDE.RIGHT);
 		lines.push(formatted);

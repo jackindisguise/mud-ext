@@ -152,7 +152,7 @@ export function wrap(string, size) {
  * @returns {string[]} The lines of the box in an array.
  */
 export function box(options) {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
     let lines = [];
     // construct top of box
     let top;
@@ -183,17 +183,17 @@ export function box(options) {
     // construct content lines
     for (let line of options.input) {
         let formatted = line;
-        if ((_e = options.style) === null || _e === void 0 ? void 0 : _e.vertical) {
-            const left = `${options.style.vertical} `;
-            const right = ` ${options.style.vertical}`;
+        if (((_e = options.style) === null || _e === void 0 ? void 0 : _e.vertical) || ((_f = options.style) === null || _f === void 0 ? void 0 : _f.left) || ((_g = options.style) === null || _g === void 0 ? void 0 : _g.right)) {
+            const left = `${options.style.left || options.style.vertical || ""}${" ".repeat(((_h = options.style) === null || _h === void 0 ? void 0 : _h.padding) || 1)}`;
+            const right = `${" ".repeat(((_j = options.style) === null || _j === void 0 ? void 0 : _j.padding) || 1)}${options.style.right || options.style.vertical || ""}`;
             formatted = `${left}${pad(formatted, options.width - left.length - right.length, options.style.hAlign || PAD_SIDE.RIGHT)}${right}`;
         }
         else
-            formatted = pad(formatted, options.width, ((_f = options.style) === null || _f === void 0 ? void 0 : _f.hAlign) || PAD_SIDE.RIGHT);
+            formatted = pad(formatted, options.width, ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || PAD_SIDE.RIGHT);
         lines.push(formatted);
     }
     // construct bottom of box
-    if ((_g = options.style) === null || _g === void 0 ? void 0 : _g.horizontal) {
+    if ((_l = options.style) === null || _l === void 0 ? void 0 : _l.horizontal) {
         let bottom;
         if (options.style.bottom) {
             const bl = options.style.bottom.left || options.style.bottom.corner || options.style.corner || options.style.horizontal;
