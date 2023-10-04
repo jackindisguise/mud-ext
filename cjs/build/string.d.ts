@@ -19,6 +19,7 @@ export interface BoxStyleTitleBorder {
 export interface BoxStyleHorizontalEdge {
     left?: string;
     right?: string;
+    middle?: string;
     corner?: string;
 }
 /**
