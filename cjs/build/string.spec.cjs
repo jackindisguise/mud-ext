@@ -23,7 +23,7 @@
                 (0, chai_1.expect)(string.pad("50.", 10, string.PAD_SIDE.RIGHT, "0")).is.equal("50.0000000");
                 (0, chai_1.expect)(string.pad("test", 10, string.PAD_SIDE.CENTER)).is.equal("   test   ");
                 (0, chai_1.expect)(string.pad("test", 10, string.PAD_SIDE.CENTER, "<>")).is.equal("<><test><>");
-                (0, chai_1.expect)(string.pad("test", 80, string.PAD_SIDE.CENTER, "<->")).is.equal("<-><-><-><-><-><-><-><-><-><-><-><-><-test><-><-><-><-><-><-><-><-><-><-><-><-><");
+                (0, chai_1.expect)(string.pad("test", 80, string.PAD_SIDE.CENTER, "<->")).is.equal("<-><-><-><-><-><-><-><-><-><-><-><-><-test<-><-><-><-><-><-><-><-><-><-><-><-><-");
                 (0, chai_1.expect)(string.pad("test", 10, string.PAD_SIDE.CENTER, "-")).is.equal("---test---");
                 (0, chai_1.expect)(string.pad("test", 11, string.PAD_SIDE.CENTER, "-")).is.equal("---test----");
                 done();
@@ -44,7 +44,7 @@
             it("padCenter", (done) => {
                 (0, chai_1.expect)(string.padCenter("test", 10)).is.equal("   test   ");
                 (0, chai_1.expect)(string.padCenter("test", 10, "<>")).is.equal("<><test><>");
-                (0, chai_1.expect)(string.padCenter("test", 80, "<->")).is.equal("<-><-><-><-><-><-><-><-><-><-><-><-><-test><-><-><-><-><-><-><-><-><-><-><-><-><");
+                (0, chai_1.expect)(string.padCenter("test", 80, "<->")).is.equal("<-><-><-><-><-><-><-><-><-><-><-><-><-test<-><-><-><-><-><-><-><-><-><-><-><-><-");
                 (0, chai_1.expect)(string.padCenter("test", 10, "-")).is.equal("---test---");
                 (0, chai_1.expect)(string.padCenter("test", 11, "-")).is.equal("---test----");
                 done();
