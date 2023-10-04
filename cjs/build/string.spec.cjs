@@ -108,23 +108,23 @@
         describe("box", () => {
             it("right-aligned (default)", (done) => {
                 let generated = string.box({
-                    style: Object.assign(Object.assign({}, string.BOX_STYLE.PLAIN), { padding: 2, left: ">>", right: "<<" }),
+                    style: Object.assign(Object.assign({}, string.BOX_STYLE.PLAIN), { hPadding: 2, top: { left: ">>", right: "<<" }, bottom: { left: ">>", right: "<<" }, left: ">>", right: "<<" }),
                     title: "Box Title",
                     input: ["This is a line.", "This is another line."],
                     width: 30
                 }).join("\n");
                 let expected = [
-                    "+- Box Title ----------------+",
+                    ">>- Box Title --------------<<",
                     ">>  This is a line.         <<",
                     ">>  This is another line.   <<",
-                    "+----------------------------+"
+                    ">>--------------------------<<"
                 ].join("\n");
                 (0, chai_1.expect)(generated).is.equal(expected);
                 done();
             });
             it("center-aligned", (done) => {
                 // copy rounded box style
-                let rounded = Object.assign(Object.assign({}, string.BOX_STYLE.ROUNDED), { hAlign: string.PAD_SIDE.CENTER, titleHAlign: string.PAD_SIDE.CENTER });
+                let rounded = Object.assign(Object.assign({}, string.BOX_STYLE.ROUNDED), { hAlign: string.PAD_SIDE.CENTER, titleHAlign: string.PAD_SIDE.CENTER, vPadding: 1 });
                 // generate a rounded box
                 let generated = string.box({
                     style: rounded,
@@ -135,8 +135,10 @@
                 // test against expected
                 let expected = [
                     ".-------- Box Title ---------.",
+                    "|                            |",
                     "|      This is a line.       |",
                     "|   This is another line.    |",
+                    "|                            |",
                     "'----------------------------'"
                 ].join("\n");
                 (0, chai_1.expect)(generated).is.equal(expected);

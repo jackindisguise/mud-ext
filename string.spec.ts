@@ -107,7 +107,9 @@ describe("string.ts", ()=>{
 			let generated = string.box({
 				style:{
 					...string.BOX_STYLE.PLAIN,
-					padding:2,
+					hPadding:2,
+					top:{left:">>", right:"<<"},
+					bottom:{left:">>", right:"<<"},
 					left:">>",
 					right:"<<"
 				},
@@ -117,10 +119,10 @@ describe("string.ts", ()=>{
 			}).join("\n");
 
 			let expected = [
-				"+- Box Title ----------------+",
+				">>- Box Title --------------<<",
 				">>  This is a line.         <<",
 				">>  This is another line.   <<",
-				"+----------------------------+"
+				">>--------------------------<<"
 			].join("\n");
 
 			expect(generated).is.equal(expected);
@@ -132,7 +134,8 @@ describe("string.ts", ()=>{
 			let rounded = {
 				...string.BOX_STYLE.ROUNDED,
 				hAlign: string.PAD_SIDE.CENTER,
-				titleHAlign: string.PAD_SIDE.CENTER
+				titleHAlign: string.PAD_SIDE.CENTER,
+				vPadding: 1
 			};
 
 			// generate a rounded box
@@ -146,8 +149,10 @@ describe("string.ts", ()=>{
 			// test against expected
 			let expected = [
 				".-------- Box Title ---------.",
+				"|                            |",
 				"|      This is a line.       |",
 				"|   This is another line.    |",
+				"|                            |",
 				"'----------------------------'"
 			].join("\n");
 

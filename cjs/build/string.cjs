@@ -169,7 +169,7 @@
      * @returns {string[]} The lines of the box in an array.
      */
     function box(options) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
         let lines = [];
         // construct top of box
         let top;
@@ -178,39 +178,39 @@
             if ((_a = options.style) === null || _a === void 0 ? void 0 : _a.titleBorder)
                 top = `${options.style.titleBorder.left}${top}${options.style.titleBorder.right}`;
         }
-        else
-            top = ""; // initialize to empty string
-        if ((_b = options.style) === null || _b === void 0 ? void 0 : _b.horizontal) {
-            if ((_c = options.style) === null || _c === void 0 ? void 0 : _c.top) {
-                const tl = (options.style.top.right || options.style.top.corner || options.style.corner || options.style.horizontal) + options.style.horizontal;
-                const tr = options.style.horizontal + (options.style.top.right || options.style.top.corner || options.style.corner || options.style.horizontal);
-                top = `${tl}${pad(top, options.width - tl.length - tr.length, options.style.titleHAlign || PAD_SIDE.RIGHT, options.style.horizontal)}${tr}`;
-            }
-            else if (options.style.corner) {
-                const tl = options.style.corner + options.style.horizontal;
-                const tr = options.style.horizontal + options.style.corner;
-                top = `${tl}${pad(top, options.width - tl.length - tr.length, options.style.titleHAlign || PAD_SIDE.RIGHT, options.style.horizontal)}${tr}`;
-            }
-            else
-                top = `${options.style.horizontal.repeat(2)}${pad(top, options.width - (options.style.horizontal.length * 4), options.style.titleHAlign || PAD_SIDE.RIGHT, options.style.horizontal)}${options.style.horizontal.repeat(2)}`;
+        if (((_b = options.style) === null || _b === void 0 ? void 0 : _b.top) || ((_c = options.style) === null || _c === void 0 ? void 0 : _c.horizontal) || ((_d = options.style) === null || _d === void 0 ? void 0 : _d.corner)) {
+            const tl = (((_f = (_e = options.style) === null || _e === void 0 ? void 0 : _e.top) === null || _f === void 0 ? void 0 : _f.left) || ((_h = (_g = options.style) === null || _g === void 0 ? void 0 : _g.top) === null || _h === void 0 ? void 0 : _h.corner) || ((_j = options.style) === null || _j === void 0 ? void 0 : _j.corner) || ((_k = options.style) === null || _k === void 0 ? void 0 : _k.horizontal)) + (((_l = options.style) === null || _l === void 0 ? void 0 : _l.horizontal) || "");
+            const tr = (((_m = options.style) === null || _m === void 0 ? void 0 : _m.horizontal) || "") + (((_p = (_o = options.style) === null || _o === void 0 ? void 0 : _o.top) === null || _p === void 0 ? void 0 : _p.right) || ((_r = (_q = options.style) === null || _q === void 0 ? void 0 : _q.top) === null || _r === void 0 ? void 0 : _r.corner) || ((_s = options.style) === null || _s === void 0 ? void 0 : _s.corner) || ((_t = options.style) === null || _t === void 0 ? void 0 : _t.horizontal));
+            top = `${tl}${pad(top, options.width - tl.length - tr.length, options.style.titleHAlign || PAD_SIDE.RIGHT, options.style.horizontal)}${tr}`;
         }
-        else
-            top = pad(top, options.width, ((_d = options.style) === null || _d === void 0 ? void 0 : _d.titleHAlign) || PAD_SIDE.RIGHT);
-        lines.push(top);
-        // construct content lines
-        for (let line of options.input) {
+        else if (top)
+            top = pad(top, options.width, ((_u = options.style) === null || _u === void 0 ? void 0 : _u.titleHAlign) || PAD_SIDE.RIGHT);
+        // add a top
+        if (top)
+            lines.push(top);
+        const addLine = (line) => {
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j;
             let formatted = line;
-            if (((_e = options.style) === null || _e === void 0 ? void 0 : _e.vertical) || ((_f = options.style) === null || _f === void 0 ? void 0 : _f.left) || ((_g = options.style) === null || _g === void 0 ? void 0 : _g.right)) {
-                const left = `${options.style.left || options.style.vertical || ""}${" ".repeat(((_h = options.style) === null || _h === void 0 ? void 0 : _h.padding) || 1)}`;
-                const right = `${" ".repeat(((_j = options.style) === null || _j === void 0 ? void 0 : _j.padding) || 1)}${options.style.right || options.style.vertical || ""}`;
-                formatted = `${left}${pad(formatted, options.width - left.length - right.length, options.style.hAlign || PAD_SIDE.RIGHT)}${right}`;
+            if (((_a = options.style) === null || _a === void 0 ? void 0 : _a.vertical) || ((_b = options.style) === null || _b === void 0 ? void 0 : _b.left) || ((_c = options.style) === null || _c === void 0 ? void 0 : _c.right)) {
+                const left = `${options.style.left || options.style.vertical || ""}${" ".repeat(((_d = options.style) === null || _d === void 0 ? void 0 : _d.hPadding) || 1)}`;
+                const right = `${" ".repeat(((_e = options.style) === null || _e === void 0 ? void 0 : _e.hPadding) || 1)}${((_f = options.style) === null || _f === void 0 ? void 0 : _f.right) || ((_g = options.style) === null || _g === void 0 ? void 0 : _g.vertical) || ""}`;
+                formatted = `${left}${pad(formatted, options.width - left.length - right.length, ((_h = options.style) === null || _h === void 0 ? void 0 : _h.hAlign) || PAD_SIDE.RIGHT)}${right}`;
             }
             else
-                formatted = pad(formatted, options.width, ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || PAD_SIDE.RIGHT);
+                formatted = pad(formatted, options.width, ((_j = options.style) === null || _j === void 0 ? void 0 : _j.hAlign) || PAD_SIDE.RIGHT);
             lines.push(formatted);
-        }
+        };
+        // construct content lines
+        if ((_v = options.style) === null || _v === void 0 ? void 0 : _v.vPadding)
+            for (let i = 0; i < options.style.vPadding; i++)
+                addLine("");
+        for (let line of options.input)
+            addLine(line);
+        if ((_w = options.style) === null || _w === void 0 ? void 0 : _w.vPadding)
+            for (let i = 0; i < options.style.vPadding; i++)
+                addLine("");
         // construct bottom of box
-        if ((_l = options.style) === null || _l === void 0 ? void 0 : _l.horizontal) {
+        if ((_x = options.style) === null || _x === void 0 ? void 0 : _x.horizontal) {
             let bottom;
             if (options.style.bottom) {
                 const bl = options.style.bottom.left || options.style.bottom.corner || options.style.corner || options.style.horizontal;

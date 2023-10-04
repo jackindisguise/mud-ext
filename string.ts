@@ -34,7 +34,8 @@ export interface BoxStyle{
 	vertical?: string;
 	left?: string;
 	right?: string;
-	padding?: number;
+	hPadding?: number;
+	vPadding?: number;
 	corner?: string;
 	titleBorder?: BoxStyleTitleBorder;
 	top?: BoxStyleHorizontalEdge;
@@ -206,31 +207,31 @@ export function box(options:BoxOptions): string[]{
 	if(options.title) {
 		top = ` ${options.title} `;
 		if(options.style?.titleBorder) top = `${options.style.titleBorder.left}${top}${options.style.titleBorder.right}`;
-	} else top = ""; // initialize to empty string
+	}
 
-	if(options.style?.horizontal) {
-		if(options.style?.top){
-			const tl = (options.style.top.right||options.style.top.corner||options.style.corner||options.style.horizontal)+options.style.horizontal;
-			const tr = options.style.horizontal+(options.style.top.right||options.style.top.corner||options.style.corner||options.style.horizontal);
-			top = `${tl}${pad(top, options.width-tl.length-tr.length, options.style.titleHAlign||PAD_SIDE.RIGHT, options.style.horizontal)}${tr}`;
-		} else if(options.style.corner) {
-			const tl = options.style.corner+options.style.horizontal;
-			const tr = options.style.horizontal+options.style.corner;
-			top = `${tl}${pad(top, options.width-tl.length-tr.length, options.style.titleHAlign||PAD_SIDE.RIGHT, options.style.horizontal)}${tr}`;
-		} else top = `${options.style.horizontal.repeat(2)}${pad(top, options.width-(options.style.horizontal.length*4), options.style.titleHAlign||PAD_SIDE.RIGHT, options.style.horizontal)}${options.style.horizontal.repeat(2)}`;
-	} else top = pad(top, options.width, options.style?.titleHAlign||PAD_SIDE.RIGHT);
-	lines.push(top);
+	if(options.style?.top||options.style?.horizontal||options.style?.corner) {
+		const tl = (options.style?.top?.left||options.style?.top?.corner||options.style?.corner||options.style?.horizontal)+(options.style?.horizontal||"");
+		const tr = (options.style?.horizontal||"")+(options.style?.top?.right||options.style?.top?.corner||options.style?.corner||options.style?.horizontal);
+		top = `${tl}${pad(top, options.width-tl.length-tr.length, options.style.titleHAlign||PAD_SIDE.RIGHT, options.style.horizontal)}${tr}`;
+	} else if(top) top = pad(top, options.width, options.style?.titleHAlign||PAD_SIDE.RIGHT);
 
-	// construct content lines
-	for(let line of options.input){
+	// add a top
+	if(top) lines.push(top);
+
+	const addLine = (line)=>{
 		let formatted = line;
 		if(options.style?.vertical || options.style?.left || options.style?.right) {
-			const left = `${options.style.left||options.style.vertical||""}${" ".repeat(options.style?.padding||1)}`;
-			const right = `${" ".repeat(options.style?.padding||1)}${options.style.right||options.style.vertical||""}`;
-			formatted = `${left}${pad(formatted, options.width-left.length-right.length, options.style.hAlign||PAD_SIDE.RIGHT)}${right}`;
+			const left = `${options.style.left||options.style.vertical||""}${" ".repeat(options.style?.hPadding||1)}`;
+			const right = `${" ".repeat(options.style?.hPadding||1)}${options.style?.right||options.style?.vertical||""}`;
+			formatted = `${left}${pad(formatted, options.width-left.length-right.length, options.style?.hAlign||PAD_SIDE.RIGHT)}${right}`;
 		} else formatted = pad(formatted, options.width, options.style?.hAlign||PAD_SIDE.RIGHT);
 		lines.push(formatted);
-	}
+	};
+
+	// construct content lines
+	if(options.style?.vPadding) for(let i=0;i<options.style.vPadding;i++) addLine("");
+	for(let line of options.input) addLine(line);
+	if(options.style?.vPadding) for(let i=0;i<options.style.vPadding;i++) addLine("");
 
 	// construct bottom of box
 	if(options.style?.horizontal) {

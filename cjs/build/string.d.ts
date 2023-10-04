@@ -29,7 +29,8 @@ export interface BoxStyle {
     vertical?: string;
     left?: string;
     right?: string;
-    padding?: number;
+    hPadding?: number;
+    vPadding?: number;
     corner?: string;
     titleBorder?: BoxStyleTitleBorder;
     top?: BoxStyleHorizontalEdge;
