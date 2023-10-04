@@ -212,15 +212,21 @@ export function box(options:BoxOptions): string[]{
 
 	// generate top
 	if(options.style?.top?.middle||options.style?.horizontal) {
-		if(!options.style?.titleBorder) top = ` ${top} `; // add padding between title and edge characters
+		if(top && !options.style?.titleBorder) top = ` ${top} `; // add padding between title and edge characters
+		let tl, tr;
 		const horizontal:string = options.style?.top?.middle || options.style?.horizontal || ""; // "" should never happen but oh well
-		const tlCorner = options.style?.top?.left||options.style?.top?.corner||options.style?.corner||horizontal;
-		const tlPad = horizontal;
-		const tl = tlCorner+tlPad;
-		const trCorner = options.style?.top?.right||options.style?.top?.corner||options.style?.corner||horizontal;
-		const trPad = horizontal;
-		const tr = trPad+trCorner;
-		top = `${tl}${pad(top, options.width-tl.length-tr.length, options.style?.titleHAlign||PAD_SIDE.RIGHT, options.style?.top?.middle||options.style?.horizontal)}${tr}`;
+		const tlCorner = options.style?.top?.left||options.style?.top?.corner||options.style?.corner;
+		if(tlCorner){
+			const tlPad = horizontal;
+			tl = tlCorner+tlPad;
+		} else tl = "";
+
+		const trCorner = options.style?.top?.right||options.style?.top?.corner||options.style?.corner;
+		if(trCorner){
+			const trPad = horizontal;
+			tr = trPad+trCorner;
+		} else tr = "";
+		top = `${tl}${pad(top||"", options.width-tl.length-tr.length, options.style?.titleHAlign||PAD_SIDE.RIGHT, options.style?.top?.middle||options.style?.horizontal)}${tr}`;
 	} else if(top) top = pad(top, options.width, options.style?.titleHAlign||PAD_SIDE.RIGHT);
 
 	// add top if it's been generated
@@ -229,12 +235,12 @@ export function box(options:BoxOptions): string[]{
 	const addLine = (line)=>{
 		let formatted = line;
 		if(options.style?.vertical || options.style?.left || options.style?.right) {
-			const left = `${options.style?.left||options.style?.vertical||" "}${" ".repeat(options.style?.hPadding||1)}`;
-			const right = `${" ".repeat(options.style?.hPadding||1)}${options.style?.right||options.style?.vertical||" "}`;
+			const left = `${options.style?.left||options.style?.vertical||""}${" ".repeat(options.style?.hPadding||1)}`;
+			const right = `${" ".repeat(options.style?.hPadding||1)}${options.style?.right||options.style?.vertical||""}`;
 			formatted = `${left}${pad(formatted, options.width-left.length-right.length, options.style?.hAlign||PAD_SIDE.RIGHT)}${right}`;
 		} else {
 			const left = `${" ".repeat(options.style?.hPadding||1)}`;
-			const right = `${" ".repeat(options.style?.hPadding||1)}`;
+			const right = left;
 			formatted = `${left}${pad(formatted, options.width-left.length-right.length, options.style?.hAlign||PAD_SIDE.RIGHT)}${right}`;
 		}
 		lines.push(formatted);
@@ -248,13 +254,19 @@ export function box(options:BoxOptions): string[]{
 
 	// generate bottom
 	if(options.style?.bottom?.middle||options.style?.horizontal) {
+		let bl, br;
 		const horizontal:string = options.style?.bottom?.middle || options.style?.horizontal || ""; // "" should never happen but oh well
-		const blCorner = options.style?.bottom?.left||options.style?.bottom?.corner||options.style?.corner||horizontal;
-		const blPad = horizontal;
-		const bl = blCorner+blPad;
-		const brCorner = options.style?.bottom?.right||options.style?.bottom?.corner||options.style?.corner||horizontal;
-		const brPad = horizontal;
-		const br = brPad+brCorner;
+		const blCorner = options.style?.bottom?.left||options.style?.bottom?.corner||options.style?.corner;
+		if(blCorner){
+			const blPad = horizontal;
+			bl = blCorner+blPad;
+		} else bl = "";
+
+		const brCorner = options.style?.bottom?.right||options.style?.bottom?.corner||options.style?.corner;
+		if(brCorner){
+			const brPad = horizontal;
+			br = brPad+brCorner;
+		} else br = "";
 		const bottom = `${bl}${padLeft("", options.width-bl.length-br.length, horizontal)}${br}`;
 		lines.push(bottom);
 	}

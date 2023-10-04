@@ -95,6 +95,35 @@ describe("string.ts", () => {
         });
     });
     describe("box", () => {
+        it("weird", (done) => {
+            let style = {
+                hPadding: 2,
+                vPadding: 1,
+                hAlign: string.PAD_SIDE.LEFT,
+                titleHAlign: string.PAD_SIDE.LEFT,
+                top: { middle: "v " },
+                bottom: { middle: "^ " },
+                left: ">",
+                right: "<"
+            };
+            let generated = string.box({
+                style: style,
+                width: 25,
+                input: ["This is line 1.", "This is line 2.", "This is line 3.", "Go to hell."]
+            }).join("\n");
+            let expected = [
+                "v v v v v v v v v v v v v",
+                ">                       <",
+                ">      This is line 1.  <",
+                ">      This is line 2.  <",
+                ">      This is line 3.  <",
+                ">          Go to hell.  <",
+                ">                       <",
+                "^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^"
+            ].join("\n");
+            expect(generated).is.equal(expected);
+            done();
+        });
         it("right-aligned (default)", (done) => {
             let generated = string.box({
                 style: Object.assign(Object.assign({}, string.BOX_STYLE.PLAIN), { hPadding: 2, top: { left: ">>", right: "<<" }, bottom: { left: ">>", right: "<<" }, left: ">>", right: "<<" }),
@@ -135,7 +164,7 @@ describe("string.ts", () => {
         });
         it("left-aligned", (done) => {
             // copy O box style
-            let obox = Object.assign(Object.assign({}, string.BOX_STYLE.O), { hAlign: string.PAD_SIDE.LEFT, titleHAlign: string.PAD_SIDE.LEFT });
+            let obox = Object.assign(Object.assign({}, string.BOX_STYLE.O), { top: { corner: "o" }, hAlign: string.PAD_SIDE.LEFT, titleHAlign: string.PAD_SIDE.LEFT });
             // generate an O box
             let generated = string.box({
                 style: obox,
@@ -145,7 +174,7 @@ describe("string.ts", () => {
             }).join("\n");
             // test against expected
             let expected = [
-                "OOOOOOOOOOOOOOO( Box Title )OO",
+                "oOOOOOOOOOOOOOO( Box Title )Oo",
                 "O            This is a line. O",
                 "O      This is another line. O",
                 "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
