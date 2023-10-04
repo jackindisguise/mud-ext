@@ -169,42 +169,51 @@
      * @returns {string[]} The lines of the box in an array.
      */
     function box(options) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9;
         let lines = [];
-        // construct top of box
-        let top;
-        if (options.title) {
-            top = options.title;
-            if ((_a = options.style) === null || _a === void 0 ? void 0 : _a.titleBorder)
-                top = `${options.style.titleBorder.left} ${top} ${options.style.titleBorder.right}`;
-        }
-        // generate top
-        if (((_c = (_b = options.style) === null || _b === void 0 ? void 0 : _b.top) === null || _c === void 0 ? void 0 : _c.middle) || ((_d = options.style) === null || _d === void 0 ? void 0 : _d.horizontal)) {
-            if (top && !((_e = options.style) === null || _e === void 0 ? void 0 : _e.titleBorder))
-                top = ` ${top} `; // add padding between title and edge characters
-            let tl, tr;
-            const horizontal = ((_g = (_f = options.style) === null || _f === void 0 ? void 0 : _f.top) === null || _g === void 0 ? void 0 : _g.middle) || ((_h = options.style) === null || _h === void 0 ? void 0 : _h.horizontal) || ""; // "" should never happen but oh well
-            const tlCorner = ((_k = (_j = options.style) === null || _j === void 0 ? void 0 : _j.top) === null || _k === void 0 ? void 0 : _k.left) || ((_m = (_l = options.style) === null || _l === void 0 ? void 0 : _l.top) === null || _m === void 0 ? void 0 : _m.corner) || ((_o = options.style) === null || _o === void 0 ? void 0 : _o.corner);
-            if (tlCorner) {
-                const tlPad = horizontal;
-                tl = tlCorner + tlPad;
+        // consolidate top elements
+        let topmiddle = ((_b = (_a = options.style) === null || _a === void 0 ? void 0 : _a.top) === null || _b === void 0 ? void 0 : _b.middle) || ((_c = options.style) === null || _c === void 0 ? void 0 : _c.horizontal) || "";
+        const topleft = ((_e = (_d = options.style) === null || _d === void 0 ? void 0 : _d.top) === null || _e === void 0 ? void 0 : _e.left) || ((_g = (_f = options.style) === null || _f === void 0 ? void 0 : _f.top) === null || _g === void 0 ? void 0 : _g.corner) || ((_h = options.style) === null || _h === void 0 ? void 0 : _h.corner) || "";
+        const topright = ((_k = (_j = options.style) === null || _j === void 0 ? void 0 : _j.top) === null || _k === void 0 ? void 0 : _k.right) || ((_m = (_l = options.style) === null || _l === void 0 ? void 0 : _l.top) === null || _m === void 0 ? void 0 : _m.corner) || ((_o = options.style) === null || _o === void 0 ? void 0 : _o.corner) || "";
+        // do we have top elements?
+        if (topleft || topright || topmiddle) {
+            if ((topleft || topright) && !topmiddle)
+                topmiddle = " ";
+            const ruleWidth = options.width - topleft.length - topright.length; // account for corners
+            const rule = topmiddle.repeat(Math.ceil(ruleWidth / topmiddle.length)); // repeats the horizontal padder enough times to fit rule width
+            const safeRule = rule.slice(0, ruleWidth); // only use what we need for the full size;
+            // inject title into rule
+            if (options.title) {
+                // titles are offset from the edge character by 1 -- titles don't touch the edge by default
+                // might make this an option later
+                const offset = 1;
+                let formattedTitle = options.title;
+                // add padding to title -- might make this an option later
+                if ((_p = options.style) === null || _p === void 0 ? void 0 : _p.titleBorder) {
+                    const tLeftPadding = ((_q = options.style.titleBorder) === null || _q === void 0 ? void 0 : _q.left) ? " " : "";
+                    const tRightPadding = ((_r = options.style.titleBorder) === null || _r === void 0 ? void 0 : _r.right) ? " " : "";
+                    formattedTitle = `${((_s = options.style.titleBorder) === null || _s === void 0 ? void 0 : _s.left) || ""}${tLeftPadding}${options.title}${tRightPadding}${((_t = options.style.titleBorder) === null || _t === void 0 ? void 0 : _t.right) || ""}`;
+                }
+                else
+                    formattedTitle = ` ${options.title} `;
+                // respect vertical alignment for titles
+                const titleWidth = formattedTitle.length;
+                let start = 0 + offset;
+                if (options.style.titleHAlign === PAD_SIDE.LEFT)
+                    start = ruleWidth - titleWidth - offset;
+                else if (options.style.titleHAlign === PAD_SIDE.CENTER)
+                    start = Math.floor((ruleWidth - titleWidth) / 2);
+                const titled = safeRule.slice(0, start) + formattedTitle + safeRule.slice(start + titleWidth, ruleWidth);
+                lines.push(`${topleft}${titled}${topright}`);
+                // no title -- just a basic rule
             }
             else
-                tl = "";
-            const trCorner = ((_q = (_p = options.style) === null || _p === void 0 ? void 0 : _p.top) === null || _q === void 0 ? void 0 : _q.right) || ((_s = (_r = options.style) === null || _r === void 0 ? void 0 : _r.top) === null || _s === void 0 ? void 0 : _s.corner) || ((_t = options.style) === null || _t === void 0 ? void 0 : _t.corner);
-            if (trCorner) {
-                const trPad = horizontal;
-                tr = trPad + trCorner;
-            }
-            else
-                tr = "";
-            top = `${tl}${pad(top || "", options.width - tl.length - tr.length, ((_u = options.style) === null || _u === void 0 ? void 0 : _u.titleHAlign) || PAD_SIDE.RIGHT, ((_w = (_v = options.style) === null || _v === void 0 ? void 0 : _v.top) === null || _w === void 0 ? void 0 : _w.middle) || ((_x = options.style) === null || _x === void 0 ? void 0 : _x.horizontal))}${tr}`;
+                lines.push(`${topleft}${safeRule}${topright}`);
+            // has a title but no box visual elements
         }
-        else if (top)
-            top = pad(top, options.width, ((_y = options.style) === null || _y === void 0 ? void 0 : _y.titleHAlign) || PAD_SIDE.RIGHT);
-        // add top if it's been generated
-        if (top)
-            lines.push(top);
+        else if (options.title) {
+            lines.push(pad(options.title, options.width, ((_u = options.style) === null || _u === void 0 ? void 0 : _u.titleHAlign) || PAD_SIDE.RIGHT));
+        }
         const addLine = (line) => {
             var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
             let formatted = line;
@@ -221,34 +230,26 @@
             lines.push(formatted);
         };
         // construct content lines
-        if ((_z = options.style) === null || _z === void 0 ? void 0 : _z.vPadding)
+        if ((_v = options.style) === null || _v === void 0 ? void 0 : _v.vPadding)
             for (let i = 0; i < options.style.vPadding; i++)
                 addLine("");
         for (let line of options.input)
             addLine(line);
-        if ((_0 = options.style) === null || _0 === void 0 ? void 0 : _0.vPadding)
+        if ((_w = options.style) === null || _w === void 0 ? void 0 : _w.vPadding)
             for (let i = 0; i < options.style.vPadding; i++)
                 addLine("");
-        // generate bottom
-        if (((_2 = (_1 = options.style) === null || _1 === void 0 ? void 0 : _1.bottom) === null || _2 === void 0 ? void 0 : _2.middle) || ((_3 = options.style) === null || _3 === void 0 ? void 0 : _3.horizontal)) {
-            let bl, br;
-            const horizontal = ((_5 = (_4 = options.style) === null || _4 === void 0 ? void 0 : _4.bottom) === null || _5 === void 0 ? void 0 : _5.middle) || ((_6 = options.style) === null || _6 === void 0 ? void 0 : _6.horizontal) || ""; // "" should never happen but oh well
-            const blCorner = ((_8 = (_7 = options.style) === null || _7 === void 0 ? void 0 : _7.bottom) === null || _8 === void 0 ? void 0 : _8.left) || ((_10 = (_9 = options.style) === null || _9 === void 0 ? void 0 : _9.bottom) === null || _10 === void 0 ? void 0 : _10.corner) || ((_11 = options.style) === null || _11 === void 0 ? void 0 : _11.corner);
-            if (blCorner) {
-                const blPad = horizontal;
-                bl = blCorner + blPad;
-            }
-            else
-                bl = "";
-            const brCorner = ((_13 = (_12 = options.style) === null || _12 === void 0 ? void 0 : _12.bottom) === null || _13 === void 0 ? void 0 : _13.right) || ((_15 = (_14 = options.style) === null || _14 === void 0 ? void 0 : _14.bottom) === null || _15 === void 0 ? void 0 : _15.corner) || ((_16 = options.style) === null || _16 === void 0 ? void 0 : _16.corner);
-            if (brCorner) {
-                const brPad = horizontal;
-                br = brPad + brCorner;
-            }
-            else
-                br = "";
-            const bottom = `${bl}${padLeft("", options.width - bl.length - br.length, horizontal)}${br}`;
-            lines.push(bottom);
+        // consolidate bottom elements
+        let bottommiddle = ((_y = (_x = options.style) === null || _x === void 0 ? void 0 : _x.bottom) === null || _y === void 0 ? void 0 : _y.middle) || ((_z = options.style) === null || _z === void 0 ? void 0 : _z.horizontal) || "";
+        const bottomleft = ((_1 = (_0 = options.style) === null || _0 === void 0 ? void 0 : _0.bottom) === null || _1 === void 0 ? void 0 : _1.left) || ((_3 = (_2 = options.style) === null || _2 === void 0 ? void 0 : _2.bottom) === null || _3 === void 0 ? void 0 : _3.corner) || ((_4 = options.style) === null || _4 === void 0 ? void 0 : _4.corner) || "";
+        const bottomright = ((_6 = (_5 = options.style) === null || _5 === void 0 ? void 0 : _5.bottom) === null || _6 === void 0 ? void 0 : _6.right) || ((_8 = (_7 = options.style) === null || _7 === void 0 ? void 0 : _7.bottom) === null || _8 === void 0 ? void 0 : _8.corner) || ((_9 = options.style) === null || _9 === void 0 ? void 0 : _9.corner) || "";
+        // do we have any bottom elements?
+        if (bottomleft || bottomright || bottommiddle) {
+            if ((bottomleft || bottomright) && !bottommiddle)
+                bottommiddle = " ";
+            const ruleWidth = options.width - bottomleft.length - bottomright.length; // account for corners
+            const rule = bottommiddle.repeat(Math.ceil(ruleWidth / bottommiddle.length)); // repeats the horizontal padder enough times to fit rule width
+            const safeRule = rule.slice(0, ruleWidth); // only use what we need for the full size;
+            lines.push(`${bottomleft}${safeRule}${bottomright}`);
         }
         return lines;
     }

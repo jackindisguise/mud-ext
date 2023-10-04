@@ -193,6 +193,30 @@
                 (0, chai_1.expect)(generated).is.equal(expected);
                 done();
             });
+            it("blank boxes", (done) => {
+                // blank-ass box
+                let blank = {
+                    hAlign: string.PAD_SIDE.CENTER,
+                    titleHAlign: string.PAD_SIDE.CENTER,
+                    corner: "+"
+                };
+                // generate a rounded box
+                let generated = string.box({
+                    style: blank,
+                    title: "Box Title",
+                    input: ["This is a line.", "This is another line."],
+                    width: 30
+                }).join("\n");
+                // test against expected
+                let expected = [
+                    "+         Box Title          +",
+                    "       This is a line.        ",
+                    "    This is another line.     ",
+                    "+                            +"
+                ].join("\n");
+                (0, chai_1.expect)(generated).is.equal(expected);
+                done();
+            });
         });
     });
 });

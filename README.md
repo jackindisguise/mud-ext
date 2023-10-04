@@ -89,3 +89,4 @@ console.assert(wrapped === expected);
 
 ### Generate boxes.
 ```javascript
+```

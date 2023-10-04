@@ -203,34 +203,47 @@ export interface BoxOptions{
 export function box(options:BoxOptions): string[]{
 	let lines:string[] = [];
 
-	// construct top of box
-	let top;
-	if(options.title) {
-		top = options.title;
-		if(options.style?.titleBorder) top = `${options.style.titleBorder.left} ${top} ${options.style.titleBorder.right}`;
+	// consolidate top elements
+	let topmiddle: string = options.style?.top?.middle || options.style?.horizontal || "";
+	const topleft:string = options.style?.top?.left || options.style?.top?.corner || options.style?.corner || "";
+	const topright:string = options.style?.top?.right || options.style?.top?.corner || options.style?.corner || "";
+
+	// do we have top elements?
+	if(topleft || topright || topmiddle) {
+		if((topleft || topright) && !topmiddle) topmiddle = " ";
+		const ruleWidth = options.width-topleft.length-topright.length; // account for corners
+		const rule = topmiddle.repeat(Math.ceil(ruleWidth/topmiddle.length)); // repeats the horizontal padder enough times to fit rule width
+		const safeRule = rule.slice(0,ruleWidth); // only use what we need for the full size;
+
+		// inject title into rule
+		if(options.title){
+			// titles are offset from the edge character by 1 -- titles don't touch the edge by default
+			// might make this an option later
+			const offset = 1;
+			let formattedTitle = options.title;
+
+			// add padding to title -- might make this an option later
+			if(options.style?.titleBorder) {
+				const tLeftPadding = options.style.titleBorder?.left ? " " : "";
+				const tRightPadding = options.style.titleBorder?.right ? " " : "";
+				formattedTitle = `${options.style.titleBorder?.left||""}${tLeftPadding}${options.title}${tRightPadding}${options.style.titleBorder?.right||""}`;
+			} else formattedTitle = ` ${options.title} `;
+
+			// respect vertical alignment for titles
+			const titleWidth = formattedTitle.length;
+			let start = 0+offset;
+			if(options.style.titleHAlign === PAD_SIDE.LEFT) start=ruleWidth-titleWidth-offset;
+			else if(options.style.titleHAlign === PAD_SIDE.CENTER) start = Math.floor((ruleWidth-titleWidth)/2);
+			const titled = safeRule.slice(0,start)+formattedTitle+safeRule.slice(start+titleWidth, ruleWidth);
+			lines.push(`${topleft}${titled}${topright}`);
+
+		// no title -- just a basic rule
+		} else lines.push(`${topleft}${safeRule}${topright}`);
+
+	// has a title but no box visual elements
+	} else if(options.title){
+		lines.push(pad(options.title, options.width, options.style?.titleHAlign||PAD_SIDE.RIGHT));
 	}
-
-	// generate top
-	if(options.style?.top?.middle||options.style?.horizontal) {
-		if(top && !options.style?.titleBorder) top = ` ${top} `; // add padding between title and edge characters
-		let tl, tr;
-		const horizontal:string = options.style?.top?.middle || options.style?.horizontal || ""; // "" should never happen but oh well
-		const tlCorner = options.style?.top?.left||options.style?.top?.corner||options.style?.corner;
-		if(tlCorner){
-			const tlPad = horizontal;
-			tl = tlCorner+tlPad;
-		} else tl = "";
-
-		const trCorner = options.style?.top?.right||options.style?.top?.corner||options.style?.corner;
-		if(trCorner){
-			const trPad = horizontal;
-			tr = trPad+trCorner;
-		} else tr = "";
-		top = `${tl}${pad(top||"", options.width-tl.length-tr.length, options.style?.titleHAlign||PAD_SIDE.RIGHT, options.style?.top?.middle||options.style?.horizontal)}${tr}`;
-	} else if(top) top = pad(top, options.width, options.style?.titleHAlign||PAD_SIDE.RIGHT);
-
-	// add top if it's been generated
-	if(top) lines.push(top);
 
 	const addLine = (line)=>{
 		let formatted = line;
@@ -251,24 +264,18 @@ export function box(options:BoxOptions): string[]{
 	for(let line of options.input) addLine(line);
 	if(options.style?.vPadding) for(let i=0;i<options.style.vPadding;i++) addLine("");
 
+	// consolidate bottom elements
+	let bottommiddle: string = options.style?.bottom?.middle || options.style?.horizontal || "";
+	const bottomleft:string = options.style?.bottom?.left || options.style?.bottom?.corner || options.style?.corner || "";
+	const bottomright:string = options.style?.bottom?.right || options.style?.bottom?.corner || options.style?.corner || "";
 
-	// generate bottom
-	if(options.style?.bottom?.middle||options.style?.horizontal) {
-		let bl, br;
-		const horizontal:string = options.style?.bottom?.middle || options.style?.horizontal || ""; // "" should never happen but oh well
-		const blCorner = options.style?.bottom?.left||options.style?.bottom?.corner||options.style?.corner;
-		if(blCorner){
-			const blPad = horizontal;
-			bl = blCorner+blPad;
-		} else bl = "";
-
-		const brCorner = options.style?.bottom?.right||options.style?.bottom?.corner||options.style?.corner;
-		if(brCorner){
-			const brPad = horizontal;
-			br = brPad+brCorner;
-		} else br = "";
-		const bottom = `${bl}${padLeft("", options.width-bl.length-br.length, horizontal)}${br}`;
-		lines.push(bottom);
+	// do we have any bottom elements?
+	if(bottomleft || bottomright || bottommiddle) {
+		if((bottomleft || bottomright) && !bottommiddle) bottommiddle = " ";
+		const ruleWidth = options.width-bottomleft.length-bottomright.length; // account for corners
+		const rule = bottommiddle.repeat(Math.ceil(ruleWidth/bottommiddle.length)); // repeats the horizontal padder enough times to fit rule width
+		const safeRule = rule.slice(0,ruleWidth); // only use what we need for the full size;
+		lines.push(`${bottomleft}${safeRule}${bottomright}`);
 	}
 
 	return lines;
