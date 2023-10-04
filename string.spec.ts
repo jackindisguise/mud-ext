@@ -107,7 +107,9 @@ describe("string.ts", ()=>{
 			let generated = string.box({
 				style:{
 					...string.BOX_STYLE.PLAIN,
-					padding:3
+					padding:2,
+					left:">>",
+					right:"<<"
 				},
 				title:"Box Title",
 				input:["This is a line.", "This is another line."],
@@ -116,8 +118,8 @@ describe("string.ts", ()=>{
 
 			let expected = [
 				"+- Box Title ----------------+",
-				"|   This is a line.          |",
-				"|   This is another line.    |",
+				">>  This is a line.         <<",
+				">>  This is another line.   <<",
 				"+----------------------------+"
 			].join("\n");
 

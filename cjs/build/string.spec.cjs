@@ -108,15 +108,15 @@
         describe("box", () => {
             it("right-aligned (default)", (done) => {
                 let generated = string.box({
-                    style: Object.assign(Object.assign({}, string.BOX_STYLE.PLAIN), { padding: 3 }),
+                    style: Object.assign(Object.assign({}, string.BOX_STYLE.PLAIN), { padding: 2, left: ">>", right: "<<" }),
                     title: "Box Title",
                     input: ["This is a line.", "This is another line."],
                     width: 30
                 }).join("\n");
                 let expected = [
                     "+- Box Title ----------------+",
-                    "|   This is a line.          |",
-                    "|   This is another line.    |",
+                    ">>  This is a line.         <<",
+                    ">>  This is another line.   <<",
                     "+----------------------------+"
                 ].join("\n");
                 (0, chai_1.expect)(generated).is.equal(expected);
