@@ -97,8 +97,8 @@ export function pad(string:string, size:number, side?:PAD_SIDE, padder?:string):
  * @returns {string} The padded string.
  */
 export function padLeft(string:string, size:number, padder=" "): string{
-	let csize = string.length;
-	let psize = size-csize;
+	const csize = string.length;
+	const psize = size-csize;
 	if(psize<1) return string;
 	let pad = padder.repeat(Math.ceil(psize/padder.length));
 	if(pad.length>psize) pad = pad.slice(0,psize);
@@ -113,8 +113,8 @@ export function padLeft(string:string, size:number, padder=" "): string{
  * @returns {string} The padded string.
  */
 export function padRight(string:string, size:number, padder=" "): string{
-	let csize = string.length;
-	let psize = size-csize;
+	const csize = string.length;
+	const psize = size-csize;
 	if(psize<1) return string;
 	let pad = padder.repeat(Math.ceil(psize/padder.length));
 	if(pad.length>psize) pad = pad.slice(0,psize);
@@ -130,20 +130,14 @@ export function padRight(string:string, size:number, padder=" "): string{
  * @returns {string} The padded string.
  */
 export function padCenter(string:string, size:number, padder=" "): string{
-	let ssize = string.length;
-	let psize = size-ssize;
+	const ssize = string.length;
+	const psize = size-ssize;
 	if(psize<1) return string;
-/*	let lsize = psize%2?Math.floor(psize/2):psize/2;
-	let rsize = psize%2?Math.floor(psize/2)+1:psize/2;
-	let lpad = padder.repeat(Math.ceil(lsize/padder.length));
-	if(lpad.length>lsize) lpad = lpad.slice(0,lsize);
-	let rpad = padder.repeat(Math.ceil(rsize/padder.length));
-	if(rpad.length>rsize) rpad = rpad.slice(0,rsize);*/
-	let tpad = padder.repeat(Math.ceil(size/padder.length));
-	let lsize = psize%2?Math.floor(psize/2):psize/2;
-	let rsize = psize%2?Math.floor(psize/2)+1:psize/2;
-	let lpad = tpad.slice(0,lsize);
-	let rpad = tpad.slice(lsize+string.length, lsize+string.length+rsize);
+	const tpad = padder.repeat(Math.ceil(size/padder.length));
+	const lsize = psize%2?Math.floor(psize/2):psize/2;
+	const rsize = psize%2?Math.floor(psize/2)+1:psize/2;
+	const lpad = tpad.slice(0,lsize);
+	const rpad = tpad.slice(lsize+string.length, lsize+string.length+rsize);
 	return `${lpad}${string}${rpad}`;
 }
 
@@ -154,12 +148,12 @@ export function padCenter(string:string, size:number, padder=" "): string{
  * @returns {string[]} The lines of the wrapped string in an array.
  */
 export function wrap(string:string, size:number): string[]{
-	let lines:string[] = [];
+	const lines:string[] = [];
 	let last = 0;
 	let cursor=size;
 	while(cursor<string.length){
 		let breakpoint = cursor; // assume current point is breakpoint
-		let mid = (cursor+last)/2; // search halfway between last point and current point for whitespace
+		const mid = (cursor+last)/2; // search halfway between last point and current point for whitespace
 		for(let i=cursor;i>=mid;i--){ // search for nearby whitespace
 			if([" ", "\r", "\n", "\t"].includes(string[i])){
 				breakpoint = i;
@@ -201,7 +195,7 @@ export interface BoxOptions{
  * @returns {string[]} The lines of the box in an array.
  */
 export function box(options:BoxOptions): string[]{
-	let lines:string[] = [];
+	const lines:string[] = [];
 
 	// consolidate top elements
 	let topmiddle: string = options.style?.top?.middle || options.style?.horizontal || "";
@@ -265,7 +259,7 @@ export function box(options:BoxOptions): string[]{
 
 	// construct content lines
 	if(options.style?.vPadding) for(let i=0;i<options.style.vPadding;i++) addLine("");
-	for(let line of options.input) addLine(line);
+	for(const line of options.input) addLine(line);
 	if(options.style?.vPadding) for(let i=0;i<options.style.vPadding;i++) addLine("");
 
 	// consolidate bottom elements
@@ -283,4 +277,8 @@ export function box(options:BoxOptions): string[]{
 	}
 
 	return lines;
+}
+
+export function autocomplete(partial: string, target: string): string|undefined{
+	if(partial.length > target.length) return;
 }

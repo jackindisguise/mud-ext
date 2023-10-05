@@ -24,9 +24,14 @@
     "@types/chai": "^4.3.6",
     "@types/mocha": "^10.0.2",
     "@types/node": "^20.8.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
     "chai": "^4.3.10",
+    "eslint": "^8.50.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "mocha": "^10.2.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "typescript-eslint": "^0.0.1-alpha.0"
   },
   "repository": {
     "type": "git",
@@ -39,5 +44,8 @@
   "bugs": {
     "url": "https://github.com/jackindisguise/mud-ext/issues"
   },
-  "homepage": "https://github.com/jackindisguise/mud-ext#readme"
+  "homepage": "https://github.com/jackindisguise/mud-ext#readme",
+  "dependencies": {
+    "eslint-config-prettier": "^9.0.0"
+  }
 }

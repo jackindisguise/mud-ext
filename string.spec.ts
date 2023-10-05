@@ -139,7 +139,7 @@ describe("string.ts", ()=>{
 		it("right-aligned (default)", (done)=>{
 			let generated = string.box({
 				style:{
-					...string.BOX_STYLE.PLAIN,
+					...string.BOX_STYLES.PLAIN,
 					hPadding:2,
 					top:{left:">>", right:"<<"},
 					bottom:{left:">>", right:"<<"},
@@ -165,7 +165,7 @@ describe("string.ts", ()=>{
 		it("center-aligned", (done)=>{
 			// copy rounded box style
 			let rounded = {
-				...string.BOX_STYLE.ROUNDED,
+				...string.BOX_STYLES.ROUNDED,
 				hAlign: string.PAD_SIDE.CENTER,
 				titleHAlign: string.PAD_SIDE.CENTER,
 				vPadding: 1
@@ -196,7 +196,7 @@ describe("string.ts", ()=>{
 		it("left-aligned", (done)=>{
 			// copy O box style
 			let obox:string.BoxStyle = {
-				...string.BOX_STYLE.O,
+				...string.BOX_STYLES.O,
 				top:{corner:"o"},
 				hAlign: string.PAD_SIDE.LEFT,
 				titleHAlign: string.PAD_SIDE.LEFT

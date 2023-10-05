@@ -38,7 +38,7 @@ export function roll(die: number, sides: number, mod?: number){
  * @returns {number[]} The result of the rolls.
  */
 export function actualRoll(die: number, sides: number){
-	let results:number[] = [];
+	const results:number[] = [];
 	for(let i=0;i<die;i++) results.push(randomInt(1,sides));
 	return results;
 }
