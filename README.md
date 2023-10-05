@@ -1,4 +1,4 @@
-# Compatability
+# Compatibility
 Supports both CJS and ES6 import style.
 ```javascript
 // CommonJS-style
