@@ -11,8 +11,8 @@ import {string} from "mud-ext";
 # Install
 `npm i mud-ext`
 
-# Usage
-## `strings`
+# Features
+## String functions
 ### Pad strings to a specific length.
 ```javascript
 import {string} from "mud-ext";
@@ -24,7 +24,7 @@ console.assert(pl === "------CAKE");
 console.assert(pc === "---CAKE---");
 console.assert(pr === "CAKE------");
 ```
-There is also an alias that I added for legacy reasons.
+There is also an alias for legacy reasons and occasionally convenience.
 ```javascript
 let str = "CAKE";
 let pl = string.pad(str, 10, string.PAD_SIDE.LEFT, "-");
@@ -48,16 +48,14 @@ console.assert(oddPadding  === "[][][CAKE][][]")
 ### Centered string padders have a consistent pattern.
 ```javascript
 let stupidPadder = "[]{}()<>(){}[]"; // 14 characters long
-let stupidPadder2 = stupidPadder.repeat(2); // 28 characters long
-console.assert(stupidPadder2  === "[]{}()<>(){}[][]{}()<>(){}[]"); // the base padder string that gets generated
-
 let strA = "CAKE";
-let stupidPaddingA = string.padCenter(strA, 28, stupidPadder);
-console.assert(stupidPaddingA === "[]{}()<>(){}CAKE{}()<>(){}[]"); // the string gets injected into the middle of the base padder string
-
 let strB = "BIG BOIS";
+let stupidPadderx2 = stupidPadder.repeat(2); // 28 characters long
+let stupidPaddingA = string.padCenter(strA, 28, stupidPadder);
 let stupidPaddingB = string.padCenter(strB, 28, stupidPadder);
-console.assert(stupidPaddingB === "[]{}()<>()BIG BOIS()<>(){}[]"); // the inner string expands while the padder string retains its pattern
+console.assert(stupidPadderx2 === "[]{}()<>(){}[][]{}()<>(){}[]"); // the base padder string that gets generated
+console.assert(stupidPaddingA === "[]{}()<>(){}CAKE{}()<>(){}[]"); // CAKE gets injected into the middle of the base padder string
+console.assert(stupidPaddingB === "[]{}()<>()BIG BOIS()<>(){}[]"); // pattern never changes
 ```
 
 ### Wordwrap on strings.
@@ -88,5 +86,87 @@ console.assert(wrapped === expected);
 ```
 
 ### Generate boxes.
+#### Simple boxes.
 ```javascript
+// simple style settings
+const simpleStyle = {
+	corner:"+",
+	vertical:"|",
+	horizontal:"-"
+};
+
+// expected result
+const expected = "\
++----------------------------+\n\
+| This is a test.            |\n\
+| I hate these people.       |\n\
++----------------------------+"
+
+// generate it
+const generated = string.box({
+	style:simpleStyle,
+	width:30,
+	input:["This is a test.", "I hate these people."]
+}).join("\n");
+
+// check it
+console.assert(generated === expected);
+```
+
+#### Complex boxes.
+```javascript
+// complex style settings
+const complexStyle = {
+	top:{left:"))", right:"(("},
+	bottom:{left:"]]", right:"[["},
+	left:">-",
+	right:"-<",
+	horizontal:"=",
+	titleBorder:{left:"(", right:")"}
+};
+
+// expected result
+const expected = "\
+))=( What up! )=============((\n\
+>- This is a test.          -<\n\
+>- I hate these people.     -<\n\
+]]==========================[[";
+
+// generate it
+const generated = string.box({
+	style:complexStyle,
+	width:30,
+	title:"What up!",
+	input:["This is a test.", "I hate these people."]
+}).join("\n");
+
+// check it
+console.assert(generated === expected);
+```
+
+## Number functions
+### Linear interpolation.
+Not super useful for MUDs in particular, but it is generally useful.
+```javascript
+import {number} from "mud-ext";
+const interpolated = number.lerp(0,100,0.5);
+console.assert(interpolated === 50);
+```
+### Random integer generation.
+Generates numbers within the given range inclusively.
+```javascript
+const int = number.randomInt(1,100);
+console.assert(1 <= int && int <= 100);
+```
+
+### Roll virtual die and return the sum.
+```javascript
+const result = number.roll(6,6);
+console.assert(6 <= result && result <= 6*6);
+```
+
+### Roll vitual die and return the result of each roll.
+```javascript
+const results = number.actualRoll(6,6);
+results.forEach((a)=>console.assert(1 <= a && a <= 6));
 ```
