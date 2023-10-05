@@ -16,7 +16,7 @@ export function lerp(low:number, high:number, mod:number): number{
  * @returns 
  */
 export function randomInt(low:number, high:number): number{
-	return Math.floor(Math.random()*(high - low + 1)) + low;
+	return Math.floor(lerp(low, high+1, Math.random()));
 }
 
 /**
