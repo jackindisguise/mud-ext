@@ -21,9 +21,9 @@
         });
         describe("randomInt", () => {
             it("low<=result<=high", (done) => {
-                let tests = 1000;
-                let low = 100;
-                let high = 500;
+                const tests = 1000;
+                const low = 100;
+                const high = 500;
                 for (let i = 0; i < tests; i++) {
                     const result = number.randomInt(low, high);
                     (0, chai_1.assert)(low <= result && result <= high);
@@ -31,11 +31,11 @@
                 done();
             });
             it("full range", (done) => {
-                let tests = 10000;
-                let low = 10;
-                let high = 20;
-                let range = high - low + 1;
-                let results = [];
+                const tests = 10000;
+                const low = 10;
+                const high = 20;
+                const range = high - low + 1;
+                const results = [];
                 for (let i = 0; i < tests; i++) {
                     const result = number.randomInt(low, high);
                     if (results.includes(result))
@@ -46,12 +46,12 @@
                 done();
             });
             it("reliable distribution", (done) => {
-                let tests = 100000;
-                let low = 1;
-                let high = 5;
-                let range = high - low + 1;
-                let results = new Array(range);
-                let expectedDistribution = tests / range;
+                const tests = 100000;
+                const low = 1;
+                const high = 5;
+                const range = high - low + 1;
+                const results = new Array(range);
+                const expectedDistribution = tests / range;
                 for (let i = 0; i < tests; i++) {
                     const result = number.randomInt(low, high);
                     if (results[result - low])
@@ -66,7 +66,7 @@
         });
         describe("roll", () => {
             it("predictable", (done) => {
-                let tests = 10000;
+                const tests = 10000;
                 for (let i = 0; i < tests; i++)
                     (0, chai_1.expect)(number.roll(2, 100)).is.within(2, 200);
                 for (let i = 0; i < tests; i++)
@@ -78,14 +78,14 @@
         });
         describe("actualRoll", () => {
             it("predictable", (done) => {
-                let die = 2;
-                let sides = 6;
-                let tests = 10000;
+                const die = 2;
+                const sides = 6;
+                const tests = 10000;
                 for (let i = 0; i < tests; i++) {
-                    let results = number.actualRoll(die, sides);
-                    for (let result of results)
+                    const results = number.actualRoll(die, sides);
+                    for (const result of results)
                         (0, chai_1.expect)(result).is.within(1, sides);
-                    (0, chai_1.expect)(results.reduce((sum, a) => sum += a, 0)).is.within(die, die + (die * sides));
+                    (0, chai_1.expect)(results.reduce((sum, a) => (sum += a), 0)).is.within(die, die + die * sides);
                 }
                 done();
             });

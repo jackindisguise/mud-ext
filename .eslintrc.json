@@ -8,5 +8,5 @@
     "plugins": [
         "@typescript-eslint"
     ],
-    "ignorePatterns": ["node_modules/", "cjs/", "es6/", "**/*.spec.ts"]
+    "ignorePatterns": ["node_modules/", "cjs/", "es6/"]
 }

@@ -51,7 +51,7 @@
      * @returns {number[]} The result of the rolls.
      */
     function actualRoll(die, sides) {
-        let results = [];
+        const results = [];
         for (let i = 0; i < die; i++)
             results.push(randomInt(1, sides));
         return results;

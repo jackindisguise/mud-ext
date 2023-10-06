@@ -144,6 +144,22 @@ const generated = string.box({
 console.assert(generated === expected);
 ```
 
+### Check for autocompletion.
+```javascript
+const partial = "sel";
+const complete = "selling cake";
+console.assert(string.autocomplete(partial, complete) === true);
+```
+
+### Check for keyword matches.
+```javascript
+const name = "the king of england loric";
+console.assert(string.matchKeywords("loric", name) === true);
+console.assert(string.matchKeywords("king loric", name) === true);
+console.assert(string.matchKeywords("t k o e l", name) === true);
+console.assert(string.matchKeywords("king john", name) === false);
+```
+
 ## Number functions
 ### Linear interpolation.
 Not super useful for MUDs in particular, but it is generally useful.

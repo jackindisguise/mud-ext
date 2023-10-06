@@ -14,7 +14,10 @@
     ]
   },
   "scripts": {
-    "make": "npx tsc -p es6 && npx tsc -p cjs && npm run fix && npm test",
+    "make": "npm run prettier && npm run lint && npm run compile && npm run fix && npm test",
+	"compile": "npx tsc -p es6 && npx tsc -p cjs",
+	"prettier": "npx prettier **/*.ts --write",
+	"lint": "npx eslint .",
     "fix": "cd es6 && node fix && cd ../cjs && node fix",
     "test": "npx mocha es6/build && npx mocha cjs/build"
   },

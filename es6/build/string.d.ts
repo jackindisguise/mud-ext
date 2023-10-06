@@ -42,7 +42,7 @@ export interface BoxStyle {
 /**
  * Some generic boxes I invented due to my ingenuity.
  */
-export declare const BOX_STYLE: {
+export declare const BOX_STYLES: {
     [key: string]: BoxStyle;
 };
 /**
@@ -101,3 +101,17 @@ export interface BoxOptions {
  * @returns {string[]} The lines of the box in an array.
  */
 export declare function box(options: BoxOptions): string[];
+/**
+ * Check if a partial string autocompletes to another string.
+ * @param partial A short string.
+ * @param target A longer string to compare against.
+ * @returns {boolean} If the partial matches the target string, return true; otherwise return false.
+ */
+export declare function autocomplete(partial: string, target: string): boolean;
+/**
+ * Match a set of words to another set of words.
+ * @param needle A set of words.
+ * @param haystack A set of words to compare against.
+ * @returns {boolean} If all of the words in the needle words have a match in the haystack, return true; otherwise return false.
+ */
+export declare function matchKeywords(needle: string, haystack: string): boolean;
