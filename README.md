@@ -1,3 +1,10 @@
+# About
+This package provides functionality that I often end up rewriting when working on text-based games (MUDs in particular).
+
+The major focus of a lot of these functions is to deal with manipulating strings for interacting with things, or manipulating strings for presentational purposes.
+
+I would ideally like to create a module for handling command processing at some point.
+
 # Compatibility
 Supports both CJS and ES6 import style.
 ```javascript
