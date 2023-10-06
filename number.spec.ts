@@ -12,7 +12,7 @@ describe("number.ts", () => {
 
 	describe("randomInt", () => {
 		it("low<=result<=high", (done) => {
-			const tests = 1000;
+			const tests = 10000;
 			const low = 100;
 			const high = 500;
 			for (let i = 0; i < tests; i++) {
