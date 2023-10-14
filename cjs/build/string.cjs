@@ -9,7 +9,7 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.matchKeywords = exports.autocomplete = exports.box = exports.wrap = exports.padCenter = exports.padRight = exports.padLeft = exports.pad = exports.BOX_STYLES = exports.PAD_SIDE = void 0;
+    exports.matchKeywords = exports.autocomplete = exports.box = exports.wrap = exports.padCenter = exports.padRight = exports.padLeft = exports.pad = exports.defaultSizer = exports.BOX_STYLES = exports.PAD_SIDE = void 0;
     var PAD_SIDE;
     (function (PAD_SIDE) {
         /** Pads to the left. */
@@ -48,77 +48,91 @@
         }
     };
     /**
+     * Get the length of a string.
+     * @param str The string to check.
+     * @returns {number} The length of the string.
+     */
+    function defaultSizer(str) {
+        return str.length;
+    }
+    exports.defaultSizer = defaultSizer;
+    /**
      * Pad a string to the given size.
-     * @param string The string to pad.
-     * @param size The size the string should be.
-     * @param side Which side to add padding to.
-     * @param padder The string to use as a padder.
+     * @param options {PadOptions} The padding options.
+     * @param side {PAD_SIDE} The side to add padding to.
      * @returns {string} The padded string.
      */
-    function pad(string, size, side, padder) {
+    function pad(options, side) {
         if (side === PAD_SIDE.LEFT)
-            return padLeft(string, size, padder);
+            return padLeft(options);
         if (side === PAD_SIDE.CENTER)
-            return padCenter(string, size, padder);
+            return padCenter(options);
         // defaults to padding the right side
-        return padRight(string, size, padder);
+        return padRight(options);
     }
     exports.pad = pad;
     /**
-     * Pad a string to the given size on the left.
-     * @param string The string to pad.
-     * @param size The size the string should be.
-     * @param padder The string to use as a padder.
+     * Pad a string to the given size on the right.
+     * @param options {PadOptions} The padding options.
      * @returns {string} The padded string.
      */
-    function padLeft(string, size, padder = " ") {
-        const csize = string.length;
-        const psize = size - csize;
+    function padLeft(options) {
+        const padder = options.padder || " "; // default to space
+        const sizer = options.sizer || defaultSizer; // default to string length
+        const csize = sizer(options.string);
+        const psize = options.width - csize;
         if (psize < 1)
-            return string;
-        let pad = padder.repeat(Math.ceil(psize / padder.length));
-        if (pad.length > psize)
+            return options.string;
+        let pad = padder.repeat(Math.ceil(psize / sizer(padder)));
+        if (sizer(pad) > psize)
             pad = pad.slice(0, psize);
-        return `${pad}${string}`;
+        if (options.color)
+            pad = options.color(pad);
+        return `${pad}${options.string}`;
     }
     exports.padLeft = padLeft;
     /**
      * Pad a string to the given size on the right.
-     * @param string The string to pad.
-     * @param size The size the string should be.
-     * @param padder The string to use as a padder.
+     * @param options {PadOptions} The padding options.
      * @returns {string} The padded string.
      */
-    function padRight(string, size, padder = " ") {
-        const csize = string.length;
-        const psize = size - csize;
+    function padRight(options) {
+        const padder = options.padder || " "; // default to space
+        const sizer = options.sizer || defaultSizer; // default to string length
+        const csize = sizer(options.string);
+        const psize = options.width - csize;
         if (psize < 1)
-            return string;
-        let pad = padder.repeat(Math.ceil(psize / padder.length));
-        if (pad.length > psize)
+            return options.string;
+        let pad = padder.repeat(Math.ceil(psize / sizer(padder)));
+        if (sizer(pad) > psize)
             pad = pad.slice(0, psize);
-        return `${string}${pad}`;
+        if (options.color)
+            pad = options.color(pad);
+        return `${options.string}${pad}`;
     }
     exports.padRight = padRight;
     /**
-     * Pad a string to the given size on the left and right.
-     * If the padding is ultimately uneven, the extra padding is added to the right side.
-     * @param string The string to pad.
-     * @param size The size the string should be.
-     * @param padder The string to use as a padder.
+     * Pad a string to the given size on the right.
+     * @param options {PadOptions} The padding options.
      * @returns {string} The padded string.
      */
-    function padCenter(string, size, padder = " ") {
-        const ssize = string.length;
-        const psize = size - ssize;
+    function padCenter(options) {
+        const padder = options.padder || " "; // default to space
+        const sizer = options.sizer || defaultSizer; // default to string length
+        const csize = sizer(options.string);
+        const psize = options.width - csize;
         if (psize < 1)
-            return string;
-        const tpad = padder.repeat(Math.ceil(size / padder.length));
+            return options.string;
+        const tpad = padder.repeat(Math.ceil(options.width / sizer(padder)));
         const lsize = psize % 2 ? Math.floor(psize / 2) : psize / 2;
         const rsize = psize % 2 ? Math.floor(psize / 2) + 1 : psize / 2;
-        const lpad = tpad.slice(0, lsize);
-        const rpad = tpad.slice(lsize + string.length, lsize + string.length + rsize);
-        return `${lpad}${string}${rpad}`;
+        let lpad = tpad.slice(0, lsize); // this is why you should avoid using colors in padders and stick to color option
+        let rpad = tpad.slice(lsize + options.string.length, lsize + options.string.length + rsize);
+        if (options.color) {
+            lpad = options.color(lpad);
+            rpad = options.color(lpad);
+        }
+        return `${lpad}${options.string}${rpad}`;
     }
     exports.padCenter = padCenter;
     /**
@@ -215,7 +229,7 @@
             // has a title but no box visual elements
         }
         else if (options.title) {
-            lines.push(pad(options.title, options.width, ((_w = options.style) === null || _w === void 0 ? void 0 : _w.titleHAlign) || PAD_SIDE.RIGHT));
+            lines.push(pad({ string: options.title, width: options.width }, ((_w = options.style) === null || _w === void 0 ? void 0 : _w.titleHAlign) || PAD_SIDE.RIGHT));
         }
         const addLine = (line) => {
             var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
@@ -229,12 +243,18 @@
                 const rightVert = ((_g = options.style) === null || _g === void 0 ? void 0 : _g.right) || ((_h = options.style) === null || _h === void 0 ? void 0 : _h.vertical) || "";
                 const rightHPadding = rightVert ? ((_j = options.style) === null || _j === void 0 ? void 0 : _j.hPadding) || 1 : 0;
                 const right = " ".repeat(rightHPadding) + rightVert;
-                formatted = `${left}${pad(formatted, options.width - left.length - right.length, ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || PAD_SIDE.RIGHT)}${right}`;
+                formatted = `${left}${pad({
+                    string: formatted,
+                    width: options.width - left.length - right.length
+                }, ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || PAD_SIDE.RIGHT)}${right}`;
             }
             else {
                 const left = `${" ".repeat(((_l = options.style) === null || _l === void 0 ? void 0 : _l.hPadding) || 0)}`;
                 const right = left;
-                formatted = `${left}${pad(formatted, options.width - left.length - right.length, ((_m = options.style) === null || _m === void 0 ? void 0 : _m.hAlign) || PAD_SIDE.RIGHT)}${right}`;
+                formatted = `${left}${pad({
+                    string: formatted,
+                    width: options.width - left.length - right.length
+                }, ((_m = options.style) === null || _m === void 0 ? void 0 : _m.hAlign) || PAD_SIDE.RIGHT)}${right}`;
             }
             lines.push(formatted);
         };

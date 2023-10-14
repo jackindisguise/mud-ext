@@ -46,39 +46,51 @@ export declare const BOX_STYLES: {
     [key: string]: BoxStyle;
 };
 /**
- * Pad a string to the given size.
- * @param string The string to pad.
- * @param size The size the string should be.
- * @param side Which side to add padding to.
- * @param padder The string to use as a padder.
- * @returns {string} The padded string.
+ * Options for pad functions.
  */
-export declare function pad(string: string, size: number, side?: PAD_SIDE, padder?: string): string;
+export interface PadOptions {
+    /** The string to pad. */
+    string: string;
+    /** The desired width of the string. */
+    width: number;
+    /** The string to use as a padder. */
+    padder?: string;
+    /** A custom function for determing the size of the provided string. */
+    sizer?: (str: string) => number;
+    /** A custom function for adding color codes (or any non-rendered element) to the padding. */
+    color?: (str: string) => string;
+}
 /**
- * Pad a string to the given size on the left.
- * @param string The string to pad.
- * @param size The size the string should be.
- * @param padder The string to use as a padder.
+ * Get the length of a string.
+ * @param str The string to check.
+ * @returns {number} The length of the string.
+ */
+export declare function defaultSizer(str: any): number;
+/**
+ * Pad a string to the given size.
+ * @param options {PadOptions} The padding options.
+ * @param side {PAD_SIDE} The side to add padding to.
  * @returns {string} The padded string.
  */
-export declare function padLeft(string: string, size: number, padder?: string): string;
+export declare function pad(options: PadOptions, side?: PAD_SIDE): string;
 /**
  * Pad a string to the given size on the right.
- * @param string The string to pad.
- * @param size The size the string should be.
- * @param padder The string to use as a padder.
+ * @param options {PadOptions} The padding options.
  * @returns {string} The padded string.
  */
-export declare function padRight(string: string, size: number, padder?: string): string;
+export declare function padLeft(options: PadOptions): string;
 /**
- * Pad a string to the given size on the left and right.
- * If the padding is ultimately uneven, the extra padding is added to the right side.
- * @param string The string to pad.
- * @param size The size the string should be.
- * @param padder The string to use as a padder.
+ * Pad a string to the given size on the right.
+ * @param options {PadOptions} The padding options.
  * @returns {string} The padded string.
  */
-export declare function padCenter(string: string, size: number, padder?: string): string;
+export declare function padRight(options: PadOptions): string;
+/**
+ * Pad a string to the given size on the right.
+ * @param options {PadOptions} The padding options.
+ * @returns {string} The padded string.
+ */
+export declare function padCenter(options: PadOptions): string;
 /**
  * Wraps a string to a given size.
  * @param string The string to wrap.

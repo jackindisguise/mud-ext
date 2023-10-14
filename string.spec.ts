@@ -4,68 +4,121 @@ import { expect } from "chai";
 describe("string.ts", () => {
 	describe("padders", () => {
 		it("pad", (done) => {
-			expect(string.pad("test", 10, string.PAD_SIDE.LEFT)).is.equal(
-				"      test"
-			);
-			expect(string.pad("test", 10, string.PAD_SIDE.LEFT, "-")).is.equal(
-				"------test"
-			);
-			expect(string.pad("50", 10, string.PAD_SIDE.LEFT, "0")).is.equal(
-				"0000000050"
-			);
-			expect(string.pad("test", 10, string.PAD_SIDE.RIGHT)).is.equal(
-				"test      "
-			);
-			expect(string.pad("test", 10, string.PAD_SIDE.RIGHT, "<>{}")).is.equal(
-				"test<>{}<>"
-			);
-			expect(string.pad("test", 10, string.PAD_SIDE.RIGHT, "-")).is.equal(
-				"test------"
-			);
-			expect(string.pad("50.", 10, string.PAD_SIDE.RIGHT, "0")).is.equal(
-				"50.0000000"
-			);
-			expect(string.pad("test", 10, string.PAD_SIDE.CENTER)).is.equal(
-				"   test   "
-			);
-			expect(string.pad("test", 10, string.PAD_SIDE.CENTER, "<>")).is.equal(
-				"<><test><>"
-			);
-			expect(string.pad("test", 80, string.PAD_SIDE.CENTER, "<->")).is.equal(
+			expect(
+				string.pad({ string: "test", width: 10 }, string.PAD_SIDE.LEFT)
+			).is.equal("      test");
+			expect(
+				string.pad(
+					{ string: "test", width: 10, padder: "-" },
+					string.PAD_SIDE.LEFT
+				)
+			).is.equal("------test");
+			expect(
+				string.pad(
+					{ string: "50", width: 10, padder: "0" },
+					string.PAD_SIDE.LEFT
+				)
+			).is.equal("0000000050");
+			expect(
+				string.pad({ string: "test", width: 10 }, string.PAD_SIDE.RIGHT)
+			).is.equal("test      ");
+			expect(
+				string.pad(
+					{ string: "test", width: 10, padder: "<>{}" },
+					string.PAD_SIDE.RIGHT
+				)
+			).is.equal("test<>{}<>");
+			expect(
+				string.pad(
+					{ string: "test", width: 10, padder: "-" },
+					string.PAD_SIDE.RIGHT
+				)
+			).is.equal("test------");
+			expect(
+				string.pad(
+					{ string: "50.", width: 10, padder: "0" },
+					string.PAD_SIDE.RIGHT
+				)
+			).is.equal("50.0000000");
+			expect(
+				string.pad({ string: "test", width: 10 }, string.PAD_SIDE.CENTER)
+			).is.equal("   test   ");
+			expect(
+				string.pad(
+					{ string: "test", width: 10, padder: "<>" },
+					string.PAD_SIDE.CENTER
+				)
+			).is.equal("<><test><>");
+			expect(
+				string.pad(
+					{ string: "test", width: 80, padder: "<->" },
+					string.PAD_SIDE.CENTER
+				)
+			).is.equal(
 				"<-><-><-><-><-><-><-><-><-><-><-><-><-test<-><-><-><-><-><-><-><-><-><-><-><-><-"
 			);
-			expect(string.pad("test", 10, string.PAD_SIDE.CENTER, "-")).is.equal(
-				"---test---"
-			);
-			expect(string.pad("test", 11, string.PAD_SIDE.CENTER, "-")).is.equal(
-				"---test----"
-			);
+			expect(
+				string.pad(
+					{ string: "test", width: 10, padder: "-" },
+					string.PAD_SIDE.CENTER
+				)
+			).is.equal("---test---");
+			expect(
+				string.pad(
+					{ string: "test", width: 11, padder: "-" },
+					string.PAD_SIDE.CENTER
+				)
+			).is.equal("---test----");
 			done();
 		});
 
 		it("padLeft", (done) => {
-			expect(string.padLeft("test", 10)).is.equal("      test");
-			expect(string.padLeft("test", 10, "-")).is.equal("------test");
-			expect(string.padLeft("50", 10, "0")).is.equal("0000000050");
+			expect(string.padLeft({ string: "test", width: 10 })).is.equal(
+				"      test"
+			);
+			expect(
+				string.padLeft({ string: "test", width: 10, padder: "-" })
+			).is.equal("------test");
+			expect(string.padLeft({ string: "50", width: 10, padder: "0" })).is.equal(
+				"0000000050"
+			);
 			done();
 		});
 
 		it("padRight", (done) => {
-			expect(string.padRight("test", 10)).is.equal("test      ");
-			expect(string.padRight("test", 10, "<>{}")).is.equal("test<>{}<>");
-			expect(string.padRight("test", 10, "-")).is.equal("test------");
-			expect(string.padRight("50.", 10, "0")).is.equal("50.0000000");
+			expect(string.padRight({ string: "test", width: 10 })).is.equal(
+				"test      "
+			);
+			expect(
+				string.padRight({ string: "test", width: 10, padder: "<>{}" })
+			).is.equal("test<>{}<>");
+			expect(
+				string.padRight({ string: "test", width: 10, padder: "-" })
+			).is.equal("test------");
+			expect(
+				string.padRight({ string: "50.", width: 10, padder: "0" })
+			).is.equal("50.0000000");
 			done();
 		});
 
 		it("padCenter", (done) => {
-			expect(string.padCenter("test", 10)).is.equal("   test   ");
-			expect(string.padCenter("test", 10, "<>")).is.equal("<><test><>");
-			expect(string.padCenter("test", 80, "<->")).is.equal(
+			expect(string.padCenter({ string: "test", width: 10 })).is.equal(
+				"   test   "
+			);
+			expect(
+				string.padCenter({ string: "test", width: 10, padder: "<>" })
+			).is.equal("<><test><>");
+			expect(
+				string.padCenter({ string: "test", width: 80, padder: "<->" })
+			).is.equal(
 				"<-><-><-><-><-><-><-><-><-><-><-><-><-test<-><-><-><-><-><-><-><-><-><-><-><-><-"
 			);
-			expect(string.padCenter("test", 10, "-")).is.equal("---test---");
-			expect(string.padCenter("test", 11, "-")).is.equal("---test----");
+			expect(
+				string.padCenter({ string: "test", width: 10, padder: "-" })
+			).is.equal("---test---");
+			expect(
+				string.padCenter({ string: "test", width: 11, padder: "-" })
+			).is.equal("---test----");
 			done();
 		});
 	});

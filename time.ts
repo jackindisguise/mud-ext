@@ -1,4 +1,9 @@
 import { EventEmitter } from "events";
+import {
+	setAbsoluteInterval,
+	setRelativeInterval,
+	clearCustomInterval
+} from "accurate-intervals";
 
 export class Timer extends EventEmitter {
 	protected startTimestamp?: number;

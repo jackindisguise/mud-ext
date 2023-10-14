@@ -75,75 +75,105 @@ export const BOX_STYLES: { [key: string]: BoxStyle } = {
 };
 
 /**
- * Pad a string to the given size.
- * @param string The string to pad.
- * @param size The size the string should be.
- * @param side Which side to add padding to.
- * @param padder The string to use as a padder.
- * @returns {string} The padded string.
+ * Options for pad functions.
  */
-export function pad(
-	string: string,
-	size: number,
-	side?: PAD_SIDE,
-	padder?: string
-): string {
-	if (side === PAD_SIDE.LEFT) return padLeft(string, size, padder);
-	if (side === PAD_SIDE.CENTER) return padCenter(string, size, padder);
-	// defaults to padding the right side
-	return padRight(string, size, padder);
+export interface PadOptions {
+	/** The string to pad. */
+	string: string;
+
+	/** The desired width of the string. */
+	width: number;
+
+	/** The string to use as a padder. */
+	padder?: string;
+
+	/** A custom function for determing the size of the provided string. */
+	sizer?: (str: string) => number;
+
+	/** A custom function for adding color codes (or any non-rendered element) to the padding. */
+	color?: (str: string) => string;
 }
 
 /**
- * Pad a string to the given size on the left.
- * @param string The string to pad.
- * @param size The size the string should be.
- * @param padder The string to use as a padder.
+ * Get the length of a string.
+ * @param str The string to check.
+ * @returns {number} The length of the string.
+ */
+export function defaultSizer(str): number {
+	return str.length;
+}
+
+/**
+ * Pad a string to the given size.
+ * @param options {PadOptions} The padding options.
+ * @param side {PAD_SIDE} The side to add padding to.
  * @returns {string} The padded string.
  */
-export function padLeft(string: string, size: number, padder = " "): string {
-	const csize = string.length;
-	const psize = size - csize;
-	if (psize < 1) return string;
-	let pad = padder.repeat(Math.ceil(psize / padder.length));
-	if (pad.length > psize) pad = pad.slice(0, psize);
-	return `${pad}${string}`;
+export function pad(options: PadOptions, side?: PAD_SIDE): string {
+	if (side === PAD_SIDE.LEFT) return padLeft(options);
+	if (side === PAD_SIDE.CENTER) return padCenter(options);
+	// defaults to padding the right side
+	return padRight(options);
 }
 
 /**
  * Pad a string to the given size on the right.
- * @param string The string to pad.
- * @param size The size the string should be.
- * @param padder The string to use as a padder.
+ * @param options {PadOptions} The padding options.
  * @returns {string} The padded string.
  */
-export function padRight(string: string, size: number, padder = " "): string {
-	const csize = string.length;
-	const psize = size - csize;
-	if (psize < 1) return string;
-	let pad = padder.repeat(Math.ceil(psize / padder.length));
-	if (pad.length > psize) pad = pad.slice(0, psize);
-	return `${string}${pad}`;
+export function padLeft(options: PadOptions) {
+	const padder = options.padder || " "; // default to space
+	const sizer = options.sizer || defaultSizer; // default to string length
+	const csize = sizer(options.string);
+	const psize = options.width - csize;
+	if (psize < 1) return options.string;
+	let pad = padder.repeat(Math.ceil(psize / sizer(padder)));
+	if (sizer(pad) > psize) pad = pad.slice(0, psize);
+	if (options.color) pad = options.color(pad);
+	return `${pad}${options.string}`;
 }
 
 /**
- * Pad a string to the given size on the left and right.
- * If the padding is ultimately uneven, the extra padding is added to the right side.
- * @param string The string to pad.
- * @param size The size the string should be.
- * @param padder The string to use as a padder.
+ * Pad a string to the given size on the right.
+ * @param options {PadOptions} The padding options.
  * @returns {string} The padded string.
  */
-export function padCenter(string: string, size: number, padder = " "): string {
-	const ssize = string.length;
-	const psize = size - ssize;
-	if (psize < 1) return string;
-	const tpad = padder.repeat(Math.ceil(size / padder.length));
+export function padRight(options: PadOptions) {
+	const padder = options.padder || " "; // default to space
+	const sizer = options.sizer || defaultSizer; // default to string length
+	const csize = sizer(options.string);
+	const psize = options.width - csize;
+	if (psize < 1) return options.string;
+	let pad = padder.repeat(Math.ceil(psize / sizer(padder)));
+	if (sizer(pad) > psize) pad = pad.slice(0, psize);
+	if (options.color) pad = options.color(pad);
+	return `${options.string}${pad}`;
+}
+
+/**
+ * Pad a string to the given size on the right.
+ * @param options {PadOptions} The padding options.
+ * @returns {string} The padded string.
+ */
+export function padCenter(options: PadOptions) {
+	const padder = options.padder || " "; // default to space
+	const sizer = options.sizer || defaultSizer; // default to string length
+	const csize = sizer(options.string);
+	const psize = options.width - csize;
+	if (psize < 1) return options.string;
+	const tpad = padder.repeat(Math.ceil(options.width / sizer(padder)));
 	const lsize = psize % 2 ? Math.floor(psize / 2) : psize / 2;
 	const rsize = psize % 2 ? Math.floor(psize / 2) + 1 : psize / 2;
-	const lpad = tpad.slice(0, lsize);
-	const rpad = tpad.slice(lsize + string.length, lsize + string.length + rsize);
-	return `${lpad}${string}${rpad}`;
+	let lpad = tpad.slice(0, lsize); // this is why you should avoid using colors in padders and stick to color option
+	let rpad = tpad.slice(
+		lsize + options.string.length,
+		lsize + options.string.length + rsize
+	);
+	if (options.color) {
+		lpad = options.color(lpad);
+		rpad = options.color(lpad);
+	}
+	return `${lpad}${options.string}${rpad}`;
 }
 
 /**
@@ -262,8 +292,7 @@ export function box(options: BoxOptions): string[] {
 	} else if (options.title) {
 		lines.push(
 			pad(
-				options.title,
-				options.width,
+				{ string: options.title, width: options.width },
 				options.style?.titleHAlign || PAD_SIDE.RIGHT
 			)
 		);
@@ -283,16 +312,20 @@ export function box(options: BoxOptions): string[] {
 			const rightHPadding = rightVert ? options.style?.hPadding || 1 : 0;
 			const right = " ".repeat(rightHPadding) + rightVert;
 			formatted = `${left}${pad(
-				formatted,
-				options.width - left.length - right.length,
+				{
+					string: formatted,
+					width: options.width - left.length - right.length
+				},
 				options.style?.hAlign || PAD_SIDE.RIGHT
 			)}${right}`;
 		} else {
 			const left = `${" ".repeat(options.style?.hPadding || 0)}`;
 			const right = left;
 			formatted = `${left}${pad(
-				formatted,
-				options.width - left.length - right.length,
+				{
+					string: formatted,
+					width: options.width - left.length - right.length
+				},
 				options.style?.hAlign || PAD_SIDE.RIGHT
 			)}${right}`;
 		}
