@@ -3,6 +3,7 @@
 		"outDir": "build",
 		"target": "ES6",
 		"module": "UMD",
+		"moduleResolution": "Node",
 		"declaration": true
 	},
 	"include": [

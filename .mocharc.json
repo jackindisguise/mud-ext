@@ -1,3 +1,4 @@
 {
-	"include": ["**/*.spec.js"]
+	"include": ["**/*.spec.js"],
+	"reporter": "spec"
 }

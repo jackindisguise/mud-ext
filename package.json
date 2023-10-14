@@ -14,11 +14,13 @@
     ]
   },
   "scripts": {
-    "make": "npm run prettier && npm run lint && npm run compile && npm run fix && npm test",
+    "clean": "node clean.cjs",
+    "make": "npm run clean && npm run prettier && npm run lint && npm run compile && npm run fix && npm test",
     "compile": "npx tsc -p es6 && npx tsc -p cjs",
     "prettier": "npx prettier **/*.ts --write",
     "lint": "npx eslint .",
-    "fix": "cd es6 && node fix && cd ../cjs && node fix",
+    "lint-fix": "npx eslint . --fix",
+    "fix": "cd es6 && node fix.cjs && cd ../cjs && node fix.cjs",
     "test": "npx mocha es6/build && npx mocha cjs/build"
   },
   "author": "jackindisguise",
@@ -26,13 +28,16 @@
   "devDependencies": {
     "@types/chai": "^4.3.6",
     "@types/mocha": "^10.0.2",
-    "@types/node": "^20.8.0",
+    "@types/node": "^20.8.3",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
+    "accurate-intervals": "^1.1.0",
     "chai": "^4.3.10",
     "eslint": "^8.50.0",
+    "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "mocha": "^10.2.0",
+    "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "typescript-eslint": "^0.0.1-alpha.0"
   },
@@ -47,8 +52,5 @@
   "bugs": {
     "url": "https://github.com/jackindisguise/mud-ext/issues"
   },
-  "homepage": "https://github.com/jackindisguise/mud-ext#readme",
-  "dependencies": {
-    "eslint-config-prettier": "^9.0.0"
-  }
+  "homepage": "https://github.com/jackindisguise/mud-ext#readme"
 }
