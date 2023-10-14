@@ -23,20 +23,19 @@ import {string} from "mud-ext";
 ### Pad strings to a specific length.
 ```javascript
 import {string} from "mud-ext";
-let str = "CAKE";
-let pl = string.padLeft(str, 10, "-");
-let pc = string.padCenter(str, 10, "-");
-let pr = string.padRight(str, 10, "-");
+let opts = {string:str, width:10, padder:"-"}
+let pl = string.padLeft(opts);
+let pc = string.padCenter(opts);
+let pr = string.padRight(opts);
 console.assert(pl === "------CAKE");
 console.assert(pc === "---CAKE---");
 console.assert(pr === "CAKE------");
 ```
 There is also an alias for legacy reasons and occasionally convenience.
 ```javascript
-let str = "CAKE";
-let pl = string.pad(str, 10, string.PAD_SIDE.LEFT, "-");
-let pc = string.pad(str, 10, string.PAD_SIDE.CENTER, "-");
-let pr = string.pad(str, 10, string.PAD_SIDE.RIGHT, "-");
+let pl = string.pad(opts, string.PAD_SIDE.LEFT);
+let pc = string.pad(opts, string.PAD_SIDE.CENTER);
+let pr = string.pad(opts, string.PAD_SIDE.RIGHT);
 console.assert(pl === "------CAKE");
 console.assert(pc === "---CAKE---");
 console.assert(pr === "CAKE------");
@@ -44,10 +43,9 @@ console.assert(pr === "CAKE------");
 
 ### Arbitrary-length padder strings.
 ```javascript
-let str = "CAKE";
-let padder = "[]";
-let evenPadding = string.padCenter(str, 20, padder);
-let oddPadding = string.padCenter(str, 14, padder);
+let opts = {string: "CAKE", padder:"[]"}
+let evenPadding = string.padCenter({...opts, width:20});
+let oddPadding = string.padCenter({...opts, width:14});
 console.assert(evenPadding === "[][][][]CAKE[][][][]")
 console.assert(oddPadding  === "[][][CAKE][][]")
 ```
@@ -55,11 +53,12 @@ console.assert(oddPadding  === "[][][CAKE][][]")
 ### Centered string padders have a consistent pattern.
 ```javascript
 let stupidPadder = "[]{}()<>(){}[]"; // 14 characters long
+let opts = {width: 28, padder:stupidPadder};
 let strA = "CAKE";
 let strB = "BIG BOIS";
 let stupidPadderx2 = stupidPadder.repeat(2); // 28 characters long
-let stupidPaddingA = string.padCenter(strA, 28, stupidPadder);
-let stupidPaddingB = string.padCenter(strB, 28, stupidPadder);
+let stupidPaddingA = string.padCenter({...opts, string: strA});
+let stupidPaddingB = string.padCenter({...opts, string: strB});
 console.assert(stupidPadderx2 === "[]{}()<>(){}[][]{}()<>(){}[]"); // the base padder string that gets generated
 console.assert(stupidPaddingA === "[]{}()<>(){}CAKE{}()<>(){}[]"); // CAKE gets injected into the middle of the base padder string
 console.assert(stupidPaddingB === "[]{}()<>()BIG BOIS()<>(){}[]"); // pattern never changes

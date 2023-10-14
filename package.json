@@ -15,8 +15,8 @@
   },
   "scripts": {
     "clean": "node clean.cjs",
-    "make": "npm run clean && npm run prettier && npm run lint && npm run compile && npm run fix && npm test",
-    "compile": "npx tsc -p es6 && npx tsc -p cjs",
+    "make": "npm run clean && npm run prettier && npm run lint && npm run compile && npm test",
+    "compile": "npx tsc -p es6 && npx tsc -p cjs && npm run fix",
     "prettier": "npx prettier **/*.ts --write",
     "lint": "npx eslint .",
     "lint-fix": "npx eslint . --fix",
@@ -33,6 +33,7 @@
     "@typescript-eslint/parser": "^6.7.4",
     "accurate-intervals": "^1.1.2",
     "chai": "^4.3.10",
+    "chalk": "^4.1.2",
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",

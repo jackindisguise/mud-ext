@@ -4,13 +4,20 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "./string.cjs", "./number.cjs", "./array.cjs"], factory);
+        define(["require", "exports", "./number.cjs"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.array = exports.number = exports.string = void 0;
-    exports.string = require("./string.cjs");
-    exports.number = require("./number.cjs");
-    exports.array = require("./array.cjs");
+    exports.pick = void 0;
+    const number_1 = require("./number.cjs");
+    /**
+     * Pick an element from a set of options.
+     * @param options
+     * @returns
+     */
+    function pick(...options) {
+        return options[(0, number_1.randomInt)(0, options.length - 1)];
+    }
+    exports.pick = pick;
 });

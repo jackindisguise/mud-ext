@@ -61,6 +61,12 @@ export interface PadOptions {
     color?: (str: string) => string;
 }
 /**
+ * Removes terminal color codes from length.
+ * @param str The string to check.
+ * @returns {number} The length of the string minus terminal color escapes.
+ */
+export declare function termSizer(str: string): number;
+/**
  * Get the length of a string.
  * @param str The string to check.
  * @returns {number} The length of the string.
@@ -106,6 +112,8 @@ export interface BoxOptions {
     width: number;
     title?: string;
     style?: BoxStyle;
+    sizer?: (str: string) => number;
+    color?: (str: string) => string;
 }
 /**
  * Generates a contained box of text.

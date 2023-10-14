@@ -9,7 +9,7 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.matchKeywords = exports.autocomplete = exports.box = exports.wrap = exports.padCenter = exports.padRight = exports.padLeft = exports.pad = exports.defaultSizer = exports.BOX_STYLES = exports.PAD_SIDE = void 0;
+    exports.matchKeywords = exports.autocomplete = exports.box = exports.wrap = exports.padCenter = exports.padRight = exports.padLeft = exports.pad = exports.defaultSizer = exports.termSizer = exports.BOX_STYLES = exports.PAD_SIDE = void 0;
     var PAD_SIDE;
     (function (PAD_SIDE) {
         /** Pads to the left. */
@@ -47,6 +47,19 @@
             vertical: "O"
         }
     };
+    /**
+     * Removes terminal color codes from length.
+     * @param str The string to check.
+     * @returns {number} The length of the string minus terminal color escapes.
+     */
+    function termSizer(str) {
+        const rule = /(\u001b\[.*?m)/g;
+        const result = str.match(rule);
+        if (!result)
+            return str.length;
+        return str.length - result.reduce((a, b) => a + b.length, 0);
+    }
+    exports.termSizer = termSizer;
     /**
      * Get the length of a string.
      * @param str The string to check.
@@ -179,6 +192,8 @@
      */
     function box(options) {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11;
+        const sizer = options.sizer || defaultSizer; // default to string length
+        const color = options.color || ((str) => str);
         const lines = [];
         // consolidate top elements
         let topmiddle = ((_b = (_a = options.style) === null || _a === void 0 ? void 0 : _a.top) === null || _b === void 0 ? void 0 : _b.middle) || ((_c = options.style) === null || _c === void 0 ? void 0 : _c.horizontal) || "";
@@ -207,29 +222,30 @@
                 if ((_p = options.style) === null || _p === void 0 ? void 0 : _p.titleBorder) {
                     const tLeftPadding = ((_q = options.style.titleBorder) === null || _q === void 0 ? void 0 : _q.left) ? " " : "";
                     const tRightPadding = ((_r = options.style.titleBorder) === null || _r === void 0 ? void 0 : _r.right) ? " " : "";
-                    formattedTitle = `${((_s = options.style.titleBorder) === null || _s === void 0 ? void 0 : _s.left) || ""}${tLeftPadding}${options.title}${tRightPadding}${((_t = options.style.titleBorder) === null || _t === void 0 ? void 0 : _t.right) || ""}`;
+                    formattedTitle = `${color(((_s = options.style.titleBorder) === null || _s === void 0 ? void 0 : _s.left) || "")}${tLeftPadding}${options.title}${tRightPadding}${color(((_t = options.style.titleBorder) === null || _t === void 0 ? void 0 : _t.right) || "")}`;
                 }
                 else
                     formattedTitle = ` ${options.title} `;
                 // respect vertical alignment for titles
-                const titleWidth = formattedTitle.length;
+                //const titleWidth = formattedTitle.length;
+                const safeTitleWidth = sizer(formattedTitle);
                 let start = 0 + offset;
                 if (((_u = options.style) === null || _u === void 0 ? void 0 : _u.titleHAlign) === PAD_SIDE.LEFT)
-                    start = ruleWidth - titleWidth - offset;
+                    start = ruleWidth - safeTitleWidth - offset;
                 else if (((_v = options.style) === null || _v === void 0 ? void 0 : _v.titleHAlign) === PAD_SIDE.CENTER)
-                    start = Math.floor((ruleWidth - titleWidth) / 2);
-                const titled = safeRule.slice(0, start) +
+                    start = Math.floor((ruleWidth - safeTitleWidth) / 2);
+                const titled = color(safeRule.slice(0, start)) +
                     formattedTitle +
-                    safeRule.slice(start + titleWidth, ruleWidth);
-                lines.push(`${topleft}${titled}${topright}`);
+                    color(safeRule.slice(start + safeTitleWidth, ruleWidth));
+                lines.push(`${color(topleft)}${titled}${color(topright)}`);
                 // no title -- just a basic rule
             }
             else
-                lines.push(`${topleft}${safeRule}${topright}`);
+                lines.push(`${color(topleft)}${safeRule}${color(topright)}`);
             // has a title but no box visual elements
         }
         else if (options.title) {
-            lines.push(pad({ string: options.title, width: options.width }, ((_w = options.style) === null || _w === void 0 ? void 0 : _w.titleHAlign) || PAD_SIDE.RIGHT));
+            lines.push(pad({ string: options.title, width: options.width, sizer: sizer }, ((_w = options.style) === null || _w === void 0 ? void 0 : _w.titleHAlign) || PAD_SIDE.RIGHT));
         }
         const addLine = (line) => {
             var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
@@ -243,18 +259,20 @@
                 const rightVert = ((_g = options.style) === null || _g === void 0 ? void 0 : _g.right) || ((_h = options.style) === null || _h === void 0 ? void 0 : _h.vertical) || "";
                 const rightHPadding = rightVert ? ((_j = options.style) === null || _j === void 0 ? void 0 : _j.hPadding) || 1 : 0;
                 const right = " ".repeat(rightHPadding) + rightVert;
-                formatted = `${left}${pad({
+                formatted = `${color(left)}${pad({
                     string: formatted,
-                    width: options.width - left.length - right.length
-                }, ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || PAD_SIDE.RIGHT)}${right}`;
+                    width: options.width - left.length - right.length,
+                    sizer: sizer
+                }, ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || PAD_SIDE.RIGHT)}${color(right)}`;
             }
             else {
-                const left = `${" ".repeat(((_l = options.style) === null || _l === void 0 ? void 0 : _l.hPadding) || 0)}`;
+                const left = " ".repeat(((_l = options.style) === null || _l === void 0 ? void 0 : _l.hPadding) || 0);
                 const right = left;
-                formatted = `${left}${pad({
+                formatted = `${color(left)}${pad({
                     string: formatted,
-                    width: options.width - left.length - right.length
-                }, ((_m = options.style) === null || _m === void 0 ? void 0 : _m.hAlign) || PAD_SIDE.RIGHT)}${right}`;
+                    width: options.width - left.length - right.length,
+                    sizer: sizer
+                }, ((_m = options.style) === null || _m === void 0 ? void 0 : _m.hAlign) || PAD_SIDE.RIGHT)}${color(right)}`;
             }
             lines.push(formatted);
         };
@@ -284,7 +302,7 @@
             const ruleWidth = options.width - bottomleft.length - bottomright.length; // account for corners
             const rule = bottommiddle.repeat(Math.ceil(ruleWidth / bottommiddle.length)); // repeats the horizontal padder enough times to fit rule width
             const safeRule = rule.slice(0, ruleWidth); // only use what we need for the full size;
-            lines.push(`${bottomleft}${safeRule}${bottomright}`);
+            lines.push(color(`${bottomleft}${safeRule}${bottomright}`));
         }
         return lines;
     }

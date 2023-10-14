@@ -95,6 +95,18 @@ export interface PadOptions {
 }
 
 /**
+ * Removes terminal color codes from length.
+ * @param str The string to check.
+ * @returns {number} The length of the string minus terminal color escapes.
+ */
+export function termSizer(str: string): number {
+	const rule = /(\u001b\[.*?m)/g;
+	const result = str.match(rule);
+	if (!result) return str.length;
+	return str.length - result.reduce((a, b) => a + b.length, 0);
+}
+
+/**
  * Get the length of a string.
  * @param str The string to check.
  * @returns {number} The length of the string.
@@ -223,6 +235,8 @@ export interface BoxOptions {
 	width: number;
 	title?: string;
 	style?: BoxStyle;
+	sizer?: (str: string) => number;
+	color?: (str: string) => string;
 }
 
 /**
@@ -231,6 +245,8 @@ export interface BoxOptions {
  * @returns {string[]} The lines of the box in an array.
  */
 export function box(options: BoxOptions): string[] {
+	const sizer = options.sizer || defaultSizer; // default to string length
+	const color = options.color || ((str: string) => str);
 	const lines: string[] = [];
 
 	// consolidate top elements
@@ -265,34 +281,35 @@ export function box(options: BoxOptions): string[] {
 			if (options.style?.titleBorder) {
 				const tLeftPadding = options.style.titleBorder?.left ? " " : "";
 				const tRightPadding = options.style.titleBorder?.right ? " " : "";
-				formattedTitle = `${
+				formattedTitle = `${color(
 					options.style.titleBorder?.left || ""
-				}${tLeftPadding}${options.title}${tRightPadding}${
+				)}${tLeftPadding}${options.title}${tRightPadding}${color(
 					options.style.titleBorder?.right || ""
-				}`;
+				)}`;
 			} else formattedTitle = ` ${options.title} `;
 
 			// respect vertical alignment for titles
-			const titleWidth = formattedTitle.length;
+			//const titleWidth = formattedTitle.length;
+			const safeTitleWidth = sizer(formattedTitle);
 			let start = 0 + offset;
 			if (options.style?.titleHAlign === PAD_SIDE.LEFT)
-				start = ruleWidth - titleWidth - offset;
+				start = ruleWidth - safeTitleWidth - offset;
 			else if (options.style?.titleHAlign === PAD_SIDE.CENTER)
-				start = Math.floor((ruleWidth - titleWidth) / 2);
+				start = Math.floor((ruleWidth - safeTitleWidth) / 2);
 			const titled =
-				safeRule.slice(0, start) +
+				color(safeRule.slice(0, start)) +
 				formattedTitle +
-				safeRule.slice(start + titleWidth, ruleWidth);
-			lines.push(`${topleft}${titled}${topright}`);
+				color(safeRule.slice(start + safeTitleWidth, ruleWidth));
+			lines.push(`${color(topleft)}${titled}${color(topright)}`);
 
 			// no title -- just a basic rule
-		} else lines.push(`${topleft}${safeRule}${topright}`);
+		} else lines.push(`${color(topleft)}${safeRule}${color(topright)}`);
 
 		// has a title but no box visual elements
 	} else if (options.title) {
 		lines.push(
 			pad(
-				{ string: options.title, width: options.width },
+				{ string: options.title, width: options.width, sizer: sizer },
 				options.style?.titleHAlign || PAD_SIDE.RIGHT
 			)
 		);
@@ -311,23 +328,25 @@ export function box(options: BoxOptions): string[] {
 			const rightVert = options.style?.right || options.style?.vertical || "";
 			const rightHPadding = rightVert ? options.style?.hPadding || 1 : 0;
 			const right = " ".repeat(rightHPadding) + rightVert;
-			formatted = `${left}${pad(
+			formatted = `${color(left)}${pad(
 				{
 					string: formatted,
-					width: options.width - left.length - right.length
+					width: options.width - left.length - right.length,
+					sizer: sizer
 				},
 				options.style?.hAlign || PAD_SIDE.RIGHT
-			)}${right}`;
+			)}${color(right)}`;
 		} else {
-			const left = `${" ".repeat(options.style?.hPadding || 0)}`;
+			const left = " ".repeat(options.style?.hPadding || 0);
 			const right = left;
-			formatted = `${left}${pad(
+			formatted = `${color(left)}${pad(
 				{
 					string: formatted,
-					width: options.width - left.length - right.length
+					width: options.width - left.length - right.length,
+					sizer: sizer
 				},
 				options.style?.hAlign || PAD_SIDE.RIGHT
-			)}${right}`;
+			)}${color(right)}`;
 		}
 		lines.push(formatted);
 	};
@@ -361,7 +380,7 @@ export function box(options: BoxOptions): string[] {
 			Math.ceil(ruleWidth / bottommiddle.length)
 		); // repeats the horizontal padder enough times to fit rule width
 		const safeRule = rule.slice(0, ruleWidth); // only use what we need for the full size;
-		lines.push(`${bottomleft}${safeRule}${bottomright}`);
+		lines.push(color(`${bottomleft}${safeRule}${bottomright}`));
 	}
 
 	return lines;
