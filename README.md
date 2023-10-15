@@ -9,7 +9,7 @@ I would ideally like to create a module for handling command processing at some 
 Supports both CJS and ES6 import style.
 ```javascript
 // CommonJS-style
-const string = require("mud-ext").string;
+const {string} = require("mud-ext");
 
 // ES6 module-style
 import {string} from "mud-ext";
@@ -22,7 +22,6 @@ import {string} from "mud-ext";
 ## String functions
 ### Pad strings to a specific length.
 ```javascript
-import {string} from "mud-ext";
 let opts = {string:str, width:10, padder:"-"}
 let pl = string.padLeft(opts);
 let pc = string.padCenter(opts);
@@ -87,7 +86,7 @@ blandit. Vestibulum elementum at enim in viverra.\n\
 Donec tincidunt vel magna non pharetra."
 
 // wrap it up
-let wrapped = string.wrap(bigString, 50).join("\n");
+let wrapped = string.wrap({string:bigString, 50).join("\n");
 console.assert(wrapped === expected);
 ```
 
@@ -101,19 +100,19 @@ const simpleStyle = {
 	horizontal:"-"
 };
 
-// expected result
-const expected = "\
-+----------------------------+\n\
-| This is a test.            |\n\
-| I hate these people.       |\n\
-+----------------------------+"
-
 // generate it
 const generated = string.box({
 	style:simpleStyle,
 	width:30,
 	input:["This is a test.", "I hate these people."]
 }).join("\n");
+
+// expected result
+const expected = "\
++----------------------------+\n\
+| This is a test.            |\n\
+| I hate these people.       |\n\
++----------------------------+"
 
 // check it
 console.assert(generated === expected);
@@ -131,13 +130,6 @@ const complexStyle = {
 	titleBorder:{left:"(", right:")"}
 };
 
-// expected result
-const expected = "\
-))=( What up! )=============((\n\
->- This is a test.          -<\n\
->- I hate these people.     -<\n\
-]]==========================[[";
-
 // generate it
 const generated = string.box({
 	style:complexStyle,
@@ -145,6 +137,13 @@ const generated = string.box({
 	title:"What up!",
 	input:["This is a test.", "I hate these people."]
 }).join("\n");
+
+// expected result
+const expected = "\
+))=( What up! )=============((\n\
+>- This is a test.          -<\n\
+>- I hate these people.     -<\n\
+]]==========================[[";
 
 // check it
 console.assert(generated === expected);
@@ -191,4 +190,13 @@ console.assert(6 <= result && result <= 6*6);
 ```javascript
 const results = number.actualRoll(6,6);
 results.forEach((a)=>console.assert(1 <= a && a <= 6));
+```
+
+## Array functions
+### Pick random elements.
+```javascript
+const {array} = require("mud-ext");
+const options = ["You smell.", "Go to heck.", "Rawr XD."];
+const result = array.pick(...options);
+console.log(result);
 ```

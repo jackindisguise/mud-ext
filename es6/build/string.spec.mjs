@@ -39,6 +39,18 @@ describe("string.ts", () => {
             expect(string.padCenter({ string: "test", width: 11, padder: "-" })).is.equal("---test----");
             done();
         });
+        it("color", (done) => {
+            const str = chalk.red("this is a test");
+            const padded = string.padCenter({
+                string: str,
+                width: 50,
+                padder: "-",
+                sizer: string.TERM_SIZER
+            });
+            const expected = `------------------${str}------------------`;
+            expect(expected).is.equal(padded);
+            done();
+        });
     });
     describe("wrap", () => {
         it("color", (done) => {
@@ -55,7 +67,7 @@ describe("string.ts", () => {
                 `This is a ${chalk.cyan("test")}.`
             ].join("\n");
             const wrapped = string
-                .wrap(lorem.join(" "), 15, string.TERM_SIZER)
+                .wrap({ string: lorem.join(" "), width: 15, sizer: string.TERM_SIZER })
                 .join("\n");
             expect(wrapped).is.equal(expected);
             done();
@@ -73,7 +85,7 @@ describe("string.ts", () => {
                 "Vestibulum dolor magna, iaculis in velit eu, fermentum tincidunt metus."
             ];
             const blob = lorem.join(" ");
-            const limited = string.wrap(blob, 80).join("-");
+            const limited = string.wrap({ string: blob, width: 80 }).join("-");
             const expected = [
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum mollis",
                 "tortor a risus varius, sed euismod lectus ultricies. Nam sodales gravida lectus",
@@ -87,7 +99,7 @@ describe("string.ts", () => {
         });
         it("long", (done) => {
             const lorem = "a".repeat(80) + "b".repeat(80);
-            const limited = string.wrap(lorem, 80).join("*");
+            const limited = string.wrap({ string: lorem, width: 80 }).join("*");
             const expected = [
                 //12345678901234567890123456789012345678901234567890123456789012345678901234567890
                 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-",
@@ -99,7 +111,7 @@ describe("string.ts", () => {
         });
         it("short and long", (done) => {
             const lorem = "a aa aaa aaaa aaaaa aaaaaa aaaaaaa aaaaaaaa aaaaaaaaa aaaaaaaaaa aa aaaaaaaaa";
-            const limited = string.wrap(lorem, 10).join("*");
+            const limited = string.wrap({ string: lorem, width: 10 }).join("*");
             const expected = [
                 "a aa aaa",
                 "aaaa aaaaa",

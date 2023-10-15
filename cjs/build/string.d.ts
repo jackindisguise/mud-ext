@@ -60,12 +60,20 @@ export interface PadOptions {
     /** A custom function for adding color codes (or any non-rendered element) to the padding. */
     color?: (str: string) => string;
 }
+/** Describes methods of sizing strings with different types of unrendered data. */
 export interface Sizer {
+    /** The character used to indicate the beginning of unrendered data. */
     open?: string;
+    /** The character used to indicate the end of unrendered data. */
     close?: string;
+    /** A function that returns only the rendered size of the given string. */
     size: (str: string) => number;
 }
+/** Describes how to size strings with terminal colors. */
 export declare const TERM_SIZER: Sizer;
+/** Describes how to size strings with HTML elements colors. */
+export declare const HTML_SIZER: Sizer;
+/** A default sizer that respects no unrendered characters. */
 export declare const DEFAULT_SIZER: Sizer;
 /**
  * Pad a string to the given size.
@@ -92,13 +100,21 @@ export declare function padRight(options: PadOptions): string;
  * @returns {string} The padded string.
  */
 export declare function padCenter(options: PadOptions): string;
+/** Options for wrapping a string. */
+interface WrapOptions {
+    /** The string to be wrapped. */
+    string: string;
+    /** The desired width of each line. */
+    width: number;
+    /** Describe how to respect unrendered characters. */
+    sizer?: Sizer;
+}
 /**
  * Wraps a string to a given size.
- * @param string The string to wrap.
- * @param size The maximum width of each line.
+ * @param options {WrapOptions} The options for this wrap.
  * @returns {string[]} The lines of the wrapped string in an array.
  */
-export declare function wrap(string: string, size: number, sizer?: Sizer): string[];
+export declare function wrap(options: WrapOptions): string[];
 /**
  * Describes the details of the box.
  */
@@ -130,3 +146,4 @@ export declare function autocomplete(partial: string, target: string): boolean;
  * @returns {boolean} If all of the words in the needle words have a match in the haystack, return true; otherwise return false.
  */
 export declare function matchKeywords(needle: string, haystack: string): boolean;
+export {};

@@ -9,7 +9,7 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.matchKeywords = exports.autocomplete = exports.box = exports.wrap = exports.padCenter = exports.padRight = exports.padLeft = exports.pad = exports.DEFAULT_SIZER = exports.TERM_SIZER = exports.BOX_STYLES = exports.PAD_SIDE = void 0;
+    exports.matchKeywords = exports.autocomplete = exports.box = exports.wrap = exports.padCenter = exports.padRight = exports.padLeft = exports.pad = exports.DEFAULT_SIZER = exports.HTML_SIZER = exports.TERM_SIZER = exports.BOX_STYLES = exports.PAD_SIDE = void 0;
     var PAD_SIDE;
     (function (PAD_SIDE) {
         /** Pads to the left. */
@@ -47,6 +47,7 @@
             vertical: "O"
         }
     };
+    /** Describes how to size strings with terminal colors. */
     exports.TERM_SIZER = {
         open: "\u001b",
         close: "m",
@@ -58,6 +59,19 @@
             return str.length - result.reduce((a, b) => a + b.length, 0);
         }
     };
+    /** Describes how to size strings with HTML elements colors. */
+    exports.HTML_SIZER = {
+        open: "<",
+        close: ">",
+        size: (str) => {
+            const rule = /(<.*?>)/g;
+            const result = str.match(rule);
+            if (!result)
+                return str.length;
+            return str.length - result.reduce((a, b) => a + b.length, 0);
+        }
+    };
+    /** A default sizer that respects no unrendered characters. */
     exports.DEFAULT_SIZER = {
         size: (str) => str.length
     };
@@ -142,34 +156,33 @@
     exports.padCenter = padCenter;
     /**
      * Wraps a string to a given size.
-     * @param string The string to wrap.
-     * @param size The maximum width of each line.
+     * @param options {WrapOptions} The options for this wrap.
      * @returns {string[]} The lines of the wrapped string in an array.
      */
-    function wrap(string, size, sizer) {
-        if (!sizer)
-            sizer = exports.DEFAULT_SIZER;
+    function wrap(options) {
+        const sizer = options.sizer || exports.DEFAULT_SIZER;
         const lines = [];
         let last = 0;
-        let cursor = size;
-        while (cursor < string.length) {
+        let cursor = options.width;
+        while (cursor < options.string.length) {
             // accomodate non-rendering elements by adding extra width to this line
             // (expand cursor)
             let unrendered = 0;
             if (sizer.open) {
                 for (let i = last; i < cursor; i++) {
-                    if (string[i] === sizer.open) {
+                    if (options.string[i] === sizer.open) {
                         do {
                             cursor++;
                             unrendered++;
-                        } while (string[i++] !== sizer.close);
+                        } while (options.string[i++] !== sizer.close);
                     }
                 }
             }
             // if the breakpoint character is not rendered, skip as many unrendered characters as we can
             if (sizer.open) {
-                while (string[cursor] === sizer.open) {
-                    while (cursor < string.length && string[cursor] !== sizer.close) {
+                while (options.string[cursor] === sizer.open) {
+                    while (cursor < options.string.length &&
+                        options.string[cursor] !== sizer.close) {
                         cursor++;
                         unrendered++;
                     }
@@ -177,30 +190,30 @@
             }
             // calculate the breakpoint of the line
             let breakpoint = cursor;
-            if (breakpoint >= string.length)
+            if (breakpoint >= options.string.length)
                 break;
             const mid = (cursor + unrendered + last) / 2; // search halfway between last point and current point for whitespace
             for (let i = cursor; i >= mid; i--) {
                 // search for nearby whitespace
-                if ([" ", "\r", "\n", "\t"].includes(string[i])) {
+                if ([" ", "\r", "\n", "\t"].includes(options.string[i])) {
                     breakpoint = i;
                     break;
                 }
             }
             // if the breakpoint is whitespace, skip over it
-            if ([" ", "\r", "\n", "\t"].includes(string[breakpoint])) {
-                lines.push(string.slice(last, breakpoint));
+            if ([" ", "\r", "\n", "\t"].includes(options.string[breakpoint])) {
+                lines.push(options.string.slice(last, breakpoint));
                 last = breakpoint + 1;
                 // if it's not whitespace, add a hypen to break the string and start the next line at this point
             }
             else {
-                lines.push(string.slice(last, breakpoint - 1) + "-");
+                lines.push(options.string.slice(last, breakpoint - 1) + "-");
                 last = breakpoint - 1;
             }
-            cursor = Math.min(last + size, string.length);
+            cursor = Math.min(last + options.width, options.string.length);
         }
         if (last < cursor)
-            lines.push(string.slice(last));
+            lines.push(options.string.slice(last));
         return lines;
     }
     exports.wrap = wrap;
