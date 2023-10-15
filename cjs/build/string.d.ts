@@ -56,22 +56,17 @@ export interface PadOptions {
     /** The string to use as a padder. */
     padder?: string;
     /** A custom function for determing the size of the provided string. */
-    sizer?: (str: string) => number;
+    sizer?: Sizer;
     /** A custom function for adding color codes (or any non-rendered element) to the padding. */
     color?: (str: string) => string;
 }
-/**
- * Removes terminal color codes from length.
- * @param str The string to check.
- * @returns {number} The length of the string minus terminal color escapes.
- */
-export declare function termSizer(str: string): number;
-/**
- * Get the length of a string.
- * @param str The string to check.
- * @returns {number} The length of the string.
- */
-export declare function defaultSizer(str: any): number;
+export interface Sizer {
+    open?: string;
+    close?: string;
+    size: (str: string) => number;
+}
+export declare const TERM_SIZER: Sizer;
+export declare const DEFAULT_SIZER: Sizer;
 /**
  * Pad a string to the given size.
  * @param options {PadOptions} The padding options.
@@ -103,7 +98,7 @@ export declare function padCenter(options: PadOptions): string;
  * @param size The maximum width of each line.
  * @returns {string[]} The lines of the wrapped string in an array.
  */
-export declare function wrap(string: string, size: number): string[];
+export declare function wrap(string: string, size: number, sizer?: Sizer): string[];
 /**
  * Describes the details of the box.
  */
@@ -112,7 +107,7 @@ export interface BoxOptions {
     width: number;
     title?: string;
     style?: BoxStyle;
-    sizer?: (str: string) => number;
+    sizer?: Sizer;
     color?: (str: string) => string;
 }
 /**

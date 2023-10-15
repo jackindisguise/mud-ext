@@ -1,5 +1,6 @@
 import * as string from "./string";
 import { expect } from "chai";
+import chalk from "chalk";
 
 describe("string.ts", () => {
 	describe("padders", () => {
@@ -124,6 +125,27 @@ describe("string.ts", () => {
 	});
 
 	describe("wrap", () => {
+		it("color", (done) => {
+			const lorem = [
+				"This is a test. This is a test. This is a test.",
+				`This is a ${chalk.magenta("test")}. This is a ${chalk.yellow(
+					"test"
+				)}. This is a ${chalk.cyan("test")}.`
+			];
+			const expected = [
+				"This is a test.",
+				"This is a test.",
+				"This is a test.",
+				`This is a ${chalk.magenta("test")}.`,
+				`This is a ${chalk.yellow("test")}.`,
+				`This is a ${chalk.cyan("test")}.`
+			].join("\n");
+			const wrapped = string
+				.wrap(lorem.join(" "), 15, string.TERM_SIZER)
+				.join("\n");
+			expect(wrapped).is.equal(expected);
+			done();
+		});
 		it("ideal", (done) => {
 			const lorem = [
 				"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
@@ -154,6 +176,7 @@ describe("string.ts", () => {
 			const lorem = "a".repeat(80) + "b".repeat(80);
 			const limited = string.wrap(lorem, 80).join("*");
 			const expected = [
+				//12345678901234567890123456789012345678901234567890123456789012345678901234567890
 				"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-",
 				"abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb-",
 				"bb"
@@ -183,6 +206,33 @@ describe("string.ts", () => {
 	});
 
 	describe("box", () => {
+		it("color", (done) => {
+			const style: string.BoxStyle = {
+				...string.BOX_STYLES.PLAIN,
+				titleBorder: { left: "<", right: ">" },
+				hAlign: string.PAD_SIDE.CENTER
+			};
+
+			const box = string.box({
+				input: ["This is a test.", `This is a ${chalk.red("test")}.`],
+				style: style,
+				title: `Go to ${chalk.yellow.bold("HELL")}`,
+				width: 30,
+				sizer: string.TERM_SIZER,
+				color: chalk.yellow
+			});
+
+			const expected = [
+				"\x1B[33m+\x1B[39m\x1B[33m-\x1B[39m\x1B[33m<\x1B[39m Go to \x1B[33m\x1B[1mHELL\x1B[22m\x1B[39m \x1B[33m>\x1B[39m\x1B[33m-------------\x1B[39m\x1B[33m+\x1B[39m",
+				"\x1B[33m|\x1B[39m      This is a test.       \x1B[33m|\x1B[39m",
+				"\x1B[33m|\x1B[39m      This is a \x1B[31mtest\x1B[39m.       \x1B[33m|\x1B[39m",
+				"\x1B[33m+----------------------------+\x1B[39m"
+			];
+
+			expect(box.join("")).is.equal(expected.join(""));
+			done();
+		});
+
 		it("weird", (done) => {
 			const style: string.BoxStyle = {
 				hPadding: 2,

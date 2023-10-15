@@ -1,16 +1,43 @@
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 (function (factory) {
     if (typeof module === "object" && typeof module.exports === "object") {
         var v = factory(require, exports);
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "./string.cjs", "chai"], factory);
+        define(["require", "exports", "./string.cjs", "chai", "chalk"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const string = require("./string.cjs");
+    const string = __importStar(require("./string.cjs"));
     const chai_1 = require("chai");
+    const chalk_1 = __importDefault(require("chalk"));
     describe("string.ts", () => {
         describe("padders", () => {
             it("pad", (done) => {
@@ -51,6 +78,25 @@
             });
         });
         describe("wrap", () => {
+            it("color", (done) => {
+                const lorem = [
+                    "This is a test. This is a test. This is a test.",
+                    `This is a ${chalk_1.default.magenta("test")}. This is a ${chalk_1.default.yellow("test")}. This is a ${chalk_1.default.cyan("test")}.`
+                ];
+                const expected = [
+                    "This is a test.",
+                    "This is a test.",
+                    "This is a test.",
+                    `This is a ${chalk_1.default.magenta("test")}.`,
+                    `This is a ${chalk_1.default.yellow("test")}.`,
+                    `This is a ${chalk_1.default.cyan("test")}.`
+                ].join("\n");
+                const wrapped = string
+                    .wrap(lorem.join(" "), 15, string.TERM_SIZER)
+                    .join("\n");
+                (0, chai_1.expect)(wrapped).is.equal(expected);
+                done();
+            });
             it("ideal", (done) => {
                 const lorem = [
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
@@ -80,6 +126,7 @@
                 const lorem = "a".repeat(80) + "b".repeat(80);
                 const limited = string.wrap(lorem, 80).join("*");
                 const expected = [
+                    //12345678901234567890123456789012345678901234567890123456789012345678901234567890
                     "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-",
                     "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb-",
                     "bb"
@@ -106,6 +153,25 @@
             });
         });
         describe("box", () => {
+            it("color", (done) => {
+                const style = Object.assign(Object.assign({}, string.BOX_STYLES.PLAIN), { titleBorder: { left: "<", right: ">" }, hAlign: string.PAD_SIDE.CENTER });
+                const box = string.box({
+                    input: ["This is a test.", `This is a ${chalk_1.default.red("test")}.`],
+                    style: style,
+                    title: `Go to ${chalk_1.default.yellow.bold("HELL")}`,
+                    width: 30,
+                    sizer: string.TERM_SIZER,
+                    color: chalk_1.default.yellow
+                });
+                const expected = [
+                    "\x1B[33m+\x1B[39m\x1B[33m-\x1B[39m\x1B[33m<\x1B[39m Go to \x1B[33m\x1B[1mHELL\x1B[22m\x1B[39m \x1B[33m>\x1B[39m\x1B[33m-------------\x1B[39m\x1B[33m+\x1B[39m",
+                    "\x1B[33m|\x1B[39m      This is a test.       \x1B[33m|\x1B[39m",
+                    "\x1B[33m|\x1B[39m      This is a \x1B[31mtest\x1B[39m.       \x1B[33m|\x1B[39m",
+                    "\x1B[33m+----------------------------+\x1B[39m"
+                ];
+                (0, chai_1.expect)(box.join("")).is.equal(expected.join(""));
+                done();
+            });
             it("weird", (done) => {
                 const style = {
                     hPadding: 2,

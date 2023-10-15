@@ -9,7 +9,7 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.matchKeywords = exports.autocomplete = exports.box = exports.wrap = exports.padCenter = exports.padRight = exports.padLeft = exports.pad = exports.defaultSizer = exports.termSizer = exports.BOX_STYLES = exports.PAD_SIDE = void 0;
+    exports.matchKeywords = exports.autocomplete = exports.box = exports.wrap = exports.padCenter = exports.padRight = exports.padLeft = exports.pad = exports.DEFAULT_SIZER = exports.TERM_SIZER = exports.BOX_STYLES = exports.PAD_SIDE = void 0;
     var PAD_SIDE;
     (function (PAD_SIDE) {
         /** Pads to the left. */
@@ -47,28 +47,20 @@
             vertical: "O"
         }
     };
-    /**
-     * Removes terminal color codes from length.
-     * @param str The string to check.
-     * @returns {number} The length of the string minus terminal color escapes.
-     */
-    function termSizer(str) {
-        const rule = /(\u001b\[.*?m)/g;
-        const result = str.match(rule);
-        if (!result)
-            return str.length;
-        return str.length - result.reduce((a, b) => a + b.length, 0);
-    }
-    exports.termSizer = termSizer;
-    /**
-     * Get the length of a string.
-     * @param str The string to check.
-     * @returns {number} The length of the string.
-     */
-    function defaultSizer(str) {
-        return str.length;
-    }
-    exports.defaultSizer = defaultSizer;
+    exports.TERM_SIZER = {
+        open: "\u001b",
+        close: "m",
+        size: (str) => {
+            const rule = /(\u001b.*?m)/g;
+            const result = str.match(rule);
+            if (!result)
+                return str.length;
+            return str.length - result.reduce((a, b) => a + b.length, 0);
+        }
+    };
+    exports.DEFAULT_SIZER = {
+        size: (str) => str.length
+    };
     /**
      * Pad a string to the given size.
      * @param options {PadOptions} The padding options.
@@ -91,13 +83,13 @@
      */
     function padLeft(options) {
         const padder = options.padder || " "; // default to space
-        const sizer = options.sizer || defaultSizer; // default to string length
-        const csize = sizer(options.string);
+        const sizer = options.sizer || exports.DEFAULT_SIZER; // default to string length
+        const csize = sizer.size(options.string);
         const psize = options.width - csize;
         if (psize < 1)
             return options.string;
-        let pad = padder.repeat(Math.ceil(psize / sizer(padder)));
-        if (sizer(pad) > psize)
+        let pad = padder.repeat(Math.ceil(psize / sizer.size(padder)));
+        if (sizer.size(pad) > psize)
             pad = pad.slice(0, psize);
         if (options.color)
             pad = options.color(pad);
@@ -111,13 +103,13 @@
      */
     function padRight(options) {
         const padder = options.padder || " "; // default to space
-        const sizer = options.sizer || defaultSizer; // default to string length
-        const csize = sizer(options.string);
+        const sizer = options.sizer || exports.DEFAULT_SIZER; // default to string length
+        const csize = sizer.size(options.string);
         const psize = options.width - csize;
         if (psize < 1)
             return options.string;
-        let pad = padder.repeat(Math.ceil(psize / sizer(padder)));
-        if (sizer(pad) > psize)
+        let pad = padder.repeat(Math.ceil(psize / sizer.size(padder)));
+        if (sizer.size(pad) > psize)
             pad = pad.slice(0, psize);
         if (options.color)
             pad = options.color(pad);
@@ -131,16 +123,16 @@
      */
     function padCenter(options) {
         const padder = options.padder || " "; // default to space
-        const sizer = options.sizer || defaultSizer; // default to string length
-        const csize = sizer(options.string);
+        const sizer = options.sizer || exports.DEFAULT_SIZER; // default to string length
+        const csize = sizer.size(options.string);
         const psize = options.width - csize;
         if (psize < 1)
             return options.string;
-        const tpad = padder.repeat(Math.ceil(options.width / sizer(padder)));
+        const tpad = padder.repeat(Math.ceil(options.width / sizer.size(padder)));
         const lsize = psize % 2 ? Math.floor(psize / 2) : psize / 2;
         const rsize = psize % 2 ? Math.floor(psize / 2) + 1 : psize / 2;
         let lpad = tpad.slice(0, lsize); // this is why you should avoid using colors in padders and stick to color option
-        let rpad = tpad.slice(lsize + options.string.length, lsize + options.string.length + rsize);
+        let rpad = tpad.slice(lsize + csize, lsize + csize + rsize);
         if (options.color) {
             lpad = options.color(lpad);
             rpad = options.color(lpad);
@@ -154,13 +146,40 @@
      * @param size The maximum width of each line.
      * @returns {string[]} The lines of the wrapped string in an array.
      */
-    function wrap(string, size) {
+    function wrap(string, size, sizer) {
+        if (!sizer)
+            sizer = exports.DEFAULT_SIZER;
         const lines = [];
         let last = 0;
         let cursor = size;
         while (cursor < string.length) {
-            let breakpoint = cursor; // assume current point is breakpoint
-            const mid = (cursor + last) / 2; // search halfway between last point and current point for whitespace
+            // accomodate non-rendering elements by adding extra width to this line
+            // (expand cursor)
+            let unrendered = 0;
+            if (sizer.open) {
+                for (let i = last; i < cursor; i++) {
+                    if (string[i] === sizer.open) {
+                        do {
+                            cursor++;
+                            unrendered++;
+                        } while (string[i++] !== sizer.close);
+                    }
+                }
+            }
+            // if the breakpoint character is not rendered, skip as many unrendered characters as we can
+            if (sizer.open) {
+                while (string[cursor] === sizer.open) {
+                    while (cursor < string.length && string[cursor] !== sizer.close) {
+                        cursor++;
+                        unrendered++;
+                    }
+                }
+            }
+            // calculate the breakpoint of the line
+            let breakpoint = cursor;
+            if (breakpoint >= string.length)
+                break;
+            const mid = (cursor + unrendered + last) / 2; // search halfway between last point and current point for whitespace
             for (let i = cursor; i >= mid; i--) {
                 // search for nearby whitespace
                 if ([" ", "\r", "\n", "\t"].includes(string[i])) {
@@ -170,7 +189,6 @@
             }
             // if the breakpoint is whitespace, skip over it
             if ([" ", "\r", "\n", "\t"].includes(string[breakpoint])) {
-                //console.log(last, breakpoint, string.slice(last, breakpoint+1));
                 lines.push(string.slice(last, breakpoint));
                 last = breakpoint + 1;
                 // if it's not whitespace, add a hypen to break the string and start the next line at this point
@@ -179,9 +197,10 @@
                 lines.push(string.slice(last, breakpoint - 1) + "-");
                 last = breakpoint - 1;
             }
-            cursor = last + size;
+            cursor = Math.min(last + size, string.length);
         }
-        lines.push(string.slice(last));
+        if (last < cursor)
+            lines.push(string.slice(last));
         return lines;
     }
     exports.wrap = wrap;
@@ -192,7 +211,7 @@
      */
     function box(options) {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11;
-        const sizer = options.sizer || defaultSizer; // default to string length
+        const sizer = options.sizer || exports.DEFAULT_SIZER; // default to string length
         const color = options.color || ((str) => str);
         const lines = [];
         // consolidate top elements
@@ -228,7 +247,7 @@
                     formattedTitle = ` ${options.title} `;
                 // respect vertical alignment for titles
                 //const titleWidth = formattedTitle.length;
-                const safeTitleWidth = sizer(formattedTitle);
+                const safeTitleWidth = sizer.size(formattedTitle);
                 let start = 0 + offset;
                 if (((_u = options.style) === null || _u === void 0 ? void 0 : _u.titleHAlign) === PAD_SIDE.LEFT)
                     start = ruleWidth - safeTitleWidth - offset;
@@ -255,15 +274,15 @@
                 ((_c = options.style) === null || _c === void 0 ? void 0 : _c.right)) {
                 const leftVert = ((_d = options.style) === null || _d === void 0 ? void 0 : _d.left) || ((_e = options.style) === null || _e === void 0 ? void 0 : _e.vertical) || "";
                 const leftHPadding = leftVert ? ((_f = options.style) === null || _f === void 0 ? void 0 : _f.hPadding) || 1 : 0;
-                const left = leftVert + " ".repeat(leftHPadding);
+                const left = color(leftVert) + " ".repeat(leftHPadding);
                 const rightVert = ((_g = options.style) === null || _g === void 0 ? void 0 : _g.right) || ((_h = options.style) === null || _h === void 0 ? void 0 : _h.vertical) || "";
                 const rightHPadding = rightVert ? ((_j = options.style) === null || _j === void 0 ? void 0 : _j.hPadding) || 1 : 0;
-                const right = " ".repeat(rightHPadding) + rightVert;
-                formatted = `${color(left)}${pad({
+                const right = " ".repeat(rightHPadding) + color(rightVert);
+                formatted = `${left}${pad({
                     string: formatted,
-                    width: options.width - left.length - right.length,
+                    width: options.width - sizer.size(left) - sizer.size(right),
                     sizer: sizer
-                }, ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || PAD_SIDE.RIGHT)}${color(right)}`;
+                }, ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || PAD_SIDE.RIGHT)}${right}`;
             }
             else {
                 const left = " ".repeat(((_l = options.style) === null || _l === void 0 ? void 0 : _l.hPadding) || 0);
