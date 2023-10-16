@@ -373,8 +373,7 @@ export function box(options: BoxOptions): string[] {
 		);
 	}
 
-	const addLine = (line) => {
-		let formatted = line;
+	const addLine = (line: string) => {
 		if (
 			options.style?.vertical ||
 			options.style?.left ||
@@ -386,27 +385,42 @@ export function box(options: BoxOptions): string[] {
 			const rightVert = options.style?.right || options.style?.vertical || "";
 			const rightHPadding = rightVert ? options.style?.hPadding || 1 : 0;
 			const right = " ".repeat(rightHPadding) + color(rightVert);
-			formatted = `${left}${pad(
-				{
-					string: formatted,
-					width: options.width - sizer.size(left) - sizer.size(right),
-					sizer: sizer
-				},
-				options.style?.hAlign || PAD_SIDE.RIGHT
-			)}${right}`;
+			const wrapped: string[] = wrap({
+				string: line,
+				width: options.width - sizer.size(left) - sizer.size(right),
+				sizer: sizer
+			});
+			for (const _line of wrapped)
+				lines.push(
+					`${left}${pad(
+						{
+							string: _line,
+							width: options.width - sizer.size(left) - sizer.size(right),
+							sizer: sizer
+						},
+						options.style?.hAlign || PAD_SIDE.RIGHT
+					)}${right}`
+				);
 		} else {
 			const left = " ".repeat(options.style?.hPadding || 0);
 			const right = left;
-			formatted = `${color(left)}${pad(
-				{
-					string: formatted,
-					width: options.width - left.length - right.length,
-					sizer: sizer
-				},
-				options.style?.hAlign || PAD_SIDE.RIGHT
-			)}${color(right)}`;
+			const wrapped: string[] = wrap({
+				string: line,
+				width: options.width - sizer.size(left) - sizer.size(right),
+				sizer: sizer
+			});
+			for (const _line of wrapped)
+				lines.push(
+					`${left}${pad(
+						{
+							string: _line,
+							width: options.width - left.length - right.length,
+							sizer: sizer
+						},
+						options.style?.hAlign || PAD_SIDE.RIGHT
+					)}${right}`
+				);
 		}
-		lines.push(formatted);
 	};
 
 	// construct content lines

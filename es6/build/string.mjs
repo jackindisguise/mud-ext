@@ -264,7 +264,6 @@ export function box(options) {
     }
     const addLine = (line) => {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
-        let formatted = line;
         if (((_a = options.style) === null || _a === void 0 ? void 0 : _a.vertical) ||
             ((_b = options.style) === null || _b === void 0 ? void 0 : _b.left) ||
             ((_c = options.style) === null || _c === void 0 ? void 0 : _c.right)) {
@@ -274,22 +273,33 @@ export function box(options) {
             const rightVert = ((_g = options.style) === null || _g === void 0 ? void 0 : _g.right) || ((_h = options.style) === null || _h === void 0 ? void 0 : _h.vertical) || "";
             const rightHPadding = rightVert ? ((_j = options.style) === null || _j === void 0 ? void 0 : _j.hPadding) || 1 : 0;
             const right = " ".repeat(rightHPadding) + color(rightVert);
-            formatted = `${left}${pad({
-                string: formatted,
+            const wrapped = wrap({
+                string: line,
                 width: options.width - sizer.size(left) - sizer.size(right),
                 sizer: sizer
-            }, ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || PAD_SIDE.RIGHT)}${right}`;
+            });
+            for (const _line of wrapped)
+                lines.push(`${left}${pad({
+                    string: _line,
+                    width: options.width - sizer.size(left) - sizer.size(right),
+                    sizer: sizer
+                }, ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || PAD_SIDE.RIGHT)}${right}`);
         }
         else {
             const left = " ".repeat(((_l = options.style) === null || _l === void 0 ? void 0 : _l.hPadding) || 0);
             const right = left;
-            formatted = `${color(left)}${pad({
-                string: formatted,
-                width: options.width - left.length - right.length,
+            const wrapped = wrap({
+                string: line,
+                width: options.width - sizer.size(left) - sizer.size(right),
                 sizer: sizer
-            }, ((_m = options.style) === null || _m === void 0 ? void 0 : _m.hAlign) || PAD_SIDE.RIGHT)}${color(right)}`;
+            });
+            for (const _line of wrapped)
+                lines.push(`${left}${pad({
+                    string: _line,
+                    width: options.width - left.length - right.length,
+                    sizer: sizer
+                }, ((_m = options.style) === null || _m === void 0 ? void 0 : _m.hAlign) || PAD_SIDE.RIGHT)}${right}`);
         }
-        lines.push(formatted);
     };
     // construct content lines
     if ((_x = options.style) === null || _x === void 0 ? void 0 : _x.vPadding)

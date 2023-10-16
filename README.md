@@ -9,10 +9,10 @@ I would ideally like to create a module for handling command processing at some 
 Supports both CJS and ES6 import style.
 ```javascript
 // CommonJS-style
-const {string} = require("mud-ext");
+const {string, number, array} = require("mud-ext");
 
 // ES6 module-style
-import {string} from "mud-ext";
+import {string, number, array} from "mud-ext";
 ```
 
 # Install

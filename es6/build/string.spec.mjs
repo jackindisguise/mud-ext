@@ -147,6 +147,30 @@ describe("string.ts", () => {
             expect(box.join("")).is.equal(expected.join(""));
             done();
         });
+        it("color + multiline", (done) => {
+            const style = Object.assign(Object.assign({}, string.BOX_STYLES.PLAIN), { titleBorder: { left: "<", right: ">" }, hAlign: string.PAD_SIDE.CENTER });
+            const box = string.box({
+                input: [
+                    "This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test."
+                ],
+                style: style,
+                title: `Go to ${chalk.yellow.bold("HELL")}`,
+                width: 30,
+                sizer: string.TERM_SIZER,
+                color: chalk.yellow
+            });
+            const expected = [
+                "\x1B[33m+\x1B[39m\x1B[33m-\x1B[39m\x1B[33m<\x1B[39m Go to \x1B[33m\x1B[1mHELL\x1B[22m\x1B[39m \x1B[33m>\x1B[39m\x1B[33m-------------\x1B[39m\x1B[33m+\x1B[39m",
+                "\x1B[33m|\x1B[39m This is a test. This is a  \x1B[33m|\x1B[39m",
+                "\x1B[33m|\x1B[39m test. This is a test. This \x1B[33m|\x1B[39m",
+                "\x1B[33m|\x1B[39m is a test. This is a test. \x1B[33m|\x1B[39m",
+                "\x1B[33m|\x1B[39m This is a test. This is a  \x1B[33m|\x1B[39m",
+                "\x1B[33m|\x1B[39m           test.            \x1B[33m|\x1B[39m",
+                "\x1B[33m+----------------------------+\x1B[39m"
+            ];
+            expect(box.join("\n")).is.equal(expected.join("\n"));
+            done();
+        });
         it("weird", (done) => {
             const style = {
                 hPadding: 2,
