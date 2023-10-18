@@ -236,11 +236,6 @@ export function padLeft(
 	return padLeftWithOptions(options);
 }
 
-/**
- * Handles padLeft calls uniformly with PadOptions as God intended.
- * @param options {PadOptions} Legal options for this function.
- * @returns {string} The padded string.
- */
 function padLeftWithOptions(options: PadOptions): string {
 	const padder = options.padder || " "; // default to space
 	const sizer = options.sizer || DEFAULT_SIZER; // default to string length
