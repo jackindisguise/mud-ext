@@ -63,26 +63,44 @@ export const HTML_SIZER = {
 export const DEFAULT_SIZER = {
     size: (str) => str.length
 };
-/**
- * Pad a string to the given size.
- * @param options {PadOptions} The padding options.
- * @param side {PAD_SIDE} The side to add padding to.
- * @returns {string} The padded string.
- */
-export function pad(options, side) {
-    if (side === PAD_SIDE.LEFT)
-        return padLeft(options);
-    if (side === PAD_SIDE.CENTER)
-        return padCenter(options);
-    // defaults to padding the right side
-    return padRight(options);
+export function pad(options, width, side, padder, sizer, color) {
+    if (typeof options === "string")
+        return padWithOptions({
+            string: options,
+            width: width || 0,
+            side: side || PAD_SIDE.RIGHT,
+            padder: padder || " ",
+            sizer: sizer || DEFAULT_SIZER,
+            color: color || undefined
+        });
+    return padWithOptions(options);
 }
 /**
- * Pad a string to the given size on the right.
- * @param options {PadOptions} The padding options.
+ * Handles pad calls uniformly with PadOptions as God intended.
+ */
+function padWithOptions(options) {
+    if (options.side === PAD_SIDE.LEFT)
+        return padLeft(options);
+    if (options.side === PAD_SIDE.CENTER)
+        return padCenter(options);
+    return padRight(options); // defaults to padding the right side
+}
+export function padLeft(options, width, padder, sizer) {
+    if (typeof options === "string")
+        return padLeftWithOptions({
+            string: options,
+            width: width || 0,
+            padder: padder || " ",
+            sizer: sizer || DEFAULT_SIZER
+        });
+    return padLeftWithOptions(options);
+}
+/**
+ * Handles padLeft calls uniformly with PadOptions as God intended.
+ * @param options {PadOptions} Legal options for this function.
  * @returns {string} The padded string.
  */
-export function padLeft(options) {
+function padLeftWithOptions(options) {
     const padder = options.padder || " "; // default to space
     const sizer = options.sizer || DEFAULT_SIZER; // default to string length
     const csize = sizer.size(options.string);
@@ -96,12 +114,17 @@ export function padLeft(options) {
         pad = options.color(pad);
     return `${pad}${options.string}`;
 }
-/**
- * Pad a string to the given size on the right.
- * @param options {PadOptions} The padding options.
- * @returns {string} The padded string.
- */
-export function padRight(options) {
+export function padRight(options, width, padder, sizer) {
+    if (typeof options === "string")
+        return padRightWithOptions({
+            string: options,
+            width: width || 0,
+            padder: padder || " ",
+            sizer: sizer || DEFAULT_SIZER
+        });
+    return padRightWithOptions(options);
+}
+function padRightWithOptions(options) {
     const padder = options.padder || " "; // default to space
     const sizer = options.sizer || DEFAULT_SIZER; // default to string length
     const csize = sizer.size(options.string);
@@ -115,12 +138,18 @@ export function padRight(options) {
         pad = options.color(pad);
     return `${options.string}${pad}`;
 }
-/**
- * Pad a string to the given size on the right.
- * @param options {PadOptions} The padding options.
- * @returns {string} The padded string.
- */
-export function padCenter(options) {
+export function padCenter(options, width, padder, sizer, color) {
+    if (typeof options === "string")
+        return padCenterWithOptions({
+            string: options,
+            width: width || 0,
+            padder: padder || " ",
+            sizer: sizer || DEFAULT_SIZER,
+            color: color || undefined
+        });
+    return padCenterWithOptions(options);
+}
+function padCenterWithOptions(options) {
     const padder = options.padder || " "; // default to space
     const sizer = options.sizer || DEFAULT_SIZER; // default to string length
     const csize = sizer.size(options.string);
@@ -133,17 +162,21 @@ export function padCenter(options) {
     let lpad = tpad.slice(0, lsize); // this is why you should avoid using colors in padders and stick to color option
     let rpad = tpad.slice(lsize + csize, lsize + csize + rsize);
     if (options.color) {
-        lpad = options.color(lpad);
-        rpad = options.color(lpad);
+        lpad = lpad ? options.color(lpad) : "";
+        rpad = rpad ? options.color(rpad) : "";
     }
     return `${lpad}${options.string}${rpad}`;
 }
-/**
- * Wraps a string to a given size.
- * @param options {WrapOptions} The options for this wrap.
- * @returns {string[]} The lines of the wrapped string in an array.
- */
-export function wrap(options) {
+export function wrap(options, width, sizer) {
+    if (typeof options === "string")
+        return wrapWithOptions({
+            string: options,
+            width: width || 0,
+            sizer: sizer || DEFAULT_SIZER
+        });
+    return wrapWithOptions(options);
+}
+function wrapWithOptions(options) {
     const sizer = options.sizer || DEFAULT_SIZER;
     const lines = [];
     let last = 0;
@@ -200,13 +233,20 @@ export function wrap(options) {
         lines.push(options.string.slice(last));
     return lines;
 }
-/**
- * Generates a contained box of text.
- * @param options The options for the box.
- * @returns {string[]} The lines of the box in an array.
- */
-export function box(options) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11;
+export function box(options, width, title, style, sizer, color) {
+    if (Array.isArray(options))
+        return boxWithOptions({
+            input: options,
+            width: width || 0,
+            title: title || undefined,
+            style: style || undefined,
+            sizer: sizer || undefined,
+            color: color || undefined
+        });
+    return boxWithOptions(options);
+}
+function boxWithOptions(options) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13;
     const sizer = options.sizer || DEFAULT_SIZER; // default to string length
     const color = options.color || ((str) => str);
     const lines = [];
@@ -237,7 +277,11 @@ export function box(options) {
             if ((_p = options.style) === null || _p === void 0 ? void 0 : _p.titleBorder) {
                 const tLeftPadding = ((_q = options.style.titleBorder) === null || _q === void 0 ? void 0 : _q.left) ? " " : "";
                 const tRightPadding = ((_r = options.style.titleBorder) === null || _r === void 0 ? void 0 : _r.right) ? " " : "";
-                formattedTitle = `${color(((_s = options.style.titleBorder) === null || _s === void 0 ? void 0 : _s.left) || "")}${tLeftPadding}${options.title}${tRightPadding}${color(((_t = options.style.titleBorder) === null || _t === void 0 ? void 0 : _t.right) || "")}`;
+                formattedTitle = `${((_s = options.style.titleBorder) === null || _s === void 0 ? void 0 : _s.left)
+                    ? color((_t = options.style.titleBorder) === null || _t === void 0 ? void 0 : _t.left)
+                    : ""}${tLeftPadding}${options.title}${tRightPadding}${((_u = options.style.titleBorder) === null || _u === void 0 ? void 0 : _u.right)
+                    ? color((_v = options.style.titleBorder) === null || _v === void 0 ? void 0 : _v.right)
+                    : ""}`;
             }
             else
                 formattedTitle = ` ${options.title} `;
@@ -245,22 +289,29 @@ export function box(options) {
             //const titleWidth = formattedTitle.length;
             const safeTitleWidth = sizer.size(formattedTitle);
             let start = 0 + offset;
-            if (((_u = options.style) === null || _u === void 0 ? void 0 : _u.titleHAlign) === PAD_SIDE.LEFT)
+            if (((_w = options.style) === null || _w === void 0 ? void 0 : _w.titleHAlign) === PAD_SIDE.LEFT)
                 start = ruleWidth - safeTitleWidth - offset;
-            else if (((_v = options.style) === null || _v === void 0 ? void 0 : _v.titleHAlign) === PAD_SIDE.CENTER)
+            else if (((_x = options.style) === null || _x === void 0 ? void 0 : _x.titleHAlign) === PAD_SIDE.CENTER)
                 start = Math.floor((ruleWidth - safeTitleWidth) / 2);
-            const titled = color(safeRule.slice(0, start)) +
+            const titled = (start > 0 ? color(safeRule.slice(0, start)) : "") +
                 formattedTitle +
-                color(safeRule.slice(start + safeTitleWidth, ruleWidth));
-            lines.push(`${color(topleft)}${titled}${color(topright)}`);
+                (start + safeTitleWidth < ruleWidth
+                    ? color(safeRule.slice(start + safeTitleWidth, ruleWidth))
+                    : "");
+            lines.push(`${topleft ? color(topleft) : ""}${titled}${topright ? color(topright) : ""}`);
             // no title -- just a basic rule
         }
         else
-            lines.push(`${color(topleft)}${safeRule}${color(topright)}`);
+            lines.push(`${topleft ? color(topleft) : ""}${safeRule}${topright ? color(topright) : ""}`);
         // has a title but no box visual elements
     }
     else if (options.title) {
-        lines.push(pad({ string: options.title, width: options.width, sizer: sizer }, ((_w = options.style) === null || _w === void 0 ? void 0 : _w.titleHAlign) || PAD_SIDE.RIGHT));
+        lines.push(pad({
+            string: options.title,
+            width: options.width,
+            side: ((_y = options.style) === null || _y === void 0 ? void 0 : _y.titleHAlign) || PAD_SIDE.RIGHT,
+            sizer: sizer
+        }));
     }
     const addLine = (line) => {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
@@ -282,8 +333,9 @@ export function box(options) {
                 lines.push(`${left}${pad({
                     string: _line,
                     width: options.width - sizer.size(left) - sizer.size(right),
+                    side: ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || PAD_SIDE.RIGHT,
                     sizer: sizer
-                }, ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || PAD_SIDE.RIGHT)}${right}`);
+                })}${right}`);
         }
         else {
             const left = " ".repeat(((_l = options.style) === null || _l === void 0 ? void 0 : _l.hPadding) || 0);
@@ -297,28 +349,29 @@ export function box(options) {
                 lines.push(`${left}${pad({
                     string: _line,
                     width: options.width - left.length - right.length,
+                    side: ((_m = options.style) === null || _m === void 0 ? void 0 : _m.hAlign) || PAD_SIDE.RIGHT,
                     sizer: sizer
-                }, ((_m = options.style) === null || _m === void 0 ? void 0 : _m.hAlign) || PAD_SIDE.RIGHT)}${right}`);
+                })}${right}`);
         }
     };
     // construct content lines
-    if ((_x = options.style) === null || _x === void 0 ? void 0 : _x.vPadding)
+    if ((_z = options.style) === null || _z === void 0 ? void 0 : _z.vPadding)
         for (let i = 0; i < options.style.vPadding; i++)
             addLine("");
     for (const line of options.input)
         addLine(line);
-    if ((_y = options.style) === null || _y === void 0 ? void 0 : _y.vPadding)
+    if ((_0 = options.style) === null || _0 === void 0 ? void 0 : _0.vPadding)
         for (let i = 0; i < options.style.vPadding; i++)
             addLine("");
     // consolidate bottom elements
-    let bottommiddle = ((_0 = (_z = options.style) === null || _z === void 0 ? void 0 : _z.bottom) === null || _0 === void 0 ? void 0 : _0.middle) || ((_1 = options.style) === null || _1 === void 0 ? void 0 : _1.horizontal) || "";
-    const bottomleft = ((_3 = (_2 = options.style) === null || _2 === void 0 ? void 0 : _2.bottom) === null || _3 === void 0 ? void 0 : _3.left) ||
-        ((_5 = (_4 = options.style) === null || _4 === void 0 ? void 0 : _4.bottom) === null || _5 === void 0 ? void 0 : _5.corner) ||
-        ((_6 = options.style) === null || _6 === void 0 ? void 0 : _6.corner) ||
+    let bottommiddle = ((_2 = (_1 = options.style) === null || _1 === void 0 ? void 0 : _1.bottom) === null || _2 === void 0 ? void 0 : _2.middle) || ((_3 = options.style) === null || _3 === void 0 ? void 0 : _3.horizontal) || "";
+    const bottomleft = ((_5 = (_4 = options.style) === null || _4 === void 0 ? void 0 : _4.bottom) === null || _5 === void 0 ? void 0 : _5.left) ||
+        ((_7 = (_6 = options.style) === null || _6 === void 0 ? void 0 : _6.bottom) === null || _7 === void 0 ? void 0 : _7.corner) ||
+        ((_8 = options.style) === null || _8 === void 0 ? void 0 : _8.corner) ||
         "";
-    const bottomright = ((_8 = (_7 = options.style) === null || _7 === void 0 ? void 0 : _7.bottom) === null || _8 === void 0 ? void 0 : _8.right) ||
-        ((_10 = (_9 = options.style) === null || _9 === void 0 ? void 0 : _9.bottom) === null || _10 === void 0 ? void 0 : _10.corner) ||
-        ((_11 = options.style) === null || _11 === void 0 ? void 0 : _11.corner) ||
+    const bottomright = ((_10 = (_9 = options.style) === null || _9 === void 0 ? void 0 : _9.bottom) === null || _10 === void 0 ? void 0 : _10.right) ||
+        ((_12 = (_11 = options.style) === null || _11 === void 0 ? void 0 : _11.bottom) === null || _12 === void 0 ? void 0 : _12.corner) ||
+        ((_13 = options.style) === null || _13 === void 0 ? void 0 : _13.corner) ||
         "";
     // do we have any bottom elements?
     if (bottomleft || bottomright || bottommiddle) {

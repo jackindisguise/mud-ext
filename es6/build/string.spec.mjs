@@ -4,18 +4,53 @@ import chalk from "chalk";
 describe("string.ts", () => {
     describe("padders", () => {
         it("pad", (done) => {
-            expect(string.pad({ string: "test", width: 10 }, string.PAD_SIDE.LEFT)).is.equal("      test");
-            expect(string.pad({ string: "test", width: 10, padder: "-" }, string.PAD_SIDE.LEFT)).is.equal("------test");
-            expect(string.pad({ string: "50", width: 10, padder: "0" }, string.PAD_SIDE.LEFT)).is.equal("0000000050");
-            expect(string.pad({ string: "test", width: 10 }, string.PAD_SIDE.RIGHT)).is.equal("test      ");
-            expect(string.pad({ string: "test", width: 10, padder: "<>{}" }, string.PAD_SIDE.RIGHT)).is.equal("test<>{}<>");
-            expect(string.pad({ string: "test", width: 10, padder: "-" }, string.PAD_SIDE.RIGHT)).is.equal("test------");
-            expect(string.pad({ string: "50.", width: 10, padder: "0" }, string.PAD_SIDE.RIGHT)).is.equal("50.0000000");
-            expect(string.pad({ string: "test", width: 10 }, string.PAD_SIDE.CENTER)).is.equal("   test   ");
-            expect(string.pad({ string: "test", width: 10, padder: "<>" }, string.PAD_SIDE.CENTER)).is.equal("<><test><>");
-            expect(string.pad({ string: "test", width: 80, padder: "<->" }, string.PAD_SIDE.CENTER)).is.equal("<-><-><-><-><-><-><-><-><-><-><-><-><-test<-><-><-><-><-><-><-><-><-><-><-><-><-");
-            expect(string.pad({ string: "test", width: 10, padder: "-" }, string.PAD_SIDE.CENTER)).is.equal("---test---");
-            expect(string.pad({ string: "test", width: 11, padder: "-" }, string.PAD_SIDE.CENTER)).is.equal("---test----");
+            expect(string.pad({ string: "test", width: 10, side: string.PAD_SIDE.LEFT })).is.equal("      test");
+            expect(string.pad("test", 10, string.PAD_SIDE.LEFT, "-")).is.equal("------test");
+            expect(string.pad("50", 10, string.PAD_SIDE.LEFT, "0")).is.equal("0000000050");
+            expect(string.pad({ string: "test", width: 10, side: string.PAD_SIDE.RIGHT })).is.equal("test      ");
+            expect(string.pad({
+                string: "test",
+                width: 10,
+                side: string.PAD_SIDE.RIGHT,
+                padder: "<>{}"
+            })).is.equal("test<>{}<>");
+            expect(string.pad({
+                string: "test",
+                width: 10,
+                side: string.PAD_SIDE.RIGHT,
+                padder: "-"
+            })).is.equal("test------");
+            expect(string.pad({
+                string: "50.",
+                width: 10,
+                side: string.PAD_SIDE.RIGHT,
+                padder: "0"
+            })).is.equal("50.0000000");
+            expect(string.pad({ string: "test", side: string.PAD_SIDE.CENTER, width: 10 })).is.equal("   test   ");
+            expect(string.pad({
+                string: "test",
+                width: 10,
+                side: string.PAD_SIDE.CENTER,
+                padder: "<>"
+            })).is.equal("<><test><>");
+            expect(string.pad({
+                string: "test",
+                width: 80,
+                side: string.PAD_SIDE.CENTER,
+                padder: "<->"
+            })).is.equal("<-><-><-><-><-><-><-><-><-><-><-><-><-test<-><-><-><-><-><-><-><-><-><-><-><-><-");
+            expect(string.pad({
+                string: "test",
+                width: 10,
+                side: string.PAD_SIDE.CENTER,
+                padder: "-"
+            })).is.equal("---test---");
+            expect(string.pad({
+                string: "test",
+                width: 11,
+                side: string.PAD_SIDE.CENTER,
+                padder: "-"
+            })).is.equal("---test----");
             done();
         });
         it("padLeft", (done) => {
@@ -45,9 +80,10 @@ describe("string.ts", () => {
                 string: str,
                 width: 50,
                 padder: "-",
-                sizer: string.TERM_SIZER
+                sizer: string.TERM_SIZER,
+                color: chalk.blue
             });
-            const expected = `------------------${str}------------------`;
+            const expected = `${chalk.blue("------------------")}${str}${chalk.blue("------------------")}`;
             expect(expected).is.equal(padded);
             done();
         });

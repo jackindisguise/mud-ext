@@ -74,26 +74,6 @@ export const BOX_STYLES: { [key: string]: BoxStyle } = {
 	}
 };
 
-/**
- * Options for pad functions.
- */
-export interface PadOptions {
-	/** The string to pad. */
-	string: string;
-
-	/** The desired width of the string. */
-	width: number;
-
-	/** The string to use as a padder. */
-	padder?: string;
-
-	/** A custom function for determing the size of the provided string. */
-	sizer?: Sizer;
-
-	/** A custom function for adding color codes (or any non-rendered element) to the padding. */
-	color?: (str: string) => string;
-}
-
 /** Describes methods of sizing strings with different types of unrendered data. */
 export interface Sizer {
 	/** The character used to indicate the beginning of unrendered data. */
@@ -136,24 +116,132 @@ export const DEFAULT_SIZER: Sizer = {
 };
 
 /**
- * Pad a string to the given size.
- * @param options {PadOptions} The padding options.
- * @param side {PAD_SIDE} The side to add padding to.
- * @returns {string} The padded string.
+ * A function that takes a string and produces a string.
  */
-export function pad(options: PadOptions, side?: PAD_SIDE): string {
-	if (side === PAD_SIDE.LEFT) return padLeft(options);
-	if (side === PAD_SIDE.CENTER) return padCenter(options);
-	// defaults to padding the right side
-	return padRight(options);
+export type StringTransformer = (str: string) => string;
+
+/**
+ * Options for pad functions.
+ */
+export interface PadOptions {
+	/** The string to pad. */
+	string: string;
+
+	/** The desired width of the string. */
+	width: number;
+
+	/** The string to use as a padder. */
+	padder?: string;
+
+	/** A custom function for determing the size of the provided string. */
+	sizer?: Sizer;
+
+	/** A custom function for adding color codes (or any non-rendered element) to the padding. */
+	color?: (str: string) => string;
 }
 
 /**
- * Pad a string to the given size on the right.
- * @param options {PadOptions} The padding options.
+ * Options for pad shortcut function.
+ */
+export interface PadWithSideOptions extends PadOptions {
+	/** The side to add padding. */
+	side: PAD_SIDE;
+}
+
+/**
+ * Pad a string to the given size.
+ * @param options {PadWithSideOptions} The padding options.
  * @returns {string} The padded string.
  */
-export function padLeft(options: PadOptions) {
+export function pad(options: PadWithSideOptions): string;
+
+/**
+ * Pad a string to the given size.
+ * @param string The string to pad.
+ * @param width The desired width of the string.
+ * @param padder The string to use as a padder.
+ * @param sizer A custom function for determining the size of the provided string.
+ * @param color A custom function for adding unrenderedcolor codes to the padding.
+ */
+export function pad(
+	string: string,
+	width: number,
+	side: PAD_SIDE,
+	padder?: string,
+	sizer?: Sizer,
+	color?: StringTransformer
+);
+export function pad(
+	options: PadWithSideOptions | string,
+	width?: number,
+	side?: PAD_SIDE,
+	padder?: string,
+	sizer?: Sizer,
+	color?: StringTransformer
+): string {
+	if (typeof options === "string")
+		return padWithOptions({
+			string: options,
+			width: width || 0,
+			side: side || PAD_SIDE.RIGHT,
+			padder: padder || " ",
+			sizer: sizer || DEFAULT_SIZER,
+			color: color || undefined
+		});
+	return padWithOptions(options);
+}
+
+/**
+ * Handles pad calls uniformly with PadOptions as God intended.
+ */
+function padWithOptions(options: PadWithSideOptions): string {
+	if (options.side === PAD_SIDE.LEFT) return padLeft(options);
+	if (options.side === PAD_SIDE.CENTER) return padCenter(options);
+	return padRight(options); // defaults to padding the right side
+}
+
+/**
+ * Pad a string to the given size on the left.
+ * @param options The padding options.
+ * @returns The padded string.
+ */
+export function padLeft(options: PadOptions): string;
+/**
+ * Pad a string to the given width on the left.
+ * @param string The string to pad.
+ * @param width The target width of the padded string.
+ * @param padder The padder to pad the string with.
+ * @param sizer Handler for unrendered characters.
+ * @returns The padded string.
+ */
+export function padLeft(
+	string: string,
+	width: number,
+	padder?: string,
+	sizer?: Sizer
+): string;
+export function padLeft(
+	options: PadOptions | string,
+	width?: number,
+	padder?: string,
+	sizer?: Sizer
+): string {
+	if (typeof options === "string")
+		return padLeftWithOptions({
+			string: options,
+			width: width || 0,
+			padder: padder || " ",
+			sizer: sizer || DEFAULT_SIZER
+		});
+	return padLeftWithOptions(options);
+}
+
+/**
+ * Handles padLeft calls uniformly with PadOptions as God intended.
+ * @param options {PadOptions} Legal options for this function.
+ * @returns {string} The padded string.
+ */
+function padLeftWithOptions(options: PadOptions): string {
 	const padder = options.padder || " "; // default to space
 	const sizer = options.sizer || DEFAULT_SIZER; // default to string length
 	const csize = sizer.size(options.string);
@@ -167,10 +255,41 @@ export function padLeft(options: PadOptions) {
 
 /**
  * Pad a string to the given size on the right.
- * @param options {PadOptions} The padding options.
- * @returns {string} The padded string.
+ * @param options The padding options.
+ * @returns The padded string.
  */
-export function padRight(options: PadOptions) {
+export function padRight(options: PadOptions): string;
+/**
+ * Pad a string to the given width on the right.
+ * @param string The string to pad.
+ * @param width The target width of the padded string.
+ * @param padder The padder to pad the string with.
+ * @param sizer Handler for unrendered characters.
+ * @returns The padded string.
+ */
+export function padRight(
+	string: string,
+	width: number,
+	padder?: string,
+	sizer?: Sizer
+): string;
+export function padRight(
+	options: PadOptions | string,
+	width?: number,
+	padder?: string,
+	sizer?: Sizer
+): string {
+	if (typeof options === "string")
+		return padRightWithOptions({
+			string: options,
+			width: width || 0,
+			padder: padder || " ",
+			sizer: sizer || DEFAULT_SIZER
+		});
+	return padRightWithOptions(options);
+}
+
+function padRightWithOptions(options: PadOptions) {
 	const padder = options.padder || " "; // default to space
 	const sizer = options.sizer || DEFAULT_SIZER; // default to string length
 	const csize = sizer.size(options.string);
@@ -183,11 +302,46 @@ export function padRight(options: PadOptions) {
 }
 
 /**
- * Pad a string to the given size on the right.
- * @param options {PadOptions} The padding options.
- * @returns {string} The padded string.
+/**
+ * Pad a string to the given size on the left and right.
+ * @param options The padding options.
+ * @returns The padded string.
  */
-export function padCenter(options: PadOptions) {
+export function padCenter(options: PadOptions): string;
+/**
+ * Pad a string to the given width on the right.
+ * @param string The string to pad.
+ * @param width The target width of the padded string.
+ * @param padder The padder to pad the string with.
+ * @param sizer Handler for unrendered characters.
+ * @returns The padded string.
+ */
+export function padCenter(
+	string: string,
+	width: number,
+	padder?: string,
+	sizer?: Sizer,
+	color?: StringTransformer
+): string;
+export function padCenter(
+	options: PadOptions | string,
+	width?: number,
+	padder?: string,
+	sizer?: Sizer,
+	color?: StringTransformer
+): string {
+	if (typeof options === "string")
+		return padCenterWithOptions({
+			string: options,
+			width: width || 0,
+			padder: padder || " ",
+			sizer: sizer || DEFAULT_SIZER,
+			color: color || undefined
+		});
+	return padCenterWithOptions(options);
+}
+
+function padCenterWithOptions(options: PadOptions) {
 	const padder = options.padder || " "; // default to space
 	const sizer = options.sizer || DEFAULT_SIZER; // default to string length
 	const csize = sizer.size(options.string);
@@ -199,8 +353,8 @@ export function padCenter(options: PadOptions) {
 	let lpad = tpad.slice(0, lsize); // this is why you should avoid using colors in padders and stick to color option
 	let rpad = tpad.slice(lsize + csize, lsize + csize + rsize);
 	if (options.color) {
-		lpad = options.color(lpad);
-		rpad = options.color(lpad);
+		lpad = lpad ? options.color(lpad) : "";
+		rpad = rpad ? options.color(rpad) : "";
 	}
 	return `${lpad}${options.string}${rpad}`;
 }
@@ -219,10 +373,33 @@ interface WrapOptions {
 
 /**
  * Wraps a string to a given size.
+ * @param string The string to be wrapped.
+ * @param width The desired width of each line.
+ * @param sizer Sizer for respecting unrendered characters.
+ */
+export function wrap(string: string, width: number, sizer?: Sizer): string[];
+
+/**
+ * Wraps a string to a given size.
  * @param options {WrapOptions} The options for this wrap.
  * @returns {string[]} The lines of the wrapped string in an array.
  */
-export function wrap(options: WrapOptions): string[] {
+export function wrap(options: WrapOptions): string[];
+export function wrap(
+	options: WrapOptions | string,
+	width?: number,
+	sizer?: Sizer
+): string[] {
+	if (typeof options === "string")
+		return wrapWithOptions({
+			string: options,
+			width: width || 0,
+			sizer: sizer || DEFAULT_SIZER
+		});
+	return wrapWithOptions(options);
+}
+
+function wrapWithOptions(options: WrapOptions): string[] {
 	const sizer = options.sizer || DEFAULT_SIZER;
 	const lines: string[] = [];
 	let last = 0;
@@ -294,7 +471,7 @@ export interface BoxOptions {
 	title?: string;
 	style?: BoxStyle;
 	sizer?: Sizer;
-	color?: (str: string) => string;
+	color?: StringTransformer;
 }
 
 /**
@@ -302,7 +479,45 @@ export interface BoxOptions {
  * @param options The options for the box.
  * @returns {string[]} The lines of the box in an array.
  */
-export function box(options: BoxOptions): string[] {
+export function box(options: BoxOptions): string[];
+/**
+ * Generates a contained box of text.
+ * @param input An array of lines of text.
+ * @param width The external width of the box.
+ * @param title The title of the box.
+ * @param style The box style.
+ * @param sizer A sizer for handling unrendered characters in the input.
+ * @param color A colorizer for the borders of the box.
+ */
+export function box(
+	input: string[],
+	width: number,
+	title?: string,
+	style?: BoxStyle,
+	sizer?: Sizer,
+	color?: StringTransformer
+): string[];
+export function box(
+	options: BoxOptions | string[],
+	width?: number,
+	title?: string,
+	style?: BoxStyle,
+	sizer?: Sizer,
+	color?: StringTransformer
+): string[] {
+	if (Array.isArray(options))
+		return boxWithOptions({
+			input: options,
+			width: width || 0,
+			title: title || undefined,
+			style: style || undefined,
+			sizer: sizer || undefined,
+			color: color || undefined
+		});
+	return boxWithOptions(options);
+}
+
+function boxWithOptions(options: BoxOptions): string[] {
 	const sizer = options.sizer || DEFAULT_SIZER; // default to string length
 	const color = options.color || ((str: string) => str);
 	const lines: string[] = [];
@@ -339,11 +554,15 @@ export function box(options: BoxOptions): string[] {
 			if (options.style?.titleBorder) {
 				const tLeftPadding = options.style.titleBorder?.left ? " " : "";
 				const tRightPadding = options.style.titleBorder?.right ? " " : "";
-				formattedTitle = `${color(
-					options.style.titleBorder?.left || ""
-				)}${tLeftPadding}${options.title}${tRightPadding}${color(
-					options.style.titleBorder?.right || ""
-				)}`;
+				formattedTitle = `${
+					options.style.titleBorder?.left
+						? color(options.style.titleBorder?.left)
+						: ""
+				}${tLeftPadding}${options.title}${tRightPadding}${
+					options.style.titleBorder?.right
+						? color(options.style.titleBorder?.right)
+						: ""
+				}`;
 			} else formattedTitle = ` ${options.title} `;
 
 			// respect vertical alignment for titles
@@ -355,21 +574,34 @@ export function box(options: BoxOptions): string[] {
 			else if (options.style?.titleHAlign === PAD_SIDE.CENTER)
 				start = Math.floor((ruleWidth - safeTitleWidth) / 2);
 			const titled =
-				color(safeRule.slice(0, start)) +
+				(start > 0 ? color(safeRule.slice(0, start)) : "") +
 				formattedTitle +
-				color(safeRule.slice(start + safeTitleWidth, ruleWidth));
-			lines.push(`${color(topleft)}${titled}${color(topright)}`);
+				(start + safeTitleWidth < ruleWidth
+					? color(safeRule.slice(start + safeTitleWidth, ruleWidth))
+					: "");
+			lines.push(
+				`${topleft ? color(topleft) : ""}${titled}${
+					topright ? color(topright) : ""
+				}`
+			);
 
 			// no title -- just a basic rule
-		} else lines.push(`${color(topleft)}${safeRule}${color(topright)}`);
+		} else
+			lines.push(
+				`${topleft ? color(topleft) : ""}${safeRule}${
+					topright ? color(topright) : ""
+				}`
+			);
 
 		// has a title but no box visual elements
 	} else if (options.title) {
 		lines.push(
-			pad(
-				{ string: options.title, width: options.width, sizer: sizer },
-				options.style?.titleHAlign || PAD_SIDE.RIGHT
-			)
+			pad({
+				string: options.title,
+				width: options.width,
+				side: options.style?.titleHAlign || PAD_SIDE.RIGHT,
+				sizer: sizer
+			})
 		);
 	}
 
@@ -392,14 +624,12 @@ export function box(options: BoxOptions): string[] {
 			});
 			for (const _line of wrapped)
 				lines.push(
-					`${left}${pad(
-						{
-							string: _line,
-							width: options.width - sizer.size(left) - sizer.size(right),
-							sizer: sizer
-						},
-						options.style?.hAlign || PAD_SIDE.RIGHT
-					)}${right}`
+					`${left}${pad({
+						string: _line,
+						width: options.width - sizer.size(left) - sizer.size(right),
+						side: options.style?.hAlign || PAD_SIDE.RIGHT,
+						sizer: sizer
+					})}${right}`
 				);
 		} else {
 			const left = " ".repeat(options.style?.hPadding || 0);
@@ -411,14 +641,12 @@ export function box(options: BoxOptions): string[] {
 			});
 			for (const _line of wrapped)
 				lines.push(
-					`${left}${pad(
-						{
-							string: _line,
-							width: options.width - left.length - right.length,
-							sizer: sizer
-						},
-						options.style?.hAlign || PAD_SIDE.RIGHT
-					)}${right}`
+					`${left}${pad({
+						string: _line,
+						width: options.width - left.length - right.length,
+						side: options.style?.hAlign || PAD_SIDE.RIGHT,
+						sizer: sizer
+					})}${right}`
 				);
 		}
 	};

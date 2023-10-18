@@ -41,18 +41,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     describe("string.ts", () => {
         describe("padders", () => {
             it("pad", (done) => {
-                (0, chai_1.expect)(string.pad({ string: "test", width: 10 }, string.PAD_SIDE.LEFT)).is.equal("      test");
-                (0, chai_1.expect)(string.pad({ string: "test", width: 10, padder: "-" }, string.PAD_SIDE.LEFT)).is.equal("------test");
-                (0, chai_1.expect)(string.pad({ string: "50", width: 10, padder: "0" }, string.PAD_SIDE.LEFT)).is.equal("0000000050");
-                (0, chai_1.expect)(string.pad({ string: "test", width: 10 }, string.PAD_SIDE.RIGHT)).is.equal("test      ");
-                (0, chai_1.expect)(string.pad({ string: "test", width: 10, padder: "<>{}" }, string.PAD_SIDE.RIGHT)).is.equal("test<>{}<>");
-                (0, chai_1.expect)(string.pad({ string: "test", width: 10, padder: "-" }, string.PAD_SIDE.RIGHT)).is.equal("test------");
-                (0, chai_1.expect)(string.pad({ string: "50.", width: 10, padder: "0" }, string.PAD_SIDE.RIGHT)).is.equal("50.0000000");
-                (0, chai_1.expect)(string.pad({ string: "test", width: 10 }, string.PAD_SIDE.CENTER)).is.equal("   test   ");
-                (0, chai_1.expect)(string.pad({ string: "test", width: 10, padder: "<>" }, string.PAD_SIDE.CENTER)).is.equal("<><test><>");
-                (0, chai_1.expect)(string.pad({ string: "test", width: 80, padder: "<->" }, string.PAD_SIDE.CENTER)).is.equal("<-><-><-><-><-><-><-><-><-><-><-><-><-test<-><-><-><-><-><-><-><-><-><-><-><-><-");
-                (0, chai_1.expect)(string.pad({ string: "test", width: 10, padder: "-" }, string.PAD_SIDE.CENTER)).is.equal("---test---");
-                (0, chai_1.expect)(string.pad({ string: "test", width: 11, padder: "-" }, string.PAD_SIDE.CENTER)).is.equal("---test----");
+                (0, chai_1.expect)(string.pad({ string: "test", width: 10, side: string.PAD_SIDE.LEFT })).is.equal("      test");
+                (0, chai_1.expect)(string.pad("test", 10, string.PAD_SIDE.LEFT, "-")).is.equal("------test");
+                (0, chai_1.expect)(string.pad("50", 10, string.PAD_SIDE.LEFT, "0")).is.equal("0000000050");
+                (0, chai_1.expect)(string.pad({ string: "test", width: 10, side: string.PAD_SIDE.RIGHT })).is.equal("test      ");
+                (0, chai_1.expect)(string.pad({
+                    string: "test",
+                    width: 10,
+                    side: string.PAD_SIDE.RIGHT,
+                    padder: "<>{}"
+                })).is.equal("test<>{}<>");
+                (0, chai_1.expect)(string.pad({
+                    string: "test",
+                    width: 10,
+                    side: string.PAD_SIDE.RIGHT,
+                    padder: "-"
+                })).is.equal("test------");
+                (0, chai_1.expect)(string.pad({
+                    string: "50.",
+                    width: 10,
+                    side: string.PAD_SIDE.RIGHT,
+                    padder: "0"
+                })).is.equal("50.0000000");
+                (0, chai_1.expect)(string.pad({ string: "test", side: string.PAD_SIDE.CENTER, width: 10 })).is.equal("   test   ");
+                (0, chai_1.expect)(string.pad({
+                    string: "test",
+                    width: 10,
+                    side: string.PAD_SIDE.CENTER,
+                    padder: "<>"
+                })).is.equal("<><test><>");
+                (0, chai_1.expect)(string.pad({
+                    string: "test",
+                    width: 80,
+                    side: string.PAD_SIDE.CENTER,
+                    padder: "<->"
+                })).is.equal("<-><-><-><-><-><-><-><-><-><-><-><-><-test<-><-><-><-><-><-><-><-><-><-><-><-><-");
+                (0, chai_1.expect)(string.pad({
+                    string: "test",
+                    width: 10,
+                    side: string.PAD_SIDE.CENTER,
+                    padder: "-"
+                })).is.equal("---test---");
+                (0, chai_1.expect)(string.pad({
+                    string: "test",
+                    width: 11,
+                    side: string.PAD_SIDE.CENTER,
+                    padder: "-"
+                })).is.equal("---test----");
                 done();
             });
             it("padLeft", (done) => {
@@ -82,9 +117,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
                     string: str,
                     width: 50,
                     padder: "-",
-                    sizer: string.TERM_SIZER
+                    sizer: string.TERM_SIZER,
+                    color: chalk_1.default.blue
                 });
-                const expected = `------------------${str}------------------`;
+                const expected = `${chalk_1.default.blue("------------------")}${str}${chalk_1.default.blue("------------------")}`;
                 (0, chai_1.expect)(expected).is.equal(padded);
                 done();
             });
