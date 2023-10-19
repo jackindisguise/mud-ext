@@ -23,11 +23,13 @@
      * Some generic boxes I invented due to my ingenuity.
      */
     exports.BOX_STYLES = {
+        /** A plain box. */
         PLAIN: {
             horizontal: "-",
             vertical: "|",
             corner: "+"
         },
+        /** A rounded box. */
         ROUNDED: {
             horizontal: "-",
             vertical: "|",
@@ -38,6 +40,7 @@
                 corner: "'"
             }
         },
+        /** A box made of Os */
         O: {
             titleBorder: {
                 left: "(",

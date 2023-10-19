@@ -13,7 +13,10 @@ export enum PAD_SIDE {
  * Describes the borders of box titles.
  */
 export interface BoxStyleTitleBorder {
+	/** The left side of the title. */
 	left?: string;
+
+	/** The right side of the title. */
 	right?: string;
 }
 
@@ -21,9 +24,16 @@ export interface BoxStyleTitleBorder {
  * Describes the elements of horizontal edges of boxes.
  */
 export interface BoxStyleHorizontalEdge {
+	/** The left corner of the box edge. */
 	left?: string;
+
+	/** The right corner of the box edge. */
 	right?: string;
+
+	/** The middle of the box edge. */
 	middle?: string;
+
+	/** The corners of the box edge. */
 	corner?: string;
 }
 
@@ -31,17 +41,40 @@ export interface BoxStyleHorizontalEdge {
  * Describes all of the elements of boxes.
  */
 export interface BoxStyle {
+	/** The horizontal edges of the box. */
 	horizontal?: string;
+
+	/** The vertical edges of the box. */
 	vertical?: string;
+
+	/** The left edge of the box. */
 	left?: string;
+
+	/** The right edge of the box. */
 	right?: string;
+
+	/** Horizontal padding of the internals of the box. */
 	hPadding?: number;
+
+	/** Vertical padding of the internals of the box. */
 	vPadding?: number;
+
+	/** The corners of the box. */
 	corner?: string;
+
+	/** The borders of the title of the box. */
 	titleBorder?: BoxStyleTitleBorder;
+
+	/** The top edge of the box. */
 	top?: BoxStyleHorizontalEdge;
+
+	/** The bottom edge of the box. */
 	bottom?: BoxStyleHorizontalEdge;
+
+	/** The horizontal alignment of the internals of the box. */
 	hAlign?: PAD_SIDE;
+
+	/** The horizontal alignment of the title of the box. */
 	titleHAlign?: PAD_SIDE;
 }
 
@@ -49,11 +82,14 @@ export interface BoxStyle {
  * Some generic boxes I invented due to my ingenuity.
  */
 export const BOX_STYLES: { [key: string]: BoxStyle } = {
+	/** A plain box. */
 	PLAIN: {
 		horizontal: "-",
 		vertical: "|",
 		corner: "+"
 	},
+
+	/** A rounded box. */
 	ROUNDED: {
 		horizontal: "-",
 		vertical: "|",
@@ -64,6 +100,8 @@ export const BOX_STYLES: { [key: string]: BoxStyle } = {
 			corner: "'"
 		}
 	},
+
+	/** A box made of Os */
 	O: {
 		titleBorder: {
 			left: "(",
@@ -83,7 +121,7 @@ export interface Sizer {
 	close?: string;
 
 	/** A function that returns only the rendered size of the given string. */
-	size: (str: string) => number;
+	size: StringSizer;
 }
 
 /** Describes how to size strings with terminal colors. */
@@ -115,10 +153,11 @@ export const DEFAULT_SIZER: Sizer = {
 	size: (str: string) => str.length
 };
 
-/**
- * A function that takes a string and produces a string.
- */
+/** A function that takes a string and produces a string. */
 export type StringTransformer = (str: string) => string;
+
+/** A function that takes a string and produces a number. */
+export type StringSizer = (str: string) => number;
 
 /**
  * Options for pad functions.
@@ -137,7 +176,7 @@ export interface PadOptions {
 	sizer?: Sizer;
 
 	/** A custom function for adding color codes (or any non-rendered element) to the padding. */
-	color?: (str: string) => string;
+	color?: StringTransformer;
 }
 
 /**
@@ -161,7 +200,7 @@ export function pad(options: PadWithSideOptions): string;
  * @param width The desired width of the string.
  * @param padder The string to use as a padder.
  * @param sizer A custom function for determining the size of the provided string.
- * @param color A custom function for adding unrenderedcolor codes to the padding.
+ * @param color A custom function for adding unrendered color codes to the padding.
  */
 export function pad(
 	string: string,
@@ -297,7 +336,6 @@ function padRightWithOptions(options: PadOptions) {
 }
 
 /**
-/**
  * Pad a string to the given size on the left and right.
  * @param options The padding options.
  * @returns The padded string.
@@ -355,7 +393,7 @@ function padCenterWithOptions(options: PadOptions) {
 }
 
 /** Options for wrapping a string. */
-interface WrapOptions {
+export interface WrapOptions {
 	/** The string to be wrapped. */
 	string: string;
 
@@ -376,7 +414,7 @@ export function wrap(string: string, width: number, sizer?: Sizer): string[];
 
 /**
  * Wraps a string to a given size.
- * @param options {WrapOptions} The options for this wrap.
+ * @param options The options for this wrap.
  * @returns {string[]} The lines of the wrapped string in an array.
  */
 export function wrap(options: WrapOptions): string[];
@@ -461,11 +499,22 @@ function wrapWithOptions(options: WrapOptions): string[] {
  * Describes the details of the box.
  */
 export interface BoxOptions {
+	/** The lines rendered in the box. */
 	input: string[];
+
+	/** The external width of the box. */
 	width: number;
+
+	/** The title of the box. */
 	title?: string;
+
+	/** The box style. */
 	style?: BoxStyle;
+
+	/** The sizer for any unrendered elements. */
 	sizer?: Sizer;
+
+	/** A colorizer that adds unrendered elements to the box elements after calculation. */
 	color?: StringTransformer;
 }
 

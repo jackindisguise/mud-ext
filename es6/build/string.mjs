@@ -11,11 +11,13 @@ export var PAD_SIDE;
  * Some generic boxes I invented due to my ingenuity.
  */
 export const BOX_STYLES = {
+    /** A plain box. */
     PLAIN: {
         horizontal: "-",
         vertical: "|",
         corner: "+"
     },
+    /** A rounded box. */
     ROUNDED: {
         horizontal: "-",
         vertical: "|",
@@ -26,6 +28,7 @@ export const BOX_STYLES = {
             corner: "'"
         }
     },
+    /** A box made of Os */
     O: {
         titleBorder: {
             left: "(",
