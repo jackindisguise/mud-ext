@@ -18,5 +18,11 @@
             (0, chai_1.expect)(chosen).is.within(1, 3);
             done();
         });
+        it("replace", (done) => {
+            const str = ["This", "is", "a", "test."];
+            const replaced = (0, array_1.replace)(str, "test.", "stick-up.");
+            (0, chai_1.expect)(replaced.join(" ")).is.equal("This is a stick-up.");
+            done();
+        });
     });
 });

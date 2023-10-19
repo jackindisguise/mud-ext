@@ -35,12 +35,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     const number = __importStar(require("./number.cjs"));
     const chai_1 = require("chai");
     describe("number.ts", () => {
-        describe("lerp", () => {
-            it("predictable", (done) => {
-                (0, chai_1.expect)(number.lerp(0, 100, 0.5)).is.equal(50);
-                (0, chai_1.expect)(number.lerp(-50, 50, 0.5)).is.equal(0);
-                done();
-            });
+        it("lerp", (done) => {
+            (0, chai_1.expect)(number.lerp(0, 100, 0.5)).is.equal(50);
+            (0, chai_1.expect)(number.lerp(-50, 50, 0.5)).is.equal(0);
+            done();
         });
         describe("randomInt", () => {
             it("low<=result<=high", (done) => {
@@ -87,31 +85,27 @@ var __importStar = (this && this.__importStar) || function (mod) {
                 done();
             });
         });
-        describe("roll", () => {
-            it("predictable", (done) => {
-                const tests = 10000;
-                for (let i = 0; i < tests; i++)
-                    (0, chai_1.expect)(number.roll(2, 100)).is.within(2, 200);
-                for (let i = 0; i < tests; i++)
-                    (0, chai_1.expect)(number.roll(2, 100, 5)).is.within(7, 205);
-                for (let i = 0; i < tests; i++)
-                    (0, chai_1.expect)(number.roll(2, 100, -5)).is.within(-3, 195);
-                done();
-            });
+        it("roll", (done) => {
+            const tests = 10000;
+            for (let i = 0; i < tests; i++)
+                (0, chai_1.expect)(number.roll(2, 100)).is.within(2, 200);
+            for (let i = 0; i < tests; i++)
+                (0, chai_1.expect)(number.roll(2, 100, 5)).is.within(7, 205);
+            for (let i = 0; i < tests; i++)
+                (0, chai_1.expect)(number.roll(2, 100, -5)).is.within(-3, 195);
+            done();
         });
-        describe("actualRoll", () => {
-            it("predictable", (done) => {
-                const die = 2;
-                const sides = 6;
-                const tests = 10000;
-                for (let i = 0; i < tests; i++) {
-                    const results = number.actualRoll(die, sides);
-                    for (const result of results)
-                        (0, chai_1.expect)(result).is.within(1, sides);
-                    (0, chai_1.expect)(results.reduce((sum, a) => (sum += a), 0)).is.within(die, die + die * sides);
-                }
-                done();
-            });
+        it("actualRoll", (done) => {
+            const die = 2;
+            const sides = 6;
+            const tests = 10000;
+            for (let i = 0; i < tests; i++) {
+                const results = number.actualRoll(die, sides);
+                for (const result of results)
+                    (0, chai_1.expect)(result).is.within(1, sides);
+                (0, chai_1.expect)(results.reduce((sum, a) => (sum += a), 0)).is.within(die, die + die * sides);
+            }
+            done();
         });
     });
 });

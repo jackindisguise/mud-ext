@@ -17,7 +17,7 @@
     "clean": "node clean.cjs",
     "make": "npm run clean && npm run prettier && npm run lint && npm run compile && npm test",
     "compile": "npx tsc -p es6 && npx tsc -p cjs && npm run fix",
-    "prettier": "npx prettier **/*.ts --write",
+    "prettier": "npx prettier **/*.ts **/*.cjs --write",
     "lint": "npx eslint .",
     "lint-fix": "npx eslint . --fix",
     "fix": "cd es6 && node fix.cjs && cd ../cjs && node fix.cjs",

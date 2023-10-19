@@ -371,23 +371,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
                 done();
             });
         });
-        describe("autocomplete", () => {
-            it("it works", (done) => {
-                (0, chai_1.expect)(string.autocomplete("", "partial")).is.true;
-                (0, chai_1.expect)(string.autocomplete("p", "partial")).is.true;
-                (0, chai_1.expect)(string.autocomplete("part", "partial")).is.true;
-                (0, chai_1.expect)(string.autocomplete("partial", "part")).is.false;
-                done();
-            });
+        it("autocomplete", (done) => {
+            (0, chai_1.expect)(string.autocomplete("", "partial")).is.true;
+            (0, chai_1.expect)(string.autocomplete("p", "partial")).is.true;
+            (0, chai_1.expect)(string.autocomplete("part", "partial")).is.true;
+            (0, chai_1.expect)(string.autocomplete("partial", "part")).is.false;
+            done();
         });
-        describe("matchKeywords", () => {
-            it("it works", (done) => {
-                (0, chai_1.expect)(string.matchKeywords("the", "the cake is a lie")).is.true;
-                (0, chai_1.expect)(string.matchKeywords("cake", "the cake is a lie")).is.true;
-                (0, chai_1.expect)(string.matchKeywords("the cake", "the cake is a lie")).is.true;
-                (0, chai_1.expect)(string.matchKeywords("the pie", "the cake is a lie")).is.false;
-                done();
-            });
+        it("matchKeywords", (done) => {
+            (0, chai_1.expect)(string.matchKeywords("the", "the cake is a lie")).is.true;
+            (0, chai_1.expect)(string.matchKeywords("cake", "the cake is a lie")).is.true;
+            (0, chai_1.expect)(string.matchKeywords("the cake", "the cake is a lie")).is.true;
+            (0, chai_1.expect)(string.matchKeywords("the pie", "the cake is a lie")).is.false;
+            done();
         });
     });
 });
