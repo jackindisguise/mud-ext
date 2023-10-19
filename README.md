@@ -205,7 +205,6 @@ results.forEach((a) => assert(1 <= a && a <= 6));
 ## Array functions
 ### Pick random elements.
 ```javascript
-const {array} = require("mud-ext");
 const options = ["You smell.", "Go to heck.", "Rawr XD."];
 const result = array.pick(...options);
 assert(options.includes(result)); // i don't really know how to demonstrate this any other way X|
