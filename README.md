@@ -175,23 +175,23 @@ assert(string.matchKeywords("king john", name) === false);
 
 ## Number functions
 ### Linear interpolation.
-Not super useful for MUDs in particular, but it is generally useful.
 ```javascript
 const {number} = require("mud-ext");
 const interpolated = number.lerp(0, 100, 0.5);
 assert(interpolated === 50);
 ```
+Not super useful for MUDs in particular, but it is generally useful.
 ### Random integer generation.
-Generates numbers within the given range inclusively.
 ```javascript
 const int = number.randomInt(1, 100);
 assert(1 <= int && int <= 100);
 ```
+Generates numbers within the given range inclusively.
 
 ### Roll virtual die and return the sum.
 ```javascript
 const result = number.roll(6,6);
-console.assert(6 <= result && result <= 6*6);
+assert(6 <= result && result <= 6*6);
 ```
 
 ### Roll vitual die and return the result of each roll.
@@ -212,8 +212,8 @@ assert(options.includes(result)); // i don't really know how to demonstrate this
 ### Replace elements in an array.
 ```javascript
 let str = "This is serious gaming.";
-let split = str.split(" ");
-let replaced = array.replace(split, "serious", "major-league");
+let split = str.split(" "); // ["This", "is", "serious", "gaming."]
+let replaced = array.replace(split, "serious", "major-league"); // ["This", "is", "major-league", "gaming."]
 let joined = replaced.join(" ");
 assert(joined === "This is major-league gaming.");
 ```
