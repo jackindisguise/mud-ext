@@ -1,6 +1,6 @@
 {
   "name": "mud-ext",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Provides useful functions for text MUDs.",
   "typings": "es6/build/index.d.ts",
   "exports": {
@@ -15,7 +15,7 @@
   },
   "scripts": {
     "clean": "node clean.cjs",
-	"prep": "node README2test.cjs",
+    "prep": "node README2test.cjs",
     "make": "npm run clean && npm run prep && npm run prettier && npm run lint && npm run compile && npm test",
     "compile": "npx tsc -p es6 && npx tsc -p cjs && npm run fix",
     "prettier": "npx prettier **/*.ts **/*.cjs --write",
