@@ -1,4 +1,6 @@
 # About
+* See full documentation [here](https://jackindisguise.github.io/mud-ext/).
+
 This package provides functionality that I often end up rewriting when working on text-based games (MUDs in particular).
 
 The major focus of a lot of these functions is to deal with manipulating strings for interacting with things, or manipulating strings for presentational purposes.
