@@ -181,7 +181,6 @@ Donec tincidunt vel magna non pharetra.";
 	});
 
 	it("Pick random elements.", (done) => {
-		const { array } = require("mud-ext");
 		const options = ["You smell.", "Go to heck.", "Rawr XD."];
 		const result = array.pick(...options);
 		assert(options.includes(result)); // i don't really know how to demonstrate this any other way X|
