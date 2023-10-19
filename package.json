@@ -1,6 +1,6 @@
 {
   "name": "mud-ext",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "Provides useful functions for text MUDs.",
   "typings": "es6/build/index.d.ts",
   "exports": {
@@ -23,7 +23,7 @@
     "lint-fix": "npx eslint . --fix",
     "fix": "cd es6 && node fix.cjs && cd ../cjs && node fix.cjs",
     "test": "npx mocha es6/build && npx mocha cjs/build && npx mocha README.spec.cjs",
-	"docs": "npx typedoc index.ts"
+    "docs": "npx typedoc index.ts"
   },
   "author": "jackindisguise",
   "license": "ISC",
