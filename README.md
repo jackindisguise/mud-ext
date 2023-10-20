@@ -1,11 +1,12 @@
+[![npm](https://img.shields.io/npm/v/mud-ext)](https://www.npmjs.com/package/mud-ext)
+[![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/jackindisguise/mud-ext/main)](https://github.com/jackindisguise/mud-ext)
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/jackindisguise/mud-ext/main)
+
+[![Static Badge](https://img.shields.io/badge/documentation-orange)](https://jackindisguise.github.io/mud-ext/)
+
 # About
-* See full documentation [here](https://jackindisguise.github.io/mud-ext/).
 
-This package provides functionality that I often end up rewriting when working on text-based games (MUDs in particular).
-
-The major focus of a lot of these functions is to deal with manipulating strings for interacting with things, or manipulating strings for presentational purposes.
-
-I would ideally like to create a module for handling command processing at some point.
+This package provides functionality that I often end up rewriting when working on text-based games (MUDs in particular). The major focus of a lot of these functions deals with manipulating strings for interaction or presentation.
 
 # Compatibility
 Supports both CJS and ES6 import style.
