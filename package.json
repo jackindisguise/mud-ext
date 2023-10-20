@@ -57,7 +57,7 @@
     "@types/node": "^20.8.3",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
-    "accurate-intervals": "^1.1.2",
+    "accurate-intervals": "^1.1.4",
     "chai": "^4.3.10",
     "chalk": "^4.1.2",
     "eslint": "^8.50.0",
