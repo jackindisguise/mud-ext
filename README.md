@@ -13,9 +13,13 @@ Supports both CJS and ES6 import style.
 ```javascript
 // CommonJS-style
 const {string, number, array} = require("mud-ext");
+const {padLeft, padRight, padCenter} = require("mud-ext/string");
+const {roll, randomInt} = require("mud-ext/number");
 
 // ES6 module-style
 import {string, number, array} from "mud-ext";
+import {padLeft, padRight, padCenter} from "mud-ext/string";
+import {roll, randomInt} from "mud-ext/number";
 ```
 
 # Install
