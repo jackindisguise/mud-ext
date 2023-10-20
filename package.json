@@ -1,6 +1,6 @@
 {
   "name": "mud-ext",
-  "version": "2.3.4",
+  "version": "2.4.0",
   "description": "Provides useful functions for text MUDs.",
   "typings": "es6/build/index.d.ts",
   "exports": {
@@ -12,30 +12,30 @@
       },
       "./cjs/build/index.cjs"
     ],
-	"./string": [
-		{
-			"import": "./es6/build/string.mjs",
-			"require": "./cjs/build/string.cjs",
-			"default": "./cjs/build/string.cjs"
-		  },
-		  "./cjs/build/string.cjs"
-	],
-	"./number": [
-		{
-			"import": "./es6/build/number.mjs",
-			"require": "./cjs/build/number.cjs",
-			"default": "./cjs/build/number.cjs"
-		  },
-		  "./cjs/build/number.cjs"
-	],
-	"./array": [
-		{
-			"import": "./es6/build/array.mjs",
-			"require": "./cjs/build/array.cjs",
-			"default": "./cjs/build/array.cjs"
-		  },
-		  "./cjs/build/array.cjs"
-	]
+    "./string": [
+      {
+        "import": "./es6/build/string.mjs",
+        "require": "./cjs/build/string.cjs",
+        "default": "./cjs/build/string.cjs"
+      },
+      "./cjs/build/string.cjs"
+    ],
+    "./number": [
+      {
+        "import": "./es6/build/number.mjs",
+        "require": "./cjs/build/number.cjs",
+        "default": "./cjs/build/number.cjs"
+      },
+      "./cjs/build/number.cjs"
+    ],
+    "./array": [
+      {
+        "import": "./es6/build/array.mjs",
+        "require": "./cjs/build/array.cjs",
+        "default": "./cjs/build/array.cjs"
+      },
+      "./cjs/build/array.cjs"
+    ]
   },
   "scripts": {
     "clean": "node clean.cjs",
