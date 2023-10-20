@@ -41,6 +41,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "mocha": "^10.2.0",
     "prettier": "^3.0.3",
+    "typedoc": "^0.25.2",
     "typescript": "^5.2.2",
     "typescript-eslint": "^0.0.1-alpha.0"
   },
@@ -55,8 +56,5 @@
   "bugs": {
     "url": "https://github.com/jackindisguise/mud-ext/issues"
   },
-  "homepage": "https://github.com/jackindisguise/mud-ext#readme",
-  "dependencies": {
-    "typedoc": "^0.25.2"
-  }
+  "homepage": "https://github.com/jackindisguise/mud-ext#readme"
 }
