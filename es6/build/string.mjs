@@ -10,33 +10,33 @@ export var PAD_SIDE;
 /**
  * Some generic boxes I invented due to my ingenuity.
  */
-export const BOX_STYLES = {
-    /** A plain box. */
-    PLAIN: {
-        horizontal: "-",
-        vertical: "|",
-        corner: "+"
+export class BOX_STYLES {
+}
+/** A plain box. */
+BOX_STYLES.PLAIN = {
+    horizontal: "-",
+    vertical: "|",
+    corner: "+"
+};
+/** A rounded box. */
+BOX_STYLES.ROUNDED = {
+    horizontal: "-",
+    vertical: "|",
+    top: {
+        corner: "."
     },
-    /** A rounded box. */
-    ROUNDED: {
-        horizontal: "-",
-        vertical: "|",
-        top: {
-            corner: "."
-        },
-        bottom: {
-            corner: "'"
-        }
-    },
-    /** A box made of Os */
-    O: {
-        titleBorder: {
-            left: "(",
-            right: ")"
-        },
-        horizontal: "O",
-        vertical: "O"
+    bottom: {
+        corner: "'"
     }
+};
+/** A box made of Os */
+BOX_STYLES.O = {
+    titleBorder: {
+        left: "(",
+        right: ")"
+    },
+    horizontal: "O",
+    vertical: "O"
 };
 /** Describes how to size strings with terminal colors. */
 export const TERM_SIZER = {

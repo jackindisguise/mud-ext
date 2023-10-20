@@ -47,6 +47,33 @@ describe("README.md", () => {
 		done();
 	});
 
+	it("Terminal-style color coding.", (done) => {
+		const chalk = require("chalk"); // version 4.x supports CJS require
+		let colored = chalk.red("This is red!"); // uses terminal color characters to make this string red
+		let padded = string.padCenter({
+			string: colored,
+			width: 40,
+			padder: "[]",
+			sizer: string.TERM_SIZER
+		}); // string.TERM_SIZER respects terminal color characters
+		let expected = `[][][][][][][]${chalk.red("This is red!")}[][][][][][][]`;
+		assert(expected === padded);
+		done();
+	});
+
+	it("HTML-style color coding.", (done) => {
+		let colored = "<font color='red'>This is red!</font>"; // uses HTML tags to add color to string
+		let padded = string.padCenter({
+			string: colored,
+			width: 40,
+			padder: "[]",
+			sizer: string.HTML_SIZER
+		}); // string.HTML_SIZER respects HTML tags
+		let expected = `[][][][][][][]<font color='red'>This is red!</font>[][][][][][][]`;
+		assert(expected === padded);
+		done();
+	});
+
 	it("Wordwrap on strings.", (done) => {
 		let bigString =
 			"\

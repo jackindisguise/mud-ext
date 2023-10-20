@@ -81,16 +81,16 @@ export interface BoxStyle {
 /**
  * Some generic boxes I invented due to my ingenuity.
  */
-export const BOX_STYLES: { [key: string]: BoxStyle } = {
+export class BOX_STYLES {
 	/** A plain box. */
-	PLAIN: {
+	static PLAIN: BoxStyle = {
 		horizontal: "-",
 		vertical: "|",
 		corner: "+"
-	},
+	};
 
 	/** A rounded box. */
-	ROUNDED: {
+	static ROUNDED: BoxStyle = {
 		horizontal: "-",
 		vertical: "|",
 		top: {
@@ -99,18 +99,18 @@ export const BOX_STYLES: { [key: string]: BoxStyle } = {
 		bottom: {
 			corner: "'"
 		}
-	},
+	};
 
 	/** A box made of Os */
-	O: {
+	static O: BoxStyle = {
 		titleBorder: {
 			left: "(",
 			right: ")"
 		},
 		horizontal: "O",
 		vertical: "O"
-	}
-};
+	};
+}
 
 /** Describes methods of sizing strings with different types of unrendered data. */
 export interface Sizer {

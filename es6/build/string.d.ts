@@ -60,9 +60,14 @@ export interface BoxStyle {
 /**
  * Some generic boxes I invented due to my ingenuity.
  */
-export declare const BOX_STYLES: {
-    [key: string]: BoxStyle;
-};
+export declare class BOX_STYLES {
+    /** A plain box. */
+    static PLAIN: BoxStyle;
+    /** A rounded box. */
+    static ROUNDED: BoxStyle;
+    /** A box made of Os */
+    static O: BoxStyle;
+}
 /** Describes methods of sizing strings with different types of unrendered data. */
 export interface Sizer {
     /** The character used to indicate the beginning of unrendered data. */
