@@ -138,7 +138,7 @@ export declare function padLeft(options: PadOptions): string;
  * @param sizer Handler for unrendered characters.
  * @returns The padded string.
  */
-export declare function padLeft(string: string, width: number, padder?: string, sizer?: Sizer): string;
+export declare function padLeft(string: string, width: number, padder?: string, sizer?: Sizer, color?: StringTransformer): string;
 /**
  * Pad a string to the given size on the right.
  * @param options The padding options.
@@ -153,7 +153,7 @@ export declare function padRight(options: PadOptions): string;
  * @param sizer Handler for unrendered characters.
  * @returns The padded string.
  */
-export declare function padRight(string: string, width: number, padder?: string, sizer?: Sizer): string;
+export declare function padRight(string: string, width: number, padder?: string, sizer?: Sizer, color?: StringTransformer): string;
 /**
  * Pad a string to the given size on the left and right.
  * @param options The padding options.

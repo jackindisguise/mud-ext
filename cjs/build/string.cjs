@@ -102,13 +102,14 @@
             return padCenter(options);
         return padRight(options); // defaults to padding the right side
     }
-    function padLeft(options, width, padder, sizer) {
+    function padLeft(options, width, padder, sizer, color) {
         if (typeof options === "string")
             return padLeftWithOptions({
                 string: options,
                 width: width || 0,
                 padder: padder || " ",
-                sizer: sizer || exports.DEFAULT_SIZER
+                sizer: sizer || exports.DEFAULT_SIZER,
+                color: color || undefined
             });
         return padLeftWithOptions(options);
     }
@@ -127,13 +128,14 @@
             pad = options.color(pad);
         return `${pad}${options.string}`;
     }
-    function padRight(options, width, padder, sizer) {
+    function padRight(options, width, padder, sizer, color) {
         if (typeof options === "string")
             return padRightWithOptions({
                 string: options,
                 width: width || 0,
                 padder: padder || " ",
-                sizer: sizer || exports.DEFAULT_SIZER
+                sizer: sizer || exports.DEFAULT_SIZER,
+                color: color || undefined
             });
         return padRightWithOptions(options);
     }

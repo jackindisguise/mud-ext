@@ -257,20 +257,23 @@ export function padLeft(
 	string: string,
 	width: number,
 	padder?: string,
-	sizer?: Sizer
+	sizer?: Sizer,
+	color?: StringTransformer
 ): string;
 export function padLeft(
 	options: PadOptions | string,
 	width?: number,
 	padder?: string,
-	sizer?: Sizer
+	sizer?: Sizer,
+	color?: StringTransformer
 ): string {
 	if (typeof options === "string")
 		return padLeftWithOptions({
 			string: options,
 			width: width || 0,
 			padder: padder || " ",
-			sizer: sizer || DEFAULT_SIZER
+			sizer: sizer || DEFAULT_SIZER,
+			color: color || undefined
 		});
 	return padLeftWithOptions(options);
 }
@@ -305,20 +308,23 @@ export function padRight(
 	string: string,
 	width: number,
 	padder?: string,
-	sizer?: Sizer
+	sizer?: Sizer,
+	color?: StringTransformer
 ): string;
 export function padRight(
 	options: PadOptions | string,
 	width?: number,
 	padder?: string,
-	sizer?: Sizer
+	sizer?: Sizer,
+	color?: StringTransformer
 ): string {
 	if (typeof options === "string")
 		return padRightWithOptions({
 			string: options,
 			width: width || 0,
 			padder: padder || " ",
-			sizer: sizer || DEFAULT_SIZER
+			sizer: sizer || DEFAULT_SIZER,
+			color: color || undefined
 		});
 	return padRightWithOptions(options);
 }

@@ -88,13 +88,14 @@ function padWithOptions(options) {
         return padCenter(options);
     return padRight(options); // defaults to padding the right side
 }
-export function padLeft(options, width, padder, sizer) {
+export function padLeft(options, width, padder, sizer, color) {
     if (typeof options === "string")
         return padLeftWithOptions({
             string: options,
             width: width || 0,
             padder: padder || " ",
-            sizer: sizer || DEFAULT_SIZER
+            sizer: sizer || DEFAULT_SIZER,
+            color: color || undefined
         });
     return padLeftWithOptions(options);
 }
@@ -112,13 +113,14 @@ function padLeftWithOptions(options) {
         pad = options.color(pad);
     return `${pad}${options.string}`;
 }
-export function padRight(options, width, padder, sizer) {
+export function padRight(options, width, padder, sizer, color) {
     if (typeof options === "string")
         return padRightWithOptions({
             string: options,
             width: width || 0,
             padder: padder || " ",
-            sizer: sizer || DEFAULT_SIZER
+            sizer: sizer || DEFAULT_SIZER,
+            color: color || undefined
         });
     return padRightWithOptions(options);
 }
