@@ -89,6 +89,23 @@ describe("string.ts", () => {
         });
     });
     describe("wrap", () => {
+        it("bug", (done) => {
+            const line = string.padCenter(" Centered ", 76, "<*>", string.TERM_SIZER, chalk.yellow);
+            const box = string
+                .box({
+                input: [line],
+                width: 80,
+                style: string.BOX_STYLES.O,
+                sizer: string.TERM_SIZER
+            })
+                .join("\n");
+            const expected = `\
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n\
+O ${chalk.yellow("<*><*><*><*><*><*><*><*><*><*><*>")} Centered ${chalk.yellow("*><*><*><*><*><*><*><*><*><*><*><")} O\n\
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO`;
+            expect(box).is.equal(expected);
+            done();
+        });
         it("color", (done) => {
             const lorem = [
                 "This is a test. This is a test. This is a test.",

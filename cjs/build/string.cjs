@@ -202,22 +202,12 @@
             // (expand cursor)
             let unrendered = 0;
             if (sizer.open) {
-                for (let i = last; i < cursor; i++) {
+                for (let i = last; i <= cursor; i++) {
                     if (options.string[i] === sizer.open) {
                         do {
                             cursor++;
                             unrendered++;
                         } while (options.string[i++] !== sizer.close);
-                    }
-                }
-            }
-            // if the breakpoint character is not rendered, skip as many unrendered characters as we can
-            if (sizer.open) {
-                while (options.string[cursor] === sizer.open) {
-                    while (cursor < options.string.length &&
-                        options.string[cursor] !== sizer.close) {
-                        cursor++;
-                        unrendered++;
                     }
                 }
             }
