@@ -151,7 +151,7 @@ describe("string.ts", () => {
 	describe("wrap", () => {
 		it("bug", (done) => {
 			const line = string.padCenter(
-				" Centered ",
+				chalk.green(" Centered "),
 				76,
 				"<*>",
 				string.TERM_SIZER,
@@ -167,9 +167,9 @@ describe("string.ts", () => {
 				.join("\n");
 			const expected = `\
 OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n\
-O ${chalk.yellow("<*><*><*><*><*><*><*><*><*><*><*>")} Centered ${chalk.yellow(
-				"*><*><*><*><*><*><*><*><*><*><*><"
-			)} O\n\
+O ${chalk.yellow("<*><*><*><*><*><*><*><*><*><*><*>")}${chalk.green(
+				" Centered "
+			)}${chalk.yellow("*><*><*><*><*><*><*><*><*><*><*><")} O\n\
 OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO`;
 
 			expect(box).is.equal(expected);

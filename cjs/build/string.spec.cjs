@@ -127,7 +127,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
         });
         describe("wrap", () => {
             it("bug", (done) => {
-                const line = string.padCenter(" Centered ", 76, "<*>", string.TERM_SIZER, chalk_1.default.yellow);
+                const line = string.padCenter(chalk_1.default.green(" Centered "), 76, "<*>", string.TERM_SIZER, chalk_1.default.yellow);
                 const box = string
                     .box({
                     input: [line],
@@ -138,7 +138,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
                     .join("\n");
                 const expected = `\
 OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n\
-O ${chalk_1.default.yellow("<*><*><*><*><*><*><*><*><*><*><*>")} Centered ${chalk_1.default.yellow("*><*><*><*><*><*><*><*><*><*><*><")} O\n\
+O ${chalk_1.default.yellow("<*><*><*><*><*><*><*><*><*><*><*>")}${chalk_1.default.green(" Centered ")}${chalk_1.default.yellow("*><*><*><*><*><*><*><*><*><*><*><")} O\n\
 OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO`;
                 (0, chai_1.expect)(box).is.equal(expected);
                 done();

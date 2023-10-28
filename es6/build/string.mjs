@@ -156,7 +156,7 @@ function padCenterWithOptions(options) {
     const psize = options.width - csize;
     if (psize < 1)
         return options.string;
-    const tpad = padder.repeat(Math.ceil(options.width / sizer.size(padder)));
+    const tpad = padder.repeat(Math.ceil(options.width / padder.length));
     const lsize = psize % 2 ? Math.floor(psize / 2) : psize / 2;
     const rsize = psize % 2 ? Math.floor(psize / 2) + 1 : psize / 2;
     let lpad = tpad.slice(0, lsize); // this is why you should avoid using colors in padders and stick to color option
@@ -188,10 +188,13 @@ function wrapWithOptions(options) {
         if (sizer.open) {
             for (let i = last; i <= cursor; i++) {
                 if (options.string[i] === sizer.open) {
-                    do {
+                    while (true) {
                         cursor++;
                         unrendered++;
-                    } while (options.string[i++] !== sizer.close);
+                        if (options.string[i] === sizer.close)
+                            break; // account for closer and then end
+                        i++; // keep searching
+                    }
                 }
             }
         }
