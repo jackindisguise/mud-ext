@@ -2,7 +2,7 @@
   "name": "mud-ext",
   "version": "2.4.3",
   "description": "Provides useful functions for text MUDs.",
-  "typings": "es6/build/index.d.ts",
+  "typings": "es6/build/index.d.mts",
   "exports": {
     ".": [
       {
@@ -40,11 +40,9 @@
   "scripts": {
     "clean": "node clean.cjs",
     "prep": "node README2test.cjs",
-    "make": "npm run clean && npm run prep && npm run prettier && npm run lint && npm run compile && npm test && npm run docs",
+    "make": "npm run clean && npm run prep && npm run prettier && npm run compile && npm test && npm run docs",
     "compile": "npx tsc -p es6 && npx tsc -p cjs && npm run fix",
     "prettier": "npx prettier **/*.ts **/*.cjs --write",
-    "lint": "npx eslint .",
-    "lint-fix": "npx eslint . --fix",
     "fix": "cd es6 && node fix.cjs && cd ../cjs && node fix.cjs",
     "test": "npx mocha es6/build && npx mocha cjs/build && npx mocha README.spec.cjs",
     "docs": "npx typedoc index.ts"
@@ -66,7 +64,7 @@
     "mocha": "^10.2.0",
     "prettier": "^3.0.3",
     "typedoc": "^0.25.2",
-    "typescript": "^5.2.2",
+    "typescript": "^5.4.5",
     "typescript-eslint": "^0.0.1-alpha.0"
   },
   "repository": {
