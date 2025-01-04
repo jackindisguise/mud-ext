@@ -1,4 +1,4 @@
-/// <reference types="node" />
+/// <reference types="node" resolution-mode="require"/>
 import { EventEmitter } from "events";
 export declare class Timer extends EventEmitter {
     protected startTimestamp?: number;

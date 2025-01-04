@@ -1,4 +1,4 @@
-import * as string from "./string.mjs";
+import * as string from "./string.js";
 import { expect } from "chai";
 import chalk from "chalk";
 describe("string.ts", () => {

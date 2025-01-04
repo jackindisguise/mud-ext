@@ -5,8 +5,9 @@ const rule = /(.*?)\r?\n```javascript\r?\n(.*?)\r?\n```/gms;
 let result;
 const output = [
 	"// include the compiled javascript plz",
-	'const {string, array, number} = require("./cjs/build/index.cjs");',
+	'const {string, array, number} = require("./build/index.cjs");',
 	'const {assert} = require("chai");',
+	'const {it, describe} = require("node:test");',
 	'describe("README.md", ()=>{'
 ];
 const ignore = ["Supports both CJS and ES6 import style."];
@@ -25,12 +26,11 @@ while ((result = rule.exec(data))) {
 	if (ignore.includes(title)) continue;
 	const lines = result[2].split(/\r?\n/g);
 	output.push(`
-it("${title}", (done)=>{
+it("${title}", ()=>{
 ${lines.join("\r\n")}
-done();
 });`);
 }
 
 output.push("});");
 
-fs.writeFileSync("README.spec.cjs", output.join("\n"));
+fs.writeFileSync("README.test.cjs", output.join("\n"));

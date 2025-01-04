@@ -1,4 +1,4 @@
-import { randomInt } from "./number.mjs";
+import { randomInt } from "./number.js";
 /**
  * Pick an element from a set of options.
  * @param options

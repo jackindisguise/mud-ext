@@ -7,7 +7,7 @@ export class Calendar {
 		this.days = days;
 	}
 
-	private _secondsPerYear: number;
+	private _secondsPerYear?: number;
 	getSecondsPerYear() {
 		if (this._secondsPerYear) return this._secondsPerYear;
 		let time = 0;
@@ -15,11 +15,11 @@ export class Calendar {
 		return (this._secondsPerYear = time);
 	}
 
-	getYear(timestamp) {
+	getYear(timestamp: number) {
 		return Math.floor(timestamp / this.getSecondsPerYear());
 	}
 
-	getMonthOfYear(timestamp) {
+	getMonthOfYear(timestamp: number) {
 		let day = this.getDayOfYear(timestamp);
 		for (let i = 0; i < this.months.length; i++) {
 			const month = this.months[i];
@@ -28,13 +28,13 @@ export class Calendar {
 		}
 	}
 
-	getDayOfYear(timestamp) {
+	getDayOfYear(timestamp: number) {
 		const kotoshi = timestamp % this.getSecondsPerYear();
 		const day = 60 * 60 * 24;
 		return Math.floor(kotoshi / day);
 	}
 
-	getDayOfMonth(timestamp) {
+	getDayOfMonth(timestamp: number) {
 		let day = this.getDayOfYear(timestamp);
 		for (let i = 0; i < this.months.length; i++) {
 			const month = this.months[i];
@@ -43,18 +43,18 @@ export class Calendar {
 		}
 	}
 
-	getHourOfDay(timestamp) {
+	getHourOfDay(timestamp: number) {
 		const thisDay = timestamp % (60 * 60 * 24);
 		const hour = 60 * 60;
 		return Math.floor(thisDay / hour);
 	}
 
-	getMinute(timestamp) {
+	getMinute(timestamp: number) {
 		const thisHour = timestamp % (60 * 60);
 		return Math.floor(thisHour / 60);
 	}
 
-	getSecond(timestamp) {
+	getSecond(timestamp: number) {
 		return Math.floor(timestamp % 60);
 	}
 }

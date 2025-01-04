@@ -1,82 +1,57 @@
 {
-  "name": "mud-ext",
-  "version": "2.6.0",
-  "description": "Provides useful functions for text MUDs.",
-  "typings": "es6/build/index.d.mts",
-  "exports": {
-    ".": [
-      {
-        "import": "./es6/build/index.mjs",
-        "require": "./cjs/build/index.cjs",
-        "default": "./cjs/build/index.cjs"
-      },
-      "./cjs/build/index.cjs"
-    ],
-    "./string": [
-      {
-        "import": "./es6/build/string.mjs",
-        "require": "./cjs/build/string.cjs",
-        "default": "./cjs/build/string.cjs"
-      },
-      "./cjs/build/string.cjs"
-    ],
-    "./number": [
-      {
-        "import": "./es6/build/number.mjs",
-        "require": "./cjs/build/number.cjs",
-        "default": "./cjs/build/number.cjs"
-      },
-      "./cjs/build/number.cjs"
-    ],
-    "./array": [
-      {
-        "import": "./es6/build/array.mjs",
-        "require": "./cjs/build/array.cjs",
-        "default": "./cjs/build/array.cjs"
-      },
-      "./cjs/build/array.cjs"
-    ]
-  },
-  "scripts": {
-    "clean": "node clean.cjs",
-    "prep": "node README2test.cjs",
-    "make": "npm run clean && npm run prep && npm run prettier && npm run compile && npm test && npm run docs",
-    "compile": "npx tsc -p es6 && npx tsc -p cjs && npm run fix",
-    "prettier": "npx prettier **/*.ts **/*.cjs --write",
-    "fix": "cd es6 && node fix.cjs && cd ../cjs && node fix.cjs",
-    "test": "npx mocha es6/build && npx mocha cjs/build && npx mocha README.spec.cjs",
-    "docs": "npx typedoc index.ts"
-  },
-  "author": "jackindisguise",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/chai": "^4.3.6",
-    "@types/mocha": "^10.0.2",
-    "@types/node": "^20.8.3",
-    "@typescript-eslint/eslint-plugin": "^6.7.4",
-    "@typescript-eslint/parser": "^6.7.4",
-    "accurate-intervals": "^1.1.4",
-    "chai": "^4.3.10",
-    "chalk": "^4.1.2",
-    "eslint": "^8.50.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "mocha": "^10.2.0",
-    "prettier": "^3.0.3",
-    "typedoc": "^0.25.2",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^0.0.1-alpha.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jackindisguise/mud-ext.git"
-  },
-  "keywords": [
-    "mud",
-    "text"
-  ],
-  "bugs": {
-    "url": "https://github.com/jackindisguise/mud-ext/issues"
-  },
-  "homepage": "https://github.com/jackindisguise/mud-ext#readme"
+	"name": "mud-ext",
+	"version": "2.6.0",
+	"description": "Common tools I use, mostly for MUDs.",
+	"type": "module",
+	"main": "./build/index.cjs",
+	"module": "./build/index.mjs",
+	"types": "./build/index.d.ts",
+	"exports": {
+		"types": "./build/index.d.ts",
+		"import": "./build/index.mjs",
+		"require": "./build/index.cjs"
+	},
+	"scripts": {
+		"prep": "node README2test.cjs",
+		"build": "tsc && npm run build:mjs && npm run build:cjs",
+		"build:mjs": "esbuild build/index.js --bundle --platform=node --target=es6 --format=esm --outfile=build/index.mjs",
+		"build:cjs": "esbuild build/index.js --bundle --platform=node --target=node18 --format=cjs --outfile=build/index.cjs",
+		"docs": "npx typedoc",
+		"test": "npx mocha build/*.spec.js",
+		"deploy": "npm run build && npm run docs",
+		"release": "npm run deploy && npx standard-version"
+	},
+	"author": "jackindisguise",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/chai": "^4.3.6",
+		"@types/mocha": "^10.0.2",
+		"@types/node": "^20.8.3",
+		"@typescript-eslint/eslint-plugin": "^6.7.4",
+		"@typescript-eslint/parser": "^6.7.4",
+		"accurate-intervals": "github:jackindisguise/accurate-intervals",
+		"chai": "^4.3.10",
+		"chalk": "^4.1.2",
+		"esbuild": "^0.24.2",
+		"eslint": "^8.50.0",
+		"eslint-config-prettier": "^9.0.0",
+		"eslint-plugin-prettier": "^5.0.0",
+		"mocha": "^10.2.0",
+		"prettier": "^3.0.3",
+		"typedoc": "^0.25.2",
+		"typescript": "^5.4.5",
+		"typescript-eslint": "^0.0.1-alpha.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jackindisguise/mud-ext.git"
+	},
+	"keywords": [
+		"mud",
+		"text"
+	],
+	"bugs": {
+		"url": "https://github.com/jackindisguise/mud-ext/issues"
+	},
+	"homepage": "https://github.com/jackindisguise/mud-ext#readme"
 }

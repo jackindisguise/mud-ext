@@ -123,7 +123,7 @@ export declare function pad(options: PadWithSideOptions): string;
  * @param sizer A custom function for determining the size of the provided string.
  * @param color A custom function for adding unrendered color codes to the padding.
  */
-export declare function pad(string: string, width: number, side: PAD_SIDE, padder?: string, sizer?: Sizer, color?: StringTransformer): any;
+export declare function pad(string: string, width: number, side: PAD_SIDE, padder?: string, sizer?: Sizer, color?: StringTransformer): string;
 /**
  * Pad a string to the given size on the left.
  * @param options The padding options.

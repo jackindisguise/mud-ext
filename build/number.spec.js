@@ -1,4 +1,4 @@
-import * as number from "./number.mjs";
+import * as number from "./number.js";
 import { expect, assert } from "chai";
 describe("number.ts", () => {
     it("lerp", (done) => {

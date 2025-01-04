@@ -209,7 +209,7 @@ export function pad(
 	padder?: string,
 	sizer?: Sizer,
 	color?: StringTransformer
-);
+): string;
 export function pad(
 	options: PadWithSideOptions | string,
 	width?: number,
