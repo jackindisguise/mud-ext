@@ -1,23 +1,22 @@
 import * as number from "./number.js";
-import { expect, assert } from "chai";
+import { equal, ok } from "assert/strict";
+import { describe, it } from "node:test";
 describe("number.ts", () => {
-    it("lerp", (done) => {
-        expect(number.lerp(0, 100, 0.5)).is.equal(50);
-        expect(number.lerp(-50, 50, 0.5)).is.equal(0);
-        done();
+    it("lerp", () => {
+        equal(number.lerp(0, 100, 0.5), 50);
+        equal(number.lerp(-50, 50, 0.5), 0);
     });
     describe("randomInt", () => {
-        it("low<=result<=high", (done) => {
+        it("low<=result<=high", () => {
             const tests = 10000;
             const low = 100;
             const high = 500;
             for (let i = 0; i < tests; i++) {
                 const result = number.randomInt(low, high);
-                assert(low <= result && result <= high);
+                ok(low <= result && result <= high);
             }
-            done();
         });
-        it("full range", (done) => {
+        it("full range", () => {
             const tests = 10000;
             const low = 10;
             const high = 20;
@@ -29,10 +28,9 @@ describe("number.ts", () => {
                     continue;
                 results.push(result);
             }
-            expect(results.length).is.equal(range);
-            done();
+            equal(results.length, range);
         });
-        it("reliable distribution", (done) => {
+        it("reliable distribution", () => {
             const tests = 100000;
             const low = 1;
             const high = 5;
@@ -47,30 +45,35 @@ describe("number.ts", () => {
                     results[result - low] = 1;
             }
             for (let i = low; i <= high; i++)
-                expect(results[i - low]).is.within(expectedDistribution * 0.95, expectedDistribution * 1.05);
-            done();
+                ok(results[i - low] >= expectedDistribution * 0.95 &&
+                    results[i - low] <= expectedDistribution * 1.05);
         });
     });
-    it("roll", (done) => {
+    it("roll", () => {
         const tests = 10000;
-        for (let i = 0; i < tests; i++)
-            expect(number.roll(2, 100)).is.within(2, 200);
-        for (let i = 0; i < tests; i++)
-            expect(number.roll(2, 100, 5)).is.within(7, 205);
-        for (let i = 0; i < tests; i++)
-            expect(number.roll(2, 100, -5)).is.within(-3, 195);
-        done();
+        for (let i = 0; i < tests; i++) {
+            let x = number.roll(2, 100);
+            ok(x >= 2 && x <= 200);
+        }
+        for (let i = 0; i < tests; i++) {
+            let x = number.roll(2, 100, 5);
+            ok(x >= 7 && x <= 205);
+        }
+        for (let i = 0; i < tests; i++) {
+            let x = number.roll(2, 100, -5);
+            ok(x >= -3 && x <= 195);
+        }
     });
-    it("actualRoll", (done) => {
+    it("actualRoll", () => {
         const die = 2;
         const sides = 6;
         const tests = 10000;
         for (let i = 0; i < tests; i++) {
             const results = number.actualRoll(die, sides);
             for (const result of results)
-                expect(result).is.within(1, sides);
-            expect(results.reduce((sum, a) => (sum += a), 0)).is.within(die, die + die * sides);
+                ok(result >= 1 && result <= sides);
+            let x = results.reduce((sum, a) => (sum += a), 0);
+            ok(x >= die && x <= die + die * sides);
         }
-        done();
     });
 });

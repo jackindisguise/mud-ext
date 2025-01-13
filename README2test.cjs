@@ -6,9 +6,9 @@ let result;
 const output = [
 	"// include the compiled javascript plz",
 	'const {string, array, number} = require("./build/index.cjs");',
-	'const {assert} = require("chai");',
-	'const {it, describe} = require("node:test");',
-	'describe("README.md", ()=>{'
+	'const assert = require("assert/strict");',
+	'const {test, suite} = require("node:test");',
+	'suite("README.md", ()=>{'
 ];
 const ignore = ["Supports both CJS and ES6 import style."];
 while ((result = rule.exec(data))) {
@@ -26,7 +26,7 @@ while ((result = rule.exec(data))) {
 	if (ignore.includes(title)) continue;
 	const lines = result[2].split(/\r?\n/g);
 	output.push(`
-it("${title}", ()=>{
+test("${title}", ()=>{
 ${lines.join("\r\n")}
 });`);
 }

@@ -12,13 +12,13 @@
 		"require": "./build/index.cjs"
 	},
 	"scripts": {
-		"prep": "node README2test.cjs",
 		"build": "tsc && npm run build:mjs && npm run build:cjs",
 		"build:mjs": "esbuild build/index.js --bundle --platform=node --target=es6 --format=esm --outfile=build/index.mjs",
 		"build:cjs": "esbuild build/index.js --bundle --platform=node --target=node18 --format=cjs --outfile=build/index.cjs",
 		"docs": "npx typedoc",
-		"test": "npx mocha build/*.spec.js",
-		"deploy": "npm run build && npm run docs",
+		"pretest": "node README2test.cjs",
+		"test": "node --test",
+		"deploy": "npm run build && npm run test && npm run docs",
 		"release": "npm run deploy && npx standard-version"
 	},
 	"author": "jackindisguise",

@@ -33,9 +33,9 @@ let opts = { string: "CAKE", width: 10, padder: "-" };
 let pl = string.padLeft(opts);
 let pc = string.padCenter(opts);
 let pr = string.padRight(opts);
-assert(pl === "------CAKE");
-assert(pc === "---CAKE---");
-assert(pr === "CAKE------");
+assert.equal(pl, "------CAKE");
+assert.equal(pc, "---CAKE---");
+assert.equal(pr, "CAKE------");
 ```
 There is also an alias for legacy reasons and occasionally convenience.
 ```javascript
@@ -43,9 +43,9 @@ let opts = { string: "CAKE", width: 10, padder: "-" };
 let pl = string.pad({ ...opts, side: string.PAD_SIDE.LEFT });
 let pc = string.pad({ ...opts, side: string.PAD_SIDE.CENTER });
 let pr = string.pad({ ...opts, side: string.PAD_SIDE.RIGHT });
-assert(pl === "------CAKE");
-assert(pc === "---CAKE---");
-assert(pr === "CAKE------");
+assert.equal(pl, "------CAKE");
+assert.equal(pc, "---CAKE---");
+assert.equal(pr, "CAKE------");
 ```
 
 ### Arbitrary-length padder strings.
@@ -53,8 +53,8 @@ assert(pr === "CAKE------");
 let opts = { string: "CAKE", padder: "[]" };
 let evenPadding = string.padCenter({ ...opts, width: 20 });
 let oddPadding = string.padCenter({ ...opts, width: 14 });
-assert(evenPadding === "[][][][]CAKE[][][][]");
-assert(oddPadding === "[][][CAKE][][]");
+assert.equal(evenPadding, "[][][][]CAKE[][][][]");
+assert.equal(oddPadding, "[][][CAKE][][]");
 ```
 
 ### Centered string padders have a consistent pattern.
@@ -66,9 +66,9 @@ let strB = "BIG BOIS";
 let stupidPadderx2 = stupidPadder.repeat(2); // 28 characters long
 let stupidPaddingA = string.padCenter({ ...opts, string: strA });
 let stupidPaddingB = string.padCenter({ ...opts, string: strB });
-assert(stupidPadderx2 === "[]{}()<>(){}[][]{}()<>(){}[]"); // the base padder string that gets generated
-assert(stupidPaddingA === "[]{}()<>(){}CAKE{}()<>(){}[]"); // CAKE gets injected into the middle of the base padder string
-assert(stupidPaddingB === "[]{}()<>()BIG BOIS()<>(){}[]"); // pattern never changes
+assert.equal(stupidPadderx2, "[]{}()<>(){}[][]{}()<>(){}[]"); // the base padder string that gets generated
+assert.equal(stupidPaddingA, "[]{}()<>(){}CAKE{}()<>(){}[]"); // CAKE gets injected into the middle of the base padder string
+assert.equal(stupidPaddingB, "[]{}()<>()BIG BOIS()<>(){}[]"); // pattern never changes
 ```
 
 ### Handle unrendered character data.
@@ -78,7 +78,7 @@ const chalk = require("chalk"); // version 4.x supports CJS require
 let colored = chalk.red("This is red!"); // uses terminal color characters to make this string red
 let padded = string.padCenter({string: colored, width:40, padder:"[]", sizer:string.TERM_SIZER}); // string.TERM_SIZER respects terminal color characters
 let expected = `[][][][][][][]${chalk.red("This is red!")}[][][][][][][]`;
-assert(expected === padded);
+assert.equal(expected, padded);
 ```
 
 #### HTML-style color coding.
@@ -86,7 +86,7 @@ assert(expected === padded);
 let colored = "<font color='red'>This is red!</font>"; // uses HTML tags to add color to string
 let padded = string.padCenter({string: colored, width:40, padder:"[]", sizer:string.HTML_SIZER}); // string.HTML_SIZER respects HTML tags
 let expected = `[][][][][][][]<font color='red'>This is red!</font>[][][][][][][]`;
-assert(expected === padded);
+assert.equal(expected, padded);
 ```
 
 ### Wordwrap on strings.
@@ -114,7 +114,7 @@ Donec tincidunt vel magna non pharetra.";
 
 // wrap it up
 let wrapped = string.wrap({ string: bigString, width: 50 }).join("\n");
-assert(wrapped === expected);
+assert.equal(wrapped, expected);
 ```
 
 ### Generate boxes.
@@ -145,7 +145,7 @@ const expected =
 +----------------------------+";
 
 // check it
-assert(generated === expected);
+assert.equal(generated, expected);
 ```
 
 #### Complex boxes.
@@ -179,23 +179,23 @@ const expected =
 ]]==========================[[";
 
 // check it
-assert(generated === expected);
+assert.equal(generated, expected);
 ```
 
 ### Check for autocompletion.
 ```javascript
 const partial = "sel";
 const complete = "selling cake";
-assert(string.autocomplete(partial, complete) === true);
+assert.ok(string.autocomplete(partial, complete));
 ```
 
 ### Check for keyword matches.
 ```javascript
 const name = "the king of england loric";
-assert(string.matchKeywords("loric", name) === true);
-assert(string.matchKeywords("king loric", name) === true);
-assert(string.matchKeywords("t k o e l", name) === true);
-assert(string.matchKeywords("king john", name) === false);
+assert.ok(string.matchKeywords("loric", name));
+assert.ok(string.matchKeywords("king loric", name));
+assert.ok(string.matchKeywords("t k o e l", name));
+assert.ok(!string.matchKeywords("king john", name));
 ```
 
 ## Number functions
@@ -203,26 +203,26 @@ assert(string.matchKeywords("king john", name) === false);
 ```javascript
 const {number} = require("mud-ext");
 const interpolated = number.lerp(0, 100, 0.5);
-assert(interpolated === 50);
+assert.equal(interpolated, 50);
 ```
 Not super useful for MUDs in particular, but it is generally useful.
 ### Random integer generation.
 ```javascript
 const int = number.randomInt(1, 100);
-assert(1 <= int && int <= 100);
+assert.ok(1 <= int && int <= 100);
 ```
 Generates numbers within the given range inclusively.
 
 ### Roll virtual die and return the sum.
 ```javascript
 const result = number.roll(6,6);
-assert(6 <= result && result <= 6*6);
+assert.ok(6 <= result && result <= 6*6);
 ```
 
 ### Roll vitual die and return the result of each roll.
 ```javascript
 const results = number.actualRoll(6, 6);
-results.forEach((a) => assert(1 <= a && a <= 6));
+results.forEach((a) => assert.ok(1 <= a && a <= 6));
 ```
 
 ## Array functions
@@ -230,7 +230,7 @@ results.forEach((a) => assert(1 <= a && a <= 6));
 ```javascript
 const options = ["You smell.", "Go to heck.", "Rawr XD."];
 const result = array.pick(...options);
-assert(options.includes(result)); // i don't really know how to demonstrate this any other way X|
+assert.ok(options.includes(result)); // i don't really know how to demonstrate this any other way X|
 ```
 
 ### Replace elements in an array.
@@ -239,5 +239,5 @@ let str = "This is serious gaming.";
 let split = str.split(" "); // ["This", "is", "serious", "gaming."]
 let replaced = array.replace(split, "serious", "major-league"); // ["This", "is", "major-league", "gaming."]
 let joined = replaced.join(" ");
-assert(joined === "This is major-league gaming.");
+assert.equal(joined, "This is major-league gaming.");
 ```

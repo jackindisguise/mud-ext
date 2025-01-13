@@ -1,137 +1,139 @@
 import * as string from "./string.js";
-import { expect } from "chai";
+import { equal, ok } from "assert/strict";
+import { describe, it } from "node:test";
 import chalk from "chalk";
 
 describe("string.ts", () => {
 	describe("padders", () => {
-		it("pad", (done) => {
-			expect(
-				string.pad({ string: "test", width: 10, side: string.PAD_SIDE.LEFT })
-			).is.equal("      test");
-			expect(string.pad("test", 10, string.PAD_SIDE.LEFT, "-")).is.equal(
-				"------test"
+		it("pad", () => {
+			equal(
+				string.pad({ string: "test", width: 10, side: string.PAD_SIDE.LEFT }),
+				"      test"
 			);
-			expect(string.pad("50", 10, string.PAD_SIDE.LEFT, "0")).is.equal(
-				"0000000050"
+			equal(string.pad("test", 10, string.PAD_SIDE.LEFT, "-"), "------test");
+			equal(string.pad("50", 10, string.PAD_SIDE.LEFT, "0"), "0000000050");
+			equal(
+				string.pad({ string: "test", width: 10, side: string.PAD_SIDE.RIGHT }),
+				"test      "
 			);
-			expect(
-				string.pad({ string: "test", width: 10, side: string.PAD_SIDE.RIGHT })
-			).is.equal("test      ");
-			expect(
+			equal(
 				string.pad({
 					string: "test",
 					width: 10,
 					side: string.PAD_SIDE.RIGHT,
 					padder: "<>{}"
-				})
-			).is.equal("test<>{}<>");
-			expect(
+				}),
+				"test<>{}<>"
+			);
+			equal(
 				string.pad({
 					string: "test",
 					width: 10,
 					side: string.PAD_SIDE.RIGHT,
 					padder: "-"
-				})
-			).is.equal("test------");
-			expect(
+				}),
+				"test------"
+			);
+			equal(
 				string.pad({
 					string: "50.",
 					width: 10,
 					side: string.PAD_SIDE.RIGHT,
 					padder: "0"
-				})
-			).is.equal("50.0000000");
-			expect(
-				string.pad({ string: "test", side: string.PAD_SIDE.CENTER, width: 10 })
-			).is.equal("   test   ");
-			expect(
+				}),
+				"50.0000000"
+			);
+			equal(
+				string.pad({ string: "test", side: string.PAD_SIDE.CENTER, width: 10 }),
+				"   test   "
+			);
+			equal(
 				string.pad({
 					string: "test",
 					width: 10,
 					side: string.PAD_SIDE.CENTER,
 					padder: "<>"
-				})
-			).is.equal("<><test><>");
-			expect(
+				}),
+				"<><test><>"
+			);
+			equal(
 				string.pad({
 					string: "test",
 					width: 80,
 					side: string.PAD_SIDE.CENTER,
 					padder: "<->"
-				})
-			).is.equal(
+				}),
 				"<-><-><-><-><-><-><-><-><-><-><-><-><-test<-><-><-><-><-><-><-><-><-><-><-><-><-"
 			);
-			expect(
+			equal(
 				string.pad({
 					string: "test",
 					width: 10,
 					side: string.PAD_SIDE.CENTER,
 					padder: "-"
-				})
-			).is.equal("---test---");
-			expect(
+				}),
+				"---test---"
+			);
+			equal(
 				string.pad({
 					string: "test",
 					width: 11,
 					side: string.PAD_SIDE.CENTER,
 					padder: "-"
-				})
-			).is.equal("---test----");
-			done();
+				}),
+				"---test----"
+			);
 		});
 
-		it("padLeft", (done) => {
-			expect(string.padLeft({ string: "test", width: 10 })).is.equal(
-				"      test"
+		it("padLeft", () => {
+			equal(string.padLeft({ string: "test", width: 10 }), "      test");
+			equal(
+				string.padLeft({ string: "test", width: 10, padder: "-" }),
+				"------test"
 			);
-			expect(
-				string.padLeft({ string: "test", width: 10, padder: "-" })
-			).is.equal("------test");
-			expect(string.padLeft({ string: "50", width: 10, padder: "0" })).is.equal(
+			equal(
+				string.padLeft({ string: "50", width: 10, padder: "0" }),
 				"0000000050"
 			);
-			done();
 		});
 
-		it("padRight", (done) => {
-			expect(string.padRight({ string: "test", width: 10 })).is.equal(
-				"test      "
+		it("padRight", () => {
+			equal(string.padRight({ string: "test", width: 10 }), "test      ");
+			equal(
+				string.padRight({ string: "test", width: 10, padder: "<>{}" }),
+				"test<>{}<>"
 			);
-			expect(
-				string.padRight({ string: "test", width: 10, padder: "<>{}" })
-			).is.equal("test<>{}<>");
-			expect(
-				string.padRight({ string: "test", width: 10, padder: "-" })
-			).is.equal("test------");
-			expect(
-				string.padRight({ string: "50.", width: 10, padder: "0" })
-			).is.equal("50.0000000");
-			done();
+			equal(
+				string.padRight({ string: "test", width: 10, padder: "-" }),
+				"test------"
+			);
+			equal(
+				string.padRight({ string: "50.", width: 10, padder: "0" }),
+				"50.0000000"
+			);
 		});
 
-		it("padCenter", (done) => {
-			expect(string.padCenter({ string: "test", width: 10 })).is.equal(
-				"   test   "
+		it("padCenter", () => {
+			equal(string.padCenter({ string: "test", width: 10 }), "   test   ");
+			equal(
+				string.padCenter({ string: "test", width: 10, padder: "<>" }),
+				"<><test><>"
 			);
-			expect(
-				string.padCenter({ string: "test", width: 10, padder: "<>" })
-			).is.equal("<><test><>");
-			expect(
-				string.padCenter({ string: "test", width: 80, padder: "<->" })
-			).is.equal(
+			equal(
+				string.padCenter({ string: "test", width: 80, padder: "<->" }),
 				"<-><-><-><-><-><-><-><-><-><-><-><-><-test<-><-><-><-><-><-><-><-><-><-><-><-><-"
 			);
-			expect(
-				string.padCenter({ string: "test", width: 10, padder: "-" })
-			).is.equal("---test---");
-			expect(
-				string.padCenter({ string: "test", width: 11, padder: "-" })
-			).is.equal("---test----");
-			done();
+			equal(
+				string.padCenter({ string: "test", width: 10, padder: "-" }),
+				"---test---"
+			);
+			equal(
+				string.padCenter({ string: "test", width: 11, padder: "-" }),
+				"---test----"
+			);
 		});
 
-		it("color", (done) => {
+		it("color", () => {
 			const str = chalk.red("this is a test");
 			const padded = string.padCenter({
 				string: str,
@@ -143,13 +145,12 @@ describe("string.ts", () => {
 			const expected = `${chalk.blue("------------------")}${str}${chalk.blue(
 				"------------------"
 			)}`;
-			expect(expected).is.equal(padded);
-			done();
+			equal(expected, padded);
 		});
 	});
 
 	describe("wrap", () => {
-		it("bug", (done) => {
+		it("bug", () => {
 			const line = string.padCenter(
 				chalk.green(" Centered "),
 				76,
@@ -172,11 +173,10 @@ O ${chalk.yellow("<*><*><*><*><*><*><*><*><*><*><*>")}${chalk.green(
 			)}${chalk.yellow("*><*><*><*><*><*><*><*><*><*><*><")} O\n\
 OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO`;
 
-			expect(box).is.equal(expected);
-			done();
+			equal(box, expected);
 		});
 
-		it("color", (done) => {
+		it("color", () => {
 			const lorem = [
 				"This is a test. This is a test. This is a test.",
 				`This is a ${chalk.magenta("test")}. This is a ${chalk.yellow(
@@ -194,10 +194,9 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 			const wrapped = string
 				.wrap({ string: lorem.join(" "), width: 15, sizer: string.TERM_SIZER })
 				.join("\n");
-			expect(wrapped).is.equal(expected);
-			done();
+			equal(wrapped, expected);
 		});
-		it("ideal", (done) => {
+		it("ideal", () => {
 			const lorem = [
 				"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
 				"Vestibulum mollis tortor a risus varius, sed euismod lectus ultricies.",
@@ -219,11 +218,10 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 				"magna non pharetra. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
 				"Vestibulum dolor magna, iaculis in velit eu, fermentum tincidunt metus."
 			].join("-");
-			expect(limited).is.equal(expected);
-			done();
+			equal(limited, expected);
 		});
 
-		it("long", (done) => {
+		it("long", () => {
 			const lorem = "a".repeat(80) + "b".repeat(80);
 			const limited = string.wrap({ string: lorem, width: 80 }).join("*");
 			const expected = [
@@ -232,11 +230,10 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 				"abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb-",
 				"bb"
 			].join("*");
-			expect(limited).is.equal(expected);
-			done();
+			equal(limited, expected);
 		});
 
-		it("short and long", (done) => {
+		it("short and long", () => {
 			const lorem =
 				"a aa aaa aaaa aaaaa aaaaaa aaaaaaa aaaaaaaa aaaaaaaaa aaaaaaaaaa aa aaaaaaaaa";
 			const limited = string.wrap({ string: lorem, width: 10 }).join("*");
@@ -251,13 +248,12 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 				"aa aaaaaa-",
 				"aaa"
 			].join("*");
-			expect(limited).is.equal(expected);
-			done();
+			equal(limited, expected);
 		});
 	});
 
 	describe("box", () => {
-		it("color", (done) => {
+		it("color", () => {
 			const style: string.BoxStyle = {
 				...string.BOX_STYLES.PLAIN,
 				titleBorder: { left: "<", right: ">" },
@@ -280,11 +276,10 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 				"\x1B[33m+----------------------------+\x1B[39m"
 			];
 
-			expect(box.join("")).is.equal(expected.join(""));
-			done();
+			equal(box.join(""), expected.join(""));
 		});
 
-		it("color + multiline", (done) => {
+		it("color + multiline", () => {
 			const style: string.BoxStyle = {
 				...string.BOX_STYLES.PLAIN,
 				titleBorder: { left: "<", right: ">" },
@@ -312,11 +307,10 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 				"\x1B[33m+----------------------------+\x1B[39m"
 			];
 
-			expect(box.join("\n")).is.equal(expected.join("\n"));
-			done();
+			equal(box.join("\n"), expected.join("\n"));
 		});
 
-		it("weird", (done) => {
+		it("weird", () => {
 			const style: string.BoxStyle = {
 				hPadding: 2,
 				vPadding: 1,
@@ -352,11 +346,10 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 				"^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^"
 			].join("\n");
 
-			expect(generated).is.equal(expected);
-			done();
+			equal(generated, expected);
 		});
 
-		it("right-aligned (default)", (done) => {
+		it("right-aligned (default)", () => {
 			const generated = string
 				.box({
 					style: {
@@ -380,11 +373,10 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 				">>--------------------------<<"
 			].join("\n");
 
-			expect(generated).is.equal(expected);
-			done();
+			equal(generated, expected);
 		});
 
-		it("center-aligned", (done) => {
+		it("center-aligned", () => {
 			// copy rounded box style
 			const rounded = {
 				...string.BOX_STYLES.ROUNDED,
@@ -413,11 +405,10 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 				"'----------------------------'"
 			].join("\n");
 
-			expect(generated).is.equal(expected);
-			done();
+			equal(generated, expected);
 		});
 
-		it("left-aligned", (done) => {
+		it("left-aligned", () => {
 			// copy O box style
 			const obox: string.BoxStyle = {
 				...string.BOX_STYLES.O,
@@ -444,11 +435,10 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 				"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
 			].join("\n");
 
-			expect(generated).is.equal(expected);
-			done();
+			equal(generated, expected);
 		});
 
-		it("blank boxes", (done) => {
+		it("blank boxes", () => {
 			// blank-ass box
 			const blank = {
 				hAlign: string.PAD_SIDE.CENTER,
@@ -474,24 +464,21 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 				"+                            +"
 			].join("\n");
 
-			expect(generated).is.equal(expected);
-			done();
+			equal(generated, expected);
 		});
 	});
 
-	it("autocomplete", (done) => {
-		expect(string.autocomplete("", "partial")).is.true;
-		expect(string.autocomplete("p", "partial")).is.true;
-		expect(string.autocomplete("part", "partial")).is.true;
-		expect(string.autocomplete("partial", "part")).is.false;
-		done();
+	it("autocomplete", () => {
+		ok(string.autocomplete("", "partial"));
+		ok(string.autocomplete("p", "partial"));
+		ok(string.autocomplete("part", "partial"));
+		ok(!string.autocomplete("partial", "part"));
 	});
 
-	it("matchKeywords", (done) => {
-		expect(string.matchKeywords("the", "the cake is a lie")).is.true;
-		expect(string.matchKeywords("cake", "the cake is a lie")).is.true;
-		expect(string.matchKeywords("the cake", "the cake is a lie")).is.true;
-		expect(string.matchKeywords("the pie", "the cake is a lie")).is.false;
-		done();
+	it("matchKeywords", () => {
+		ok(string.matchKeywords("the", "the cake is a lie"));
+		ok(string.matchKeywords("cake", "the cake is a lie"));
+		ok(string.matchKeywords("the cake", "the cake is a lie"));
+		ok(!string.matchKeywords("the pie", "the cake is a lie"));
 	});
 });
