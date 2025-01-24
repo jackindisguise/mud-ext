@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.8.0](https://github.com/jackindisguise/mud-ext/compare/v2.7.0...v2.8.0) (2025-01-24)
+
+
+### Features
+
+* array.pick accepts a single argument as an array to pick from ([772dde7](https://github.com/jackindisguise/mud-ext/commit/772dde7047a2f016c5dacb65ca309c78ea1a7678))
+
 ## [2.7.0](https://github.com/jackindisguise/mud-ext/compare/v2.6.0...v2.7.0) (2025-01-13)
 
 
