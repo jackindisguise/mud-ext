@@ -5,6 +5,8 @@ import { randomInt } from "./number.js";
  * @returns
  */
 export function pick(...options) {
+    if (Array.isArray(options[0]))
+        options = options[0];
     return options[randomInt(0, options.length - 1)];
 }
 /**

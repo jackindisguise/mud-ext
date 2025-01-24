@@ -1,11 +1,14 @@
 import { randomInt } from "./number.js";
 
+export function pick<type>(options: type[]): type; // accepts a single array of the type, which it picks from
+export function pick<type>(...options: type[]): type; // accepts arbitrary amount of arguments of the type, which it picks from
 /**
  * Pick an element from a set of options.
  * @param options
  * @returns
  */
 export function pick<type>(...options: type[]): type {
+	if (Array.isArray(options[0])) options = options[0];
 	return options[randomInt(0, options.length - 1)];
 }
 

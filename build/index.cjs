@@ -418,6 +418,8 @@ __export(array_exports, {
   replace: () => replace
 });
 function pick(...options) {
+  if (Array.isArray(options[0]))
+    options = options[0];
   return options[randomInt(0, options.length - 1)];
 }
 function replace(array, rule, replace2) {
