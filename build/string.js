@@ -216,6 +216,34 @@ function wrapWithOptions(options) {
         let breakpoint = cursor;
         if (breakpoint >= options.string.length)
             break;
+        // avoid splitting unrendered sequences when breaking the line
+        if (sizer.open) {
+            const adjustBoundary = (bound) => {
+                if (!sizer.open)
+                    return bound;
+                for (let j = last; j < bound; j++) {
+                    if (options.string[j] === sizer.open) {
+                        // find the next unrendered token after this opener to treat the whole colored span as atomic
+                        let groupEnd = j;
+                        for (let k = j + 1; k < options.string.length; k++) {
+                            let tokenLen = 0;
+                            if (sizer.unrenderedSequenceLength)
+                                tokenLen = sizer.unrenderedSequenceLength(options.string, k);
+                            else if (options.string[k] === sizer.open)
+                                tokenLen = 1; // fallback minimal
+                            if (tokenLen > 0) {
+                                groupEnd = k + tokenLen;
+                                break;
+                            }
+                        }
+                        if (groupEnd > bound)
+                            bound = Math.min(groupEnd, options.string.length);
+                    }
+                }
+                return bound;
+            };
+            breakpoint = adjustBoundary(breakpoint);
+        }
         const mid = (cursor + unrendered + last) / 2; // search halfway between last point and current point for whitespace
         for (let i = cursor; i >= mid; i--) {
             // search for nearby whitespace

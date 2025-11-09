@@ -220,6 +220,32 @@ function wrapWithOptions(options) {
     let breakpoint = cursor;
     if (breakpoint >= options.string.length)
       break;
+    if (sizer.open) {
+      const adjustBoundary = (bound) => {
+        if (!sizer.open)
+          return bound;
+        for (let j = last; j < bound; j++) {
+          if (options.string[j] === sizer.open) {
+            let groupEnd = j;
+            for (let k = j + 1; k < options.string.length; k++) {
+              let tokenLen = 0;
+              if (sizer.unrenderedSequenceLength)
+                tokenLen = sizer.unrenderedSequenceLength(options.string, k);
+              else if (options.string[k] === sizer.open)
+                tokenLen = 1;
+              if (tokenLen > 0) {
+                groupEnd = k + tokenLen;
+                break;
+              }
+            }
+            if (groupEnd > bound)
+              bound = Math.min(groupEnd, options.string.length);
+          }
+        }
+        return bound;
+      };
+      breakpoint = adjustBoundary(breakpoint);
+    }
     const mid = (cursor + unrendered + last) / 2;
     for (let i = cursor; i >= mid; i--) {
       if ([" ", "\r", "\n", "	"].includes(options.string[i])) {

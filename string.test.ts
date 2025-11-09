@@ -188,6 +188,21 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 				}
 			};
 			const wrapped = string.wrap(lorem, 14, COLOR_SIZER);
+			equal(wrapped.join("?"), expected);
+		});
+
+		it("simple2", () => {
+			const lorem = "This is{----a test.";
+			const expected = "This is{----a test.";
+			const COLOR_SIZER = {
+				open: "{",
+				size: (str: string) => str.replace(/\{[A-Za-z]/g, "").length,
+				unrenderedSequenceLength: (str: string, i: number) => {
+					if (str[i] === "{") return 5;
+					return 0;
+				}
+			};
+			const wrapped = string.wrap(lorem, 14, COLOR_SIZER);
 			console.log(wrapped);
 			equal(wrapped.join("?"), expected);
 		});
