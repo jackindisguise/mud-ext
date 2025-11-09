@@ -76,6 +76,8 @@ export interface Sizer {
     close?: string;
     /** A function that returns only the rendered size of the given string. */
     size: StringSizer;
+    /** Optionally returns the length of an unrendered sequence starting at index i. Requires 'open' to be set. */
+    unrenderedSequenceLength?: (str: string, index: number) => number;
 }
 /** Describes how to size strings with terminal colors. */
 export declare const TERM_SIZER: Sizer;

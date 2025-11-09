@@ -213,7 +213,20 @@ function wrapWithOptions(options) {
   let cursor = options.width;
   while (cursor < options.string.length) {
     let unrendered = 0;
-    if (sizer.open) {
+    if (sizer.unrenderedSequenceLength && sizer.open) {
+      for (let i = last; i < cursor; ) {
+        if (options.string[i] === sizer.open) {
+          const len = sizer.unrenderedSequenceLength(options.string, i);
+          if (len > 0) {
+            cursor += len;
+            unrendered += len;
+            i += len;
+            continue;
+          }
+        }
+        i++;
+      }
+    } else if (sizer.open) {
       for (let i = last; i <= cursor; i++) {
         if (options.string[i] === sizer.open) {
           while (true) {

@@ -101,6 +101,22 @@ O ${chalk.yellow("<*><*><*><*><*><*><*><*><*><*><*>")}${chalk.green(" Centered "
 OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO`;
             equal(box, expected);
         });
+        it("simple", () => {
+            const lorem = "This is{----a test.";
+            const expected = "This is{----a test.";
+            const COLOR_SIZER = {
+                open: "{",
+                size: (str) => str.replace(/\{[A-Za-z]/g, "").length,
+                unrenderedSequenceLength: (str, i) => {
+                    if (str[i] === "{")
+                        return 5;
+                    return 0;
+                }
+            };
+            const wrapped = string.wrap(lorem, 14, COLOR_SIZER);
+            console.log(wrapped);
+            equal(wrapped.join("?"), expected);
+        });
         it("color", () => {
             const lorem = [
                 "This is a test. This is a test. This is a test.",

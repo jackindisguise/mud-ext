@@ -122,6 +122,9 @@ export interface Sizer {
 
 	/** A function that returns only the rendered size of the given string. */
 	size: StringSizer;
+
+	/** Optionally returns the length of an unrendered sequence starting at index i. Requires 'open' to be set. */
+	unrenderedSequenceLength?: (str: string, index: number) => number;
 }
 
 /** Describes how to size strings with terminal colors. */
@@ -447,7 +450,20 @@ function wrapWithOptions(options: WrapOptions): string[] {
 		// accomodate non-rendering elements by adding extra width to this line
 		// (expand cursor)
 		let unrendered = 0;
-		if (sizer.open) {
+		if (sizer.unrenderedSequenceLength && sizer.open) {
+			for (let i = last; i < cursor; ) {
+				if (options.string[i] === sizer.open) {
+					const len = sizer.unrenderedSequenceLength(options.string, i);
+					if (len > 0) {
+						cursor += len;
+						unrendered += len;
+						i += len;
+						continue;
+					}
+				}
+				i++;
+			}
+		} else if (sizer.open) {
 			for (let i = last; i <= cursor; i++) {
 				if (options.string[i] === sizer.open) {
 					while (true) {
