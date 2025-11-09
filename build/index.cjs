@@ -214,7 +214,7 @@ function wrapWithOptions(options) {
   while (cursor < options.string.length) {
     let unrendered = 0;
     if (sizer.unrenderedSequenceLength && sizer.open) {
-      for (let i = last; i < cursor; ) {
+      for (let i = last; i <= cursor; ) {
         if (options.string[i] === sizer.open) {
           const len = sizer.unrenderedSequenceLength(options.string, i);
           if (len > 0) {
@@ -246,7 +246,7 @@ function wrapWithOptions(options) {
       const adjustBoundary = (bound) => {
         if (!sizer.open)
           return bound;
-        for (let j = last; j < bound; j++) {
+        for (let j = last; j <= bound && j < options.string.length; j++) {
           if (options.string[j] === sizer.open) {
             let groupEnd = j;
             for (let k = j + 1; k < options.string.length; k++) {

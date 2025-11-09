@@ -186,7 +186,8 @@ function wrapWithOptions(options) {
         // (expand cursor)
         let unrendered = 0;
         if (sizer.unrenderedSequenceLength && sizer.open) {
-            for (let i = last; i < cursor;) {
+            // include the cursor index itself so we don't miss an opener that starts exactly at the boundary
+            for (let i = last; i <= cursor;) {
                 if (options.string[i] === sizer.open) {
                     const len = sizer.unrenderedSequenceLength(options.string, i);
                     if (len > 0) {
@@ -221,7 +222,9 @@ function wrapWithOptions(options) {
             const adjustBoundary = (bound) => {
                 if (!sizer.open)
                     return bound;
-                for (let j = last; j < bound; j++) {
+                // include the boundary index so that an opener starting exactly at the break
+                // is considered and the whole unrendered token is kept intact
+                for (let j = last; j <= bound && j < options.string.length; j++) {
                     if (options.string[j] === sizer.open) {
                         // find the next unrendered token after this opener to treat the whole colored span as atomic
                         let groupEnd = j;
