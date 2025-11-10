@@ -1,7 +1,34 @@
 import * as string from "./string.js";
 import { equal, ok } from "assert/strict";
 import { describe, it } from "node:test";
-import chalk from "chalk";
+import { deepEqual } from "assert";
+
+// Generic color transformation functions for testing
+const colors = {
+	red: (str: string) => `\x1B[31m${str}\x1B[39m`,
+	green: (str: string) => `\x1B[32m${str}\x1B[39m`,
+	yellow: (str: string) => `\x1B[33m${str}\x1B[39m`,
+	blue: (str: string) => `\x1B[34m${str}\x1B[39m`,
+	magenta: (str: string) => `\x1B[35m${str}\x1B[39m`,
+	cyan: (str: string) => `\x1B[36m${str}\x1B[39m`,
+	bold: (str: string) => `\x1B[1m${str}\x1B[22m`
+};
+
+// Helper to combine styles (applies modifiers first, then color, like chalk.yellow.bold)
+const combineStyles = (
+	color: (s: string) => string,
+	...modifiers: ((s: string) => string)[]
+) => {
+	return (str: string) => {
+		let result = str;
+		// Apply modifiers first (e.g., bold)
+		for (const mod of modifiers) {
+			result = mod(result);
+		}
+		// Then apply color (wraps the already-modified string)
+		return color(result);
+	};
+};
 
 describe("string.ts", () => {
 	describe("padders", () => {
@@ -134,15 +161,15 @@ describe("string.ts", () => {
 		});
 
 		it("color", () => {
-			const str = chalk.red("this is a test");
+			const str = colors.red("this is a test");
 			const padded = string.padCenter({
 				string: str,
 				width: 50,
 				padder: "-",
 				sizer: string.TERM_SIZER,
-				color: chalk.blue
+				color: colors.blue
 			});
-			const expected = `${chalk.blue("------------------")}${str}${chalk.blue(
+			const expected = `${colors.blue("------------------")}${str}${colors.blue(
 				"------------------"
 			)}`;
 			equal(expected, padded);
@@ -152,11 +179,11 @@ describe("string.ts", () => {
 	describe("wrap", () => {
 		it("bug", () => {
 			const line = string.padCenter(
-				chalk.green(" Centered "),
+				colors.green(" Centered "),
 				76,
 				"<*>",
 				string.TERM_SIZER,
-				chalk.yellow
+				colors.yellow
 			);
 			const box = string
 				.box({
@@ -168,9 +195,9 @@ describe("string.ts", () => {
 				.join("\n");
 			const expected = `\
 OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n\
-O ${chalk.yellow("<*><*><*><*><*><*><*><*><*><*><*>")}${chalk.green(
+O ${colors.yellow("<*><*><*><*><*><*><*><*><*><*><*>")}${colors.green(
 				" Centered "
-			)}${chalk.yellow("*><*><*><*><*><*><*><*><*><*><*><")} O\n\
+			)}${colors.yellow("*><*><*><*><*><*><*><*><*><*><*><")} O\n\
 OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO`;
 
 			equal(box, expected);
@@ -210,17 +237,17 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 		it("color", () => {
 			const lorem = [
 				"This is a test. This is a test. This is a test.",
-				`This is a ${chalk.magenta("test")}. This is a ${chalk.yellow(
+				`This is a ${colors.magenta("test")}. This is a ${colors.yellow(
 					"test"
-				)}. This is a ${chalk.cyan("test")}.`
+				)}. This is a ${colors.cyan("test")}.`
 			];
 			const expected = [
 				"This is a test.",
 				"This is a test.",
 				"This is a test.",
-				`This is a ${chalk.magenta("test")}.`,
-				`This is a ${chalk.yellow("test")}.`,
-				`This is a ${chalk.cyan("test")}.`
+				`This is a ${colors.magenta("test")}.`,
+				`This is a ${colors.yellow("test")}.`,
+				`This is a ${colors.cyan("test")}.`
 			].join("\n");
 			const wrapped = string
 				.wrap({ string: lorem.join(" "), width: 15, sizer: string.TERM_SIZER })
@@ -281,6 +308,40 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 			].join("*");
 			equal(limited, expected);
 		});
+
+		it("respects linebreaks", () => {
+			// Test with Unix linebreaks (\n)
+			const unixText =
+				"This is the first line.\nThis is the second line.\nThis is the third line.";
+			const unixWrapped = string.wrap({ string: unixText, width: 50 });
+			equal(unixWrapped.length, 3);
+			equal(unixWrapped[0], "This is the first line.");
+			equal(unixWrapped[1], "This is the second line.");
+			equal(unixWrapped[2], "This is the third line.");
+
+			// Test with Windows linebreaks (\r\n)
+			const windowsText = "First line.\r\nSecond line.\r\nThird line.";
+			const windowsWrapped = string.wrap({ string: windowsText, width: 50 });
+			equal(windowsWrapped.length, 3);
+			equal(windowsWrapped[0], "First line.");
+			equal(windowsWrapped[1], "Second line.");
+			equal(windowsWrapped[2], "Third line.");
+
+			// Test with linebreaks that would normally be wrapped
+			const longWithBreaks =
+				"This is a very long line that would normally wrap.\nBut it has a linebreak.\nAnd another one here.";
+			const longWrapped = string.wrap({ string: longWithBreaks, width: 20 });
+			const expected = [
+				"This is a very long",
+				"line that would",
+				"normally wrap.",
+				"But it has a",
+				"linebreak.",
+				"And another one",
+				"here."
+			];
+			deepEqual(longWrapped, expected);
+		});
 	});
 
 	describe("box", () => {
@@ -292,12 +353,12 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 			};
 
 			const box = string.box({
-				input: ["This is a test.", `This is a ${chalk.red("test")}.`],
+				input: ["This is a test.", `This is a ${colors.red("test")}.`],
 				style: style,
-				title: `Go to ${chalk.yellow.bold("HELL")}`,
+				title: `Go to ${combineStyles(colors.yellow, colors.bold)("HELL")}`,
 				width: 30,
 				sizer: string.TERM_SIZER,
-				color: chalk.yellow
+				color: colors.yellow
 			});
 
 			const expected = [
@@ -322,10 +383,10 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 					"This is a test. This is a test. This is a test. This is a test. This is a test. This is a test. This is a test."
 				],
 				style: style,
-				title: `Go to ${chalk.yellow.bold("HELL")}`,
+				title: `Go to ${combineStyles(colors.yellow, colors.bold)("HELL")}`,
 				width: 30,
 				sizer: string.TERM_SIZER,
-				color: chalk.yellow
+				color: colors.yellow
 			});
 
 			const expected = [

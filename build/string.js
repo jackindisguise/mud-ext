@@ -179,20 +179,17 @@ export function wrap(options, width, sizer) {
 function wrapWithOptions(options) {
     const sizer = options.sizer || DEFAULT_SIZER;
     const lines = [];
-    let last = 0;
-    let cursor = options.width;
-    while (cursor < options.string.length) {
-        // accomodate non-rendering elements by adding extra width to this line
-        // (expand cursor)
-        let unrendered = 0;
+    let pos = 0;
+    while (pos < options.string.length) {
+        // Calculate the target cursor position (max width for this line)
+        let cursor = Math.min(pos + options.width, options.string.length);
+        // Account for non-rendering elements (expand cursor)
         if (sizer.unrenderedSequenceLength && sizer.open) {
-            // include the cursor index itself so we don't miss an opener that starts exactly at the boundary
-            for (let i = last; i <= cursor;) {
+            for (let i = pos; i <= cursor && i < options.string.length;) {
                 if (options.string[i] === sizer.open) {
                     const len = sizer.unrenderedSequenceLength(options.string, i);
                     if (len > 0) {
                         cursor += len;
-                        unrendered += len;
                         i += len;
                         continue;
                     }
@@ -201,39 +198,70 @@ function wrapWithOptions(options) {
             }
         }
         else if (sizer.open) {
-            for (let i = last; i <= cursor; i++) {
+            for (let i = pos; i <= cursor && i < options.string.length; i++) {
                 if (options.string[i] === sizer.open) {
-                    while (true) {
+                    while (i < options.string.length &&
+                        options.string[i] !== sizer.close) {
                         cursor++;
-                        unrendered++;
-                        if (options.string[i] === sizer.close)
-                            break; // account for closer and then end
-                        i++; // keep searching
+                        i++;
                     }
+                    if (i < options.string.length)
+                        cursor++; // Include the closer
                 }
             }
         }
-        // calculate the breakpoint of the line
-        let breakpoint = cursor;
-        if (breakpoint >= options.string.length)
+        // Search forward from pos to cursor for linebreaks
+        // Only respect linebreaks that occur within the width limit
+        // If a linebreak is beyond the width, wrap at width first
+        let linebreakPos = -1;
+        for (let i = pos; i <= cursor && i < options.string.length; i++) {
+            if (options.string[i] === "\n") {
+                linebreakPos = i;
+                break;
+            }
+            else if (options.string[i] === "\r") {
+                linebreakPos = i;
+                break; // Handle both \r\n and standalone \r
+            }
+        }
+        if (linebreakPos >= 0) {
+            // Found a linebreak - break there
+            lines.push(options.string.slice(pos, linebreakPos));
+            // Skip over the linebreak(s) and any leading whitespace on the next line
+            pos = linebreakPos + 1;
+            if (options.string[linebreakPos] === "\r" &&
+                linebreakPos + 1 < options.string.length &&
+                options.string[linebreakPos + 1] === "\n") {
+                pos++; // Skip the \n in \r\n
+            }
+            // Skip any leading whitespace on the next line
+            while (pos < options.string.length &&
+                [" ", "\t"].includes(options.string[pos])) {
+                pos++;
+            }
+            continue;
+        }
+        // If we've reached the end, add remaining text and finish
+        if (cursor >= options.string.length) {
+            lines.push(options.string.slice(pos));
             break;
-        // avoid splitting unrendered sequences when breaking the line
+        }
+        // Find the best breakpoint
+        let breakpoint = cursor;
+        // Avoid splitting unrendered sequences
         if (sizer.open) {
             const adjustBoundary = (bound) => {
                 if (!sizer.open)
                     return bound;
-                // include the boundary index so that an opener starting exactly at the break
-                // is considered and the whole unrendered token is kept intact
-                for (let j = last; j <= bound && j < options.string.length; j++) {
+                for (let j = pos; j <= bound && j < options.string.length; j++) {
                     if (options.string[j] === sizer.open) {
-                        // find the next unrendered token after this opener to treat the whole colored span as atomic
                         let groupEnd = j;
                         for (let k = j + 1; k < options.string.length; k++) {
                             let tokenLen = 0;
                             if (sizer.unrenderedSequenceLength)
                                 tokenLen = sizer.unrenderedSequenceLength(options.string, k);
                             else if (options.string[k] === sizer.open)
-                                tokenLen = 1; // fallback minimal
+                                tokenLen = 1;
                             if (tokenLen > 0) {
                                 groupEnd = k + tokenLen;
                                 break;
@@ -247,28 +275,26 @@ function wrapWithOptions(options) {
             };
             breakpoint = adjustBoundary(breakpoint);
         }
-        const mid = (cursor + unrendered + last) / 2; // search halfway between last point and current point for whitespace
+        // Search backwards for whitespace to break at word boundary
+        const mid = Math.floor((pos + cursor) / 2);
         for (let i = cursor; i >= mid; i--) {
-            // search for nearby whitespace
             if ([" ", "\r", "\n", "\t"].includes(options.string[i])) {
                 breakpoint = i;
                 break;
             }
         }
-        // if the breakpoint is whitespace, skip over it
+        // Add the line and update position
         if ([" ", "\r", "\n", "\t"].includes(options.string[breakpoint])) {
-            lines.push(options.string.slice(last, breakpoint));
-            last = breakpoint + 1;
-            // if it's not whitespace, add a hypen to break the string and start the next line at this point
+            // Break at whitespace - skip over it
+            lines.push(options.string.slice(pos, breakpoint));
+            pos = breakpoint + 1;
         }
         else {
-            lines.push(options.string.slice(last, breakpoint - 1) + "-");
-            last = breakpoint - 1;
+            // Break in the middle of a word - add hyphen
+            lines.push(options.string.slice(pos, breakpoint - 1) + "-");
+            pos = breakpoint - 1;
         }
-        cursor = Math.min(last + options.width, options.string.length);
     }
-    if (last < cursor)
-        lines.push(options.string.slice(last));
     return lines;
 }
 export function box(options, width, title, style, sizer, color) {
@@ -352,7 +378,7 @@ function boxWithOptions(options) {
         }));
     }
     const addLine = (line) => {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
         if (((_a = options.style) === null || _a === void 0 ? void 0 : _a.vertical) ||
             ((_b = options.style) === null || _b === void 0 ? void 0 : _b.left) ||
             ((_c = options.style) === null || _c === void 0 ? void 0 : _c.right)) {
@@ -367,29 +393,51 @@ function boxWithOptions(options) {
                 width: options.width - sizer.size(left) - sizer.size(right),
                 sizer: sizer
             });
-            for (const _line of wrapped)
+            // If wrap returns empty array (e.g., for empty string), add at least one empty line
+            if (wrapped.length === 0) {
                 lines.push(`${left}${pad({
-                    string: _line,
+                    string: "",
                     width: options.width - sizer.size(left) - sizer.size(right),
                     side: ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || PAD_SIDE.RIGHT,
                     sizer: sizer
                 })}${right}`);
+            }
+            else {
+                for (const _line of wrapped)
+                    lines.push(`${left}${pad({
+                        string: _line,
+                        width: options.width - sizer.size(left) - sizer.size(right),
+                        side: ((_l = options.style) === null || _l === void 0 ? void 0 : _l.hAlign) || PAD_SIDE.RIGHT,
+                        sizer: sizer
+                    })}${right}`);
+            }
         }
         else {
-            const left = " ".repeat(((_l = options.style) === null || _l === void 0 ? void 0 : _l.hPadding) || 0);
+            const left = " ".repeat(((_m = options.style) === null || _m === void 0 ? void 0 : _m.hPadding) || 0);
             const right = left;
             const wrapped = wrap({
                 string: line,
                 width: options.width - sizer.size(left) - sizer.size(right),
                 sizer: sizer
             });
-            for (const _line of wrapped)
+            // If wrap returns empty array (e.g., for empty string), add at least one empty line
+            if (wrapped.length === 0) {
                 lines.push(`${left}${pad({
-                    string: _line,
+                    string: "",
                     width: options.width - left.length - right.length,
-                    side: ((_m = options.style) === null || _m === void 0 ? void 0 : _m.hAlign) || PAD_SIDE.RIGHT,
+                    side: ((_o = options.style) === null || _o === void 0 ? void 0 : _o.hAlign) || PAD_SIDE.RIGHT,
                     sizer: sizer
                 })}${right}`);
+            }
+            else {
+                for (const _line of wrapped)
+                    lines.push(`${left}${pad({
+                        string: _line,
+                        width: options.width - left.length - right.length,
+                        side: ((_p = options.style) === null || _p === void 0 ? void 0 : _p.hAlign) || PAD_SIDE.RIGHT,
+                        sizer: sizer
+                    })}${right}`);
+            }
         }
     };
     // construct content lines

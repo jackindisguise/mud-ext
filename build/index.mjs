@@ -187,17 +187,15 @@ function wrap(options, width, sizer) {
 function wrapWithOptions(options) {
   const sizer = options.sizer || DEFAULT_SIZER;
   const lines = [];
-  let last = 0;
-  let cursor = options.width;
-  while (cursor < options.string.length) {
-    let unrendered = 0;
+  let pos = 0;
+  while (pos < options.string.length) {
+    let cursor = Math.min(pos + options.width, options.string.length);
     if (sizer.unrenderedSequenceLength && sizer.open) {
-      for (let i = last; i <= cursor; ) {
+      for (let i = pos; i <= cursor && i < options.string.length; ) {
         if (options.string[i] === sizer.open) {
           const len = sizer.unrenderedSequenceLength(options.string, i);
           if (len > 0) {
             cursor += len;
-            unrendered += len;
             i += len;
             continue;
           }
@@ -205,26 +203,48 @@ function wrapWithOptions(options) {
         i++;
       }
     } else if (sizer.open) {
-      for (let i = last; i <= cursor; i++) {
+      for (let i = pos; i <= cursor && i < options.string.length; i++) {
         if (options.string[i] === sizer.open) {
-          while (true) {
+          while (i < options.string.length && options.string[i] !== sizer.close) {
             cursor++;
-            unrendered++;
-            if (options.string[i] === sizer.close)
-              break;
             i++;
           }
+          if (i < options.string.length)
+            cursor++;
         }
       }
     }
-    let breakpoint = cursor;
-    if (breakpoint >= options.string.length)
+    let linebreakPos = -1;
+    for (let i = pos; i <= cursor && i < options.string.length; i++) {
+      if (options.string[i] === "\n") {
+        linebreakPos = i;
+        break;
+      } else if (options.string[i] === "\r") {
+        linebreakPos = i;
+        break;
+      }
+    }
+    if (linebreakPos >= 0) {
+      lines.push(options.string.slice(pos, linebreakPos));
+      pos = linebreakPos + 1;
+      if (options.string[linebreakPos] === "\r" && linebreakPos + 1 < options.string.length && options.string[linebreakPos + 1] === "\n") {
+        pos++;
+      }
+      while (pos < options.string.length && [" ", "	"].includes(options.string[pos])) {
+        pos++;
+      }
+      continue;
+    }
+    if (cursor >= options.string.length) {
+      lines.push(options.string.slice(pos));
       break;
+    }
+    let breakpoint = cursor;
     if (sizer.open) {
       const adjustBoundary = (bound) => {
         if (!sizer.open)
           return bound;
-        for (let j = last; j <= bound && j < options.string.length; j++) {
+        for (let j = pos; j <= bound && j < options.string.length; j++) {
           if (options.string[j] === sizer.open) {
             let groupEnd = j;
             for (let k = j + 1; k < options.string.length; k++) {
@@ -246,7 +266,7 @@ function wrapWithOptions(options) {
       };
       breakpoint = adjustBoundary(breakpoint);
     }
-    const mid = (cursor + unrendered + last) / 2;
+    const mid = Math.floor((pos + cursor) / 2);
     for (let i = cursor; i >= mid; i--) {
       if ([" ", "\r", "\n", "	"].includes(options.string[i])) {
         breakpoint = i;
@@ -254,16 +274,13 @@ function wrapWithOptions(options) {
       }
     }
     if ([" ", "\r", "\n", "	"].includes(options.string[breakpoint])) {
-      lines.push(options.string.slice(last, breakpoint));
-      last = breakpoint + 1;
+      lines.push(options.string.slice(pos, breakpoint));
+      pos = breakpoint + 1;
     } else {
-      lines.push(options.string.slice(last, breakpoint - 1) + "-");
-      last = breakpoint - 1;
+      lines.push(options.string.slice(pos, breakpoint - 1) + "-");
+      pos = breakpoint - 1;
     }
-    cursor = Math.min(last + options.width, options.string.length);
   }
-  if (last < cursor)
-    lines.push(options.string.slice(last));
   return lines;
 }
 function box(options, width, title, style, sizer, color) {
@@ -320,7 +337,7 @@ function boxWithOptions(options) {
     }));
   }
   const addLine = (line) => {
-    var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2, _j2, _k2, _l2, _m2;
+    var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2, _j2, _k2, _l2, _m2, _o2, _p2;
     if (((_a2 = options.style) === null || _a2 === void 0 ? void 0 : _a2.vertical) || ((_b2 = options.style) === null || _b2 === void 0 ? void 0 : _b2.left) || ((_c2 = options.style) === null || _c2 === void 0 ? void 0 : _c2.right)) {
       const leftVert = ((_d2 = options.style) === null || _d2 === void 0 ? void 0 : _d2.left) || ((_e2 = options.style) === null || _e2 === void 0 ? void 0 : _e2.vertical) || "";
       const leftHPadding = leftVert ? ((_f2 = options.style) === null || _f2 === void 0 ? void 0 : _f2.hPadding) || 1 : 0;
@@ -333,28 +350,46 @@ function boxWithOptions(options) {
         width: options.width - sizer.size(left) - sizer.size(right),
         sizer
       });
-      for (const _line of wrapped)
+      if (wrapped.length === 0) {
         lines.push(`${left}${pad({
-          string: _line,
+          string: "",
           width: options.width - sizer.size(left) - sizer.size(right),
           side: ((_k2 = options.style) === null || _k2 === void 0 ? void 0 : _k2.hAlign) || PAD_SIDE.RIGHT,
           sizer
         })}${right}`);
+      } else {
+        for (const _line of wrapped)
+          lines.push(`${left}${pad({
+            string: _line,
+            width: options.width - sizer.size(left) - sizer.size(right),
+            side: ((_l2 = options.style) === null || _l2 === void 0 ? void 0 : _l2.hAlign) || PAD_SIDE.RIGHT,
+            sizer
+          })}${right}`);
+      }
     } else {
-      const left = " ".repeat(((_l2 = options.style) === null || _l2 === void 0 ? void 0 : _l2.hPadding) || 0);
+      const left = " ".repeat(((_m2 = options.style) === null || _m2 === void 0 ? void 0 : _m2.hPadding) || 0);
       const right = left;
       const wrapped = wrap({
         string: line,
         width: options.width - sizer.size(left) - sizer.size(right),
         sizer
       });
-      for (const _line of wrapped)
+      if (wrapped.length === 0) {
         lines.push(`${left}${pad({
-          string: _line,
+          string: "",
           width: options.width - left.length - right.length,
-          side: ((_m2 = options.style) === null || _m2 === void 0 ? void 0 : _m2.hAlign) || PAD_SIDE.RIGHT,
+          side: ((_o2 = options.style) === null || _o2 === void 0 ? void 0 : _o2.hAlign) || PAD_SIDE.RIGHT,
           sizer
         })}${right}`);
+      } else {
+        for (const _line of wrapped)
+          lines.push(`${left}${pad({
+            string: _line,
+            width: options.width - left.length - right.length,
+            side: ((_p2 = options.style) === null || _p2 === void 0 ? void 0 : _p2.hAlign) || PAD_SIDE.RIGHT,
+            sizer
+          })}${right}`);
+      }
     }
   };
   if ((_z = options.style) === null || _z === void 0 ? void 0 : _z.vPadding)
