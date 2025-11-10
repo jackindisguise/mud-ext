@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.8.2](https://github.com/jackindisguise/mud-ext/compare/v2.8.1...v2.8.2) (2025-11-10)
+
+
+### Bug Fixes
+
+* wrap has a deeper respect for linebreaks ([0151049](https://github.com/jackindisguise/mud-ext/commit/0151049cba49a8ca23adb2e257c6dfd6d84d1a94))
+
 ### [2.8.1](https://github.com/jackindisguise/mud-ext/compare/v2.8.0...v2.8.1) (2025-11-09)
 
 ## [2.8.0](https://github.com/jackindisguise/mud-ext/compare/v2.7.0...v2.8.0) (2025-01-24)
