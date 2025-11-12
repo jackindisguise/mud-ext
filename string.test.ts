@@ -34,51 +34,59 @@ describe("string.ts", () => {
 	describe("padders", () => {
 		it("pad", () => {
 			equal(
-				string.pad({ string: "test", width: 10, side: string.PAD_SIDE.LEFT }),
-				"      test"
-			);
-			equal(string.pad("test", 10, string.PAD_SIDE.LEFT, "-"), "------test");
-			equal(string.pad("50", 10, string.PAD_SIDE.LEFT, "0"), "0000000050");
-			equal(
-				string.pad({ string: "test", width: 10, side: string.PAD_SIDE.RIGHT }),
+				string.pad({ string: "test", width: 10, textAlign: string.ALIGN.LEFT }),
 				"test      "
 			);
+			equal(string.pad("test", 10, string.ALIGN.LEFT, "-"), "test------");
+			equal(string.pad("50", 10, string.ALIGN.LEFT, "0"), "5000000000");
 			equal(
 				string.pad({
 					string: "test",
 					width: 10,
-					side: string.PAD_SIDE.RIGHT,
-					padder: "<>{}"
+					textAlign: string.ALIGN.RIGHT
 				}),
-				"test<>{}<>"
+				"      test"
 			);
 			equal(
 				string.pad({
 					string: "test",
 					width: 10,
-					side: string.PAD_SIDE.RIGHT,
+					textAlign: string.ALIGN.RIGHT,
+					padder: "<>{}"
+				}),
+				"<>{}<>test"
+			);
+			equal(
+				string.pad({
+					string: "test",
+					width: 10,
+					textAlign: string.ALIGN.RIGHT,
 					padder: "-"
 				}),
-				"test------"
+				"------test"
 			);
 			equal(
 				string.pad({
 					string: "50.",
 					width: 10,
-					side: string.PAD_SIDE.RIGHT,
+					textAlign: string.ALIGN.LEFT,
 					padder: "0"
 				}),
 				"50.0000000"
 			);
 			equal(
-				string.pad({ string: "test", side: string.PAD_SIDE.CENTER, width: 10 }),
+				string.pad({
+					string: "test",
+					textAlign: string.ALIGN.CENTER,
+					width: 10
+				}),
 				"   test   "
 			);
 			equal(
 				string.pad({
 					string: "test",
 					width: 10,
-					side: string.PAD_SIDE.CENTER,
+					textAlign: string.ALIGN.CENTER,
 					padder: "<>"
 				}),
 				"<><test><>"
@@ -87,7 +95,7 @@ describe("string.ts", () => {
 				string.pad({
 					string: "test",
 					width: 80,
-					side: string.PAD_SIDE.CENTER,
+					textAlign: string.ALIGN.CENTER,
 					padder: "<->"
 				}),
 				"<-><-><-><-><-><-><-><-><-><-><-><-><-test<-><-><-><-><-><-><-><-><-><-><-><-><-"
@@ -96,7 +104,7 @@ describe("string.ts", () => {
 				string.pad({
 					string: "test",
 					width: 10,
-					side: string.PAD_SIDE.CENTER,
+					textAlign: string.ALIGN.CENTER,
 					padder: "-"
 				}),
 				"---test---"
@@ -105,7 +113,7 @@ describe("string.ts", () => {
 				string.pad({
 					string: "test",
 					width: 11,
-					side: string.PAD_SIDE.CENTER,
+					textAlign: string.ALIGN.CENTER,
 					padder: "-"
 				}),
 				"---test----"
@@ -471,7 +479,7 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 			const style: string.BoxStyle = {
 				...string.BOX_STYLES.PLAIN,
 				titleBorder: { left: "<", right: ">" },
-				hAlign: string.PAD_SIDE.CENTER
+				hAlign: string.ALIGN.CENTER
 			};
 
 			const box = string.box({
@@ -497,7 +505,7 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 			const style: string.BoxStyle = {
 				...string.BOX_STYLES.PLAIN,
 				titleBorder: { left: "<", right: ">" },
-				hAlign: string.PAD_SIDE.CENTER
+				hAlign: string.ALIGN.CENTER
 			};
 
 			const box = string.box({
@@ -528,8 +536,8 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 			const style: string.BoxStyle = {
 				hPadding: 2,
 				vPadding: 1,
-				hAlign: string.PAD_SIDE.LEFT,
-				titleHAlign: string.PAD_SIDE.LEFT,
+				hAlign: string.ALIGN.RIGHT,
+				titleHAlign: string.ALIGN.RIGHT,
 				top: { middle: "v " },
 				bottom: { middle: "^ " },
 				left: ">",
@@ -563,7 +571,7 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 			equal(generated, expected);
 		});
 
-		it("right-aligned (default)", () => {
+		it("left-aligned (default)", () => {
 			const generated = string
 				.box({
 					style: {
@@ -592,10 +600,10 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
 		it("center-aligned", () => {
 			// copy rounded box style
-			const rounded = {
+			const rounded: string.BoxStyle = {
 				...string.BOX_STYLES.ROUNDED,
-				hAlign: string.PAD_SIDE.CENTER,
-				titleHAlign: string.PAD_SIDE.CENTER,
+				hAlign: string.ALIGN.CENTER as string.HALIGN,
+				titleHAlign: string.ALIGN.CENTER as string.HALIGN,
 				vPadding: 1
 			};
 
@@ -622,13 +630,13 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 			equal(generated, expected);
 		});
 
-		it("left-aligned", () => {
+		it("right-aligned", () => {
 			// copy O box style
 			const obox: string.BoxStyle = {
 				...string.BOX_STYLES.O,
 				top: { corner: "o" },
-				hAlign: string.PAD_SIDE.LEFT,
-				titleHAlign: string.PAD_SIDE.LEFT
+				hAlign: string.ALIGN.RIGHT,
+				titleHAlign: string.ALIGN.RIGHT
 			};
 
 			// generate an O box
@@ -654,9 +662,9 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
 		it("blank boxes", () => {
 			// blank-ass box
-			const blank = {
-				hAlign: string.PAD_SIDE.CENTER,
-				titleHAlign: string.PAD_SIDE.CENTER,
+			const blank: string.BoxStyle = {
+				hAlign: string.ALIGN.CENTER,
+				titleHAlign: string.ALIGN.CENTER,
 				corner: "+"
 			};
 

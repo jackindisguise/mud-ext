@@ -9,6 +9,29 @@ export enum PAD_SIDE {
 	CENTER = 3
 }
 
+export enum ALIGN {
+	/** Align to the top. */
+	TOP = 1,
+
+	/** Align to the bottom. */
+	BOTTOM = 2,
+
+	/** Align to the left. */
+	LEFT = 3,
+
+	/** Align to the right. */
+	RIGHT = 4,
+
+	/** Align to the center. */
+	CENTER = 5
+}
+
+/** Vertical alignment: top to bottom, including center. */
+export type VALIGN = ALIGN.TOP | ALIGN.BOTTOM | ALIGN.CENTER;
+
+/** Horizontal alignment: left to right, including center. */
+export type HALIGN = ALIGN.LEFT | ALIGN.RIGHT | ALIGN.CENTER;
+
 /**
  * Describes the borders of box titles.
  */
@@ -72,10 +95,10 @@ export interface BoxStyle {
 	bottom?: BoxStyleHorizontalEdge;
 
 	/** The horizontal alignment of the internals of the box. */
-	hAlign?: PAD_SIDE;
+	hAlign?: HALIGN;
 
 	/** The horizontal alignment of the title of the box. */
-	titleHAlign?: PAD_SIDE;
+	titleHAlign?: HALIGN;
 }
 
 /**
@@ -186,8 +209,8 @@ export interface PadOptions {
  * Options for pad shortcut function.
  */
 export interface PadWithSideOptions extends PadOptions {
-	/** The side to add padding. */
-	side: PAD_SIDE;
+	/** The alignment of the text (padding is added to the opposite side). */
+	textAlign: HALIGN;
 }
 
 /**
@@ -201,6 +224,7 @@ export function pad(options: PadWithSideOptions): string;
  * Pad a string to the given size.
  * @param string The string to pad.
  * @param width The desired width of the string.
+ * @param textAlign The alignment of the text (padding is added to the opposite side).
  * @param padder The string to use as a padder.
  * @param sizer A custom function for determining the size of the provided string.
  * @param color A custom function for adding unrendered color codes to the padding.
@@ -208,7 +232,7 @@ export function pad(options: PadWithSideOptions): string;
 export function pad(
 	string: string,
 	width: number,
-	side: PAD_SIDE,
+	textAlign: HALIGN,
 	padder?: string,
 	sizer?: Sizer,
 	color?: StringTransformer
@@ -216,7 +240,7 @@ export function pad(
 export function pad(
 	options: PadWithSideOptions | string,
 	width?: number,
-	side?: PAD_SIDE,
+	textAlign?: HALIGN,
 	padder?: string,
 	sizer?: Sizer,
 	color?: StringTransformer
@@ -225,7 +249,7 @@ export function pad(
 		return padWithOptions({
 			string: options,
 			width: width || 0,
-			side: side || PAD_SIDE.RIGHT,
+			textAlign: textAlign || ALIGN.LEFT,
 			padder: padder || " ",
 			sizer: sizer || DEFAULT_SIZER,
 			color: color || undefined
@@ -237,9 +261,13 @@ export function pad(
  * Handles pad calls uniformly with PadOptions as God intended.
  */
 function padWithOptions(options: PadWithSideOptions): string {
-	if (options.side === PAD_SIDE.LEFT) return padLeft(options);
-	if (options.side === PAD_SIDE.CENTER) return padCenter(options);
-	return padRight(options); // defaults to padding the right side
+	// Reverse the logic: text alignment determines where padding goes
+	// ALIGN.LEFT means text on left, so pad on right
+	// ALIGN.RIGHT means text on right, so pad on left
+	// ALIGN.CENTER means text in center, pad on both sides
+	if (options.textAlign === ALIGN.LEFT) return padRight(options);
+	if (options.textAlign === ALIGN.CENTER) return padCenter(options);
+	return padLeft(options); // defaults to text on right, pad on left
 }
 
 /**
@@ -730,13 +758,13 @@ function boxWithOptions(options: BoxOptions): string[] {
 				}`;
 			} else formattedTitle = ` ${options.title} `;
 
-			// respect vertical alignment for titles
+			// respect horizontal alignment for titles
 			//const titleWidth = formattedTitle.length;
 			const safeTitleWidth = sizer.size(formattedTitle);
-			let start = 0 + offset;
-			if (options.style?.titleHAlign === PAD_SIDE.LEFT)
+			let start = 0 + offset; // default: title on left
+			if (options.style?.titleHAlign === ALIGN.RIGHT)
 				start = ruleWidth - safeTitleWidth - offset;
-			else if (options.style?.titleHAlign === PAD_SIDE.CENTER)
+			else if (options.style?.titleHAlign === ALIGN.CENTER)
 				start = Math.floor((ruleWidth - safeTitleWidth) / 2);
 			const titled =
 				(start > 0 ? color(safeRule.slice(0, start)) : "") +
@@ -764,7 +792,7 @@ function boxWithOptions(options: BoxOptions): string[] {
 			pad({
 				string: options.title,
 				width: options.width,
-				side: options.style?.titleHAlign || PAD_SIDE.RIGHT,
+				textAlign: options.style?.titleHAlign || ALIGN.LEFT,
 				sizer: sizer
 			})
 		);
@@ -793,7 +821,7 @@ function boxWithOptions(options: BoxOptions): string[] {
 					`${left}${pad({
 						string: "",
 						width: options.width - sizer.size(left) - sizer.size(right),
-						side: options.style?.hAlign || PAD_SIDE.RIGHT,
+						textAlign: options.style?.hAlign || ALIGN.LEFT,
 						sizer: sizer
 					})}${right}`
 				);
@@ -803,7 +831,7 @@ function boxWithOptions(options: BoxOptions): string[] {
 						`${left}${pad({
 							string: _line,
 							width: options.width - sizer.size(left) - sizer.size(right),
-							side: options.style?.hAlign || PAD_SIDE.RIGHT,
+							textAlign: options.style?.hAlign || ALIGN.LEFT,
 							sizer: sizer
 						})}${right}`
 					);
@@ -822,7 +850,7 @@ function boxWithOptions(options: BoxOptions): string[] {
 					`${left}${pad({
 						string: "",
 						width: options.width - left.length - right.length,
-						side: options.style?.hAlign || PAD_SIDE.RIGHT,
+						textAlign: options.style?.hAlign || ALIGN.LEFT,
 						sizer: sizer
 					})}${right}`
 				);
@@ -832,7 +860,7 @@ function boxWithOptions(options: BoxOptions): string[] {
 						`${left}${pad({
 							string: _line,
 							width: options.width - left.length - right.length,
-							side: options.style?.hAlign || PAD_SIDE.RIGHT,
+							textAlign: options.style?.hAlign || ALIGN.LEFT,
 							sizer: sizer
 						})}${right}`
 					);

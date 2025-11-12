@@ -40,12 +40,12 @@ assert.equal(pr, "CAKE------");
 There is also an alias for legacy reasons and occasionally convenience.
 ```javascript
 let opts = { string: "CAKE", width: 10, padder: "-" };
-let pl = string.pad({ ...opts, side: string.PAD_SIDE.LEFT });
-let pc = string.pad({ ...opts, side: string.PAD_SIDE.CENTER });
-let pr = string.pad({ ...opts, side: string.PAD_SIDE.RIGHT });
-assert.equal(pl, "------CAKE");
+let pl = string.pad({ ...opts, textAlign: string.ALIGN.LEFT });
+let pc = string.pad({ ...opts, textAlign: string.ALIGN.CENTER });
+let pr = string.pad({ ...opts, textAlign: string.ALIGN.RIGHT });
+assert.equal(pl, "CAKE------");
 assert.equal(pc, "---CAKE---");
-assert.equal(pr, "CAKE------");
+assert.equal(pr, "------CAKE");
 ```
 
 ### Arbitrary-length padder strings.

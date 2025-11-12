@@ -7,6 +7,19 @@ export var PAD_SIDE;
     /** Pads to the left and right. */
     PAD_SIDE[PAD_SIDE["CENTER"] = 3] = "CENTER";
 })(PAD_SIDE || (PAD_SIDE = {}));
+export var ALIGN;
+(function (ALIGN) {
+    /** Align to the top. */
+    ALIGN[ALIGN["TOP"] = 1] = "TOP";
+    /** Align to the bottom. */
+    ALIGN[ALIGN["BOTTOM"] = 2] = "BOTTOM";
+    /** Align to the left. */
+    ALIGN[ALIGN["LEFT"] = 3] = "LEFT";
+    /** Align to the right. */
+    ALIGN[ALIGN["RIGHT"] = 4] = "RIGHT";
+    /** Align to the center. */
+    ALIGN[ALIGN["CENTER"] = 5] = "CENTER";
+})(ALIGN || (ALIGN = {}));
 /**
  * Some generic boxes I invented due to my ingenuity.
  */
@@ -66,12 +79,12 @@ export const HTML_SIZER = {
 export const DEFAULT_SIZER = {
     size: (str) => str.length
 };
-export function pad(options, width, side, padder, sizer, color) {
+export function pad(options, width, textAlign, padder, sizer, color) {
     if (typeof options === "string")
         return padWithOptions({
             string: options,
             width: width || 0,
-            side: side || PAD_SIDE.RIGHT,
+            textAlign: textAlign || ALIGN.LEFT,
             padder: padder || " ",
             sizer: sizer || DEFAULT_SIZER,
             color: color || undefined
@@ -82,11 +95,15 @@ export function pad(options, width, side, padder, sizer, color) {
  * Handles pad calls uniformly with PadOptions as God intended.
  */
 function padWithOptions(options) {
-    if (options.side === PAD_SIDE.LEFT)
-        return padLeft(options);
-    if (options.side === PAD_SIDE.CENTER)
+    // Reverse the logic: text alignment determines where padding goes
+    // ALIGN.LEFT means text on left, so pad on right
+    // ALIGN.RIGHT means text on right, so pad on left
+    // ALIGN.CENTER means text in center, pad on both sides
+    if (options.textAlign === ALIGN.LEFT)
+        return padRight(options);
+    if (options.textAlign === ALIGN.CENTER)
         return padCenter(options);
-    return padRight(options); // defaults to padding the right side
+    return padLeft(options); // defaults to text on right, pad on left
 }
 export function padLeft(options, width, padder, sizer, color) {
     if (typeof options === "string")
@@ -367,13 +384,13 @@ function boxWithOptions(options) {
             }
             else
                 formattedTitle = ` ${options.title} `;
-            // respect vertical alignment for titles
+            // respect horizontal alignment for titles
             //const titleWidth = formattedTitle.length;
             const safeTitleWidth = sizer.size(formattedTitle);
-            let start = 0 + offset;
-            if (((_w = options.style) === null || _w === void 0 ? void 0 : _w.titleHAlign) === PAD_SIDE.LEFT)
+            let start = 0 + offset; // default: title on left
+            if (((_w = options.style) === null || _w === void 0 ? void 0 : _w.titleHAlign) === ALIGN.RIGHT)
                 start = ruleWidth - safeTitleWidth - offset;
-            else if (((_x = options.style) === null || _x === void 0 ? void 0 : _x.titleHAlign) === PAD_SIDE.CENTER)
+            else if (((_x = options.style) === null || _x === void 0 ? void 0 : _x.titleHAlign) === ALIGN.CENTER)
                 start = Math.floor((ruleWidth - safeTitleWidth) / 2);
             const titled = (start > 0 ? color(safeRule.slice(0, start)) : "") +
                 formattedTitle +
@@ -391,7 +408,7 @@ function boxWithOptions(options) {
         lines.push(pad({
             string: options.title,
             width: options.width,
-            side: ((_y = options.style) === null || _y === void 0 ? void 0 : _y.titleHAlign) || PAD_SIDE.RIGHT,
+            textAlign: ((_y = options.style) === null || _y === void 0 ? void 0 : _y.titleHAlign) || ALIGN.LEFT,
             sizer: sizer
         }));
     }
@@ -416,7 +433,7 @@ function boxWithOptions(options) {
                 lines.push(`${left}${pad({
                     string: "",
                     width: options.width - sizer.size(left) - sizer.size(right),
-                    side: ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || PAD_SIDE.RIGHT,
+                    textAlign: ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || ALIGN.LEFT,
                     sizer: sizer
                 })}${right}`);
             }
@@ -425,7 +442,7 @@ function boxWithOptions(options) {
                     lines.push(`${left}${pad({
                         string: _line,
                         width: options.width - sizer.size(left) - sizer.size(right),
-                        side: ((_l = options.style) === null || _l === void 0 ? void 0 : _l.hAlign) || PAD_SIDE.RIGHT,
+                        textAlign: ((_l = options.style) === null || _l === void 0 ? void 0 : _l.hAlign) || ALIGN.LEFT,
                         sizer: sizer
                     })}${right}`);
             }
@@ -443,7 +460,7 @@ function boxWithOptions(options) {
                 lines.push(`${left}${pad({
                     string: "",
                     width: options.width - left.length - right.length,
-                    side: ((_o = options.style) === null || _o === void 0 ? void 0 : _o.hAlign) || PAD_SIDE.RIGHT,
+                    textAlign: ((_o = options.style) === null || _o === void 0 ? void 0 : _o.hAlign) || ALIGN.LEFT,
                     sizer: sizer
                 })}${right}`);
             }
@@ -452,7 +469,7 @@ function boxWithOptions(options) {
                     lines.push(`${left}${pad({
                         string: _line,
                         width: options.width - left.length - right.length,
-                        side: ((_p = options.style) === null || _p === void 0 ? void 0 : _p.hAlign) || PAD_SIDE.RIGHT,
+                        textAlign: ((_p = options.style) === null || _p === void 0 ? void 0 : _p.hAlign) || ALIGN.LEFT,
                         sizer: sizer
                     })}${right}`);
             }

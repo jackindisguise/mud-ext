@@ -6,6 +6,22 @@ export declare enum PAD_SIDE {
     /** Pads to the left and right. */
     CENTER = 3
 }
+export declare enum ALIGN {
+    /** Align to the top. */
+    TOP = 1,
+    /** Align to the bottom. */
+    BOTTOM = 2,
+    /** Align to the left. */
+    LEFT = 3,
+    /** Align to the right. */
+    RIGHT = 4,
+    /** Align to the center. */
+    CENTER = 5
+}
+/** Vertical alignment: top to bottom, including center. */
+export type VALIGN = ALIGN.TOP | ALIGN.BOTTOM | ALIGN.CENTER;
+/** Horizontal alignment: left to right, including center. */
+export type HALIGN = ALIGN.LEFT | ALIGN.RIGHT | ALIGN.CENTER;
 /**
  * Describes the borders of box titles.
  */
@@ -53,9 +69,9 @@ export interface BoxStyle {
     /** The bottom edge of the box. */
     bottom?: BoxStyleHorizontalEdge;
     /** The horizontal alignment of the internals of the box. */
-    hAlign?: PAD_SIDE;
+    hAlign?: HALIGN;
     /** The horizontal alignment of the title of the box. */
-    titleHAlign?: PAD_SIDE;
+    titleHAlign?: HALIGN;
 }
 /**
  * Some generic boxes I invented due to my ingenuity.
@@ -108,8 +124,8 @@ export interface PadOptions {
  * Options for pad shortcut function.
  */
 export interface PadWithSideOptions extends PadOptions {
-    /** The side to add padding. */
-    side: PAD_SIDE;
+    /** The alignment of the text (padding is added to the opposite side). */
+    textAlign: HALIGN;
 }
 /**
  * Pad a string to the given size.
@@ -121,11 +137,12 @@ export declare function pad(options: PadWithSideOptions): string;
  * Pad a string to the given size.
  * @param string The string to pad.
  * @param width The desired width of the string.
+ * @param textAlign The alignment of the text (padding is added to the opposite side).
  * @param padder The string to use as a padder.
  * @param sizer A custom function for determining the size of the provided string.
  * @param color A custom function for adding unrendered color codes to the padding.
  */
-export declare function pad(string: string, width: number, side: PAD_SIDE, padder?: string, sizer?: Sizer, color?: StringTransformer): string;
+export declare function pad(string: string, width: number, textAlign: HALIGN, padder?: string, sizer?: Sizer, color?: StringTransformer): string;
 /**
  * Pad a string to the given size on the left.
  * @param options The padding options.
