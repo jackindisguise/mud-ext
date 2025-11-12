@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.10.0](https://github.com/jackindisguise/mud-ext/compare/v2.9.0...v2.10.0) (2025-11-12)
+
+
+### Features
+
+* add direct parameter signature for wrap() prefix ([e34f1f2](https://github.com/jackindisguise/mud-ext/commit/e34f1f291997a3052d140df4ecb72f774c2de292))
+
 ## [2.9.0](https://github.com/jackindisguise/mud-ext/compare/v2.8.2...v2.9.0) (2025-11-12)
 
 
