@@ -181,6 +181,8 @@ export interface WrapOptions {
     sizer?: Sizer;
     /** Text to add to the front of each wrapped line (e.g., for indentation or continuation markers). */
     prefix?: string;
+    /** A function to transform/color the wrapped text. Applied to each line's content, but not to prefixes. */
+    color?: StringTransformer;
 }
 /**
  * Wraps a string to a given size.
@@ -201,6 +203,7 @@ export declare function wrap(string: string, width: number, sizer: Sizer | undef
  * Wraps a string to a given size.
  * @param options The options for this wrap.
  * @param options.prefix Optional text to add to the front of each wrapped line (e.g., for indentation or continuation markers).
+ * @param options.color Optional function to transform/color the wrapped text. Applied to each line's content, but not to prefixes.
  * @returns {string[]} The lines of the wrapped string in an array.
  */
 export declare function wrap(options: WrapOptions): string[];

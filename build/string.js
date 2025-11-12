@@ -303,11 +303,17 @@ function wrapWithOptions(options) {
             pos = breakpoint - 1;
         }
     }
-    // Add prefix to each line after the first if specified
-    if (prefix && lines.length > 0) {
-        return lines.map((line, index) => (index === 0 ? line : prefix + line));
+    // Apply color transformation if specified, then add prefix
+    // Prefix is added after coloring, so it doesn't get colored
+    let result = lines;
+    if (options.color) {
+        result = result.map((line) => options.color(line));
     }
-    return lines;
+    // Add prefix to each line after the first if specified
+    if (prefix && result.length > 0) {
+        return result.map((line, index) => (index === 0 ? line : prefix + line));
+    }
+    return result;
 }
 export function box(options, width, title, style, sizer, color) {
     if (Array.isArray(options))

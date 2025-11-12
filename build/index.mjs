@@ -286,10 +286,14 @@ function wrapWithOptions(options) {
       pos = breakpoint - 1;
     }
   }
-  if (prefix && lines.length > 0) {
-    return lines.map((line, index) => index === 0 ? line : prefix + line);
+  let result = lines;
+  if (options.color) {
+    result = result.map((line) => options.color(line));
   }
-  return lines;
+  if (prefix && result.length > 0) {
+    return result.map((line, index) => index === 0 ? line : prefix + line);
+  }
+  return result;
 }
 function box(options, width, title, style, sizer, color) {
   if (Array.isArray(options))

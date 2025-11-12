@@ -319,6 +319,41 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
             equal(withSizer[0], "This is a");
             equal(withSizer[1], "  test.");
         });
+        it("prefix + color", () => {
+            // Test color without prefix
+            const text = "This is a long line that wraps.";
+            const colored = string.wrap({
+                string: text,
+                width: 15,
+                color: colors.yellow
+            });
+            equal(colored.length, 3);
+            equal(colored[0], colors.yellow("This is a long"));
+            equal(colored[1], colors.yellow("line that"));
+            equal(colored[2], colors.yellow("wraps."));
+            // Test color with prefix - prefix should NOT be colored
+            const withPrefix = string.wrap({
+                string: text,
+                width: 15,
+                prefix: "> ",
+                color: colors.yellow
+            });
+            equal(withPrefix.length, 3);
+            equal(withPrefix[0], colors.yellow("This is a long"));
+            equal(withPrefix[1], "> " + colors.yellow("line that"));
+            equal(withPrefix[2], "> " + colors.yellow("wraps."));
+            // Test color with linebreaks
+            const withBreaks = "First line.\nSecond line that wraps.";
+            const breakColored = string.wrap({
+                string: withBreaks,
+                width: 15,
+                color: colors.cyan
+            });
+            equal(breakColored.length, 3);
+            equal(breakColored[0], colors.cyan("First line."));
+            equal(breakColored[1], colors.cyan("Second line"));
+            equal(breakColored[2], colors.cyan("that wraps."));
+        });
     });
     describe("box", () => {
         it("color", () => {

@@ -414,6 +414,9 @@ export interface WrapOptions {
 
 	/** Text to add to the front of each wrapped line (e.g., for indentation or continuation markers). */
 	prefix?: string;
+
+	/** A function to transform/color the wrapped text. Applied to each line's content, but not to prefixes. */
+	color?: StringTransformer;
 }
 
 /**
@@ -442,6 +445,7 @@ export function wrap(
  * Wraps a string to a given size.
  * @param options The options for this wrap.
  * @param options.prefix Optional text to add to the front of each wrapped line (e.g., for indentation or continuation markers).
+ * @param options.color Optional function to transform/color the wrapped text. Applied to each line's content, but not to prefixes.
  * @returns {string[]} The lines of the wrapped string in an array.
  */
 export function wrap(options: WrapOptions): string[];
@@ -597,12 +601,19 @@ function wrapWithOptions(options: WrapOptions): string[] {
 		}
 	}
 
-	// Add prefix to each line after the first if specified
-	if (prefix && lines.length > 0) {
-		return lines.map((line, index) => (index === 0 ? line : prefix + line));
+	// Apply color transformation if specified, then add prefix
+	// Prefix is added after coloring, so it doesn't get colored
+	let result = lines;
+	if (options.color) {
+		result = result.map((line) => options.color!(line));
 	}
 
-	return lines;
+	// Add prefix to each line after the first if specified
+	if (prefix && result.length > 0) {
+		return result.map((line, index) => (index === 0 ? line : prefix + line));
+	}
+
+	return result;
 }
 
 /**
