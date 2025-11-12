@@ -411,6 +411,9 @@ export interface WrapOptions {
 
 	/** Describe how to respect unrendered characters. */
 	sizer?: Sizer;
+
+	/** Text to add to the front of each wrapped line (e.g., for indentation or continuation markers). */
+	prefix?: string;
 }
 
 /**
@@ -424,6 +427,7 @@ export function wrap(string: string, width: number, sizer?: Sizer): string[];
 /**
  * Wraps a string to a given size.
  * @param options The options for this wrap.
+ * @param options.prefix Optional text to add to the front of each wrapped line (e.g., for indentation or continuation markers).
  * @returns {string[]} The lines of the wrapped string in an array.
  */
 export function wrap(options: WrapOptions): string[];
@@ -443,12 +447,19 @@ export function wrap(
 
 function wrapWithOptions(options: WrapOptions): string[] {
 	const sizer = options.sizer || DEFAULT_SIZER;
+	const prefix = options.prefix || "";
+	const prefixSize = sizer.size(prefix);
+	// Effective width is the total width minus the prefix size (for subsequent lines)
+	// Ensure it's at least 1 to avoid infinite loops
+	const effectiveWidth = Math.max(1, options.width - prefixSize);
 	const lines: string[] = [];
 	let pos = 0;
 
 	while (pos < options.string.length) {
 		// Calculate the target cursor position (max width for this line)
-		let cursor = Math.min(pos + options.width, options.string.length);
+		// First line uses full width, subsequent lines use effective width
+		const lineWidth = lines.length === 0 ? options.width : effectiveWidth;
+		let cursor = Math.min(pos + lineWidth, options.string.length);
 
 		// Account for non-rendering elements (expand cursor)
 		if (sizer.unrenderedSequenceLength && sizer.open) {
@@ -568,6 +579,11 @@ function wrapWithOptions(options: WrapOptions): string[] {
 			lines.push(options.string.slice(pos, breakpoint - 1) + "-");
 			pos = breakpoint - 1;
 		}
+	}
+
+	// Add prefix to each line after the first if specified
+	if (prefix && lines.length > 0) {
+		return lines.map((line, index) => (index === 0 ? line : prefix + line));
 	}
 
 	return lines;
