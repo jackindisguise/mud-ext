@@ -1,6 +1,6 @@
 {
 	"name": "mud-ext",
-	"version": "2.8.2",
+	"version": "2.9.0",
 	"description": "Common tools I use, mostly for MUDs.",
 	"type": "module",
 	"main": "./build/index.cjs",
