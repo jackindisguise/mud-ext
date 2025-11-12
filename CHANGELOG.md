@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.11.0](https://github.com/jackindisguise/mud-ext/compare/v2.10.0...v2.11.0) (2025-11-12)
+
+
+### Features
+
+* add color option to wrap() function ([da5129c](https://github.com/jackindisguise/mud-ext/commit/da5129cff4d6caa319176913e2ba3e4d2fda5dd4))
+
 ## [2.10.0](https://github.com/jackindisguise/mud-ext/compare/v2.9.0...v2.10.0) (2025-11-12)
 
 
