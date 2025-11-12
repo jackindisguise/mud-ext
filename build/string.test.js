@@ -252,6 +252,73 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
             ];
             deepEqual(longWrapped, expected);
         });
+        it("prefix", () => {
+            // Test basic prefix - first line has no prefix and uses full width, subsequent lines do
+            const text = "This is a long line that will wrap into multiple lines.";
+            const wrapped = string.wrap({ string: text, width: 20, prefix: "> " });
+            equal(wrapped.length, 4);
+            equal(wrapped[0], "This is a long line");
+            equal(wrapped[1], "> that will wrap");
+            equal(wrapped[2], "> into multiple");
+            equal(wrapped[3], "> lines.");
+            // Test prefix with single line (no prefix should be added)
+            const singleLine = "Short line.";
+            const singleWrapped = string.wrap({
+                string: singleLine,
+                width: 50,
+                prefix: "> "
+            });
+            equal(singleWrapped.length, 1);
+            equal(singleWrapped[0], "Short line.");
+            // Test prefix with linebreaks
+            const withBreaks = "First line.\nSecond line that wraps.\nThird line.";
+            const breakWrapped = string.wrap({
+                string: withBreaks,
+                width: 20,
+                prefix: "  "
+            });
+            equal(breakWrapped.length, 4);
+            equal(breakWrapped[0], "First line.");
+            equal(breakWrapped[1], "  Second line that");
+            equal(breakWrapped[2], "  wraps.");
+            equal(breakWrapped[3], "  Third line.");
+            // Test prefix with indentation
+            const indented = "This is a very long line that needs to be wrapped.";
+            const indentedWrapped = string.wrap({
+                string: indented,
+                width: 30,
+                prefix: "    "
+            });
+            equal(indentedWrapped.length, 2);
+            equal(indentedWrapped[0], "This is a very long line that");
+            equal(indentedWrapped[1], "    needs to be wrapped.");
+            // Test prefix respects width calculation
+            const widthTest = "A".repeat(50);
+            const widthWrapped = string.wrap({
+                string: widthTest,
+                width: 20,
+                prefix: "> "
+            });
+            // First line should use full width (20 chars, no prefix)
+            equal(widthWrapped[0].length, 20);
+            equal(widthWrapped[0].endsWith("-"), true); // Word break with hyphen
+            // Subsequent lines should have prefix and be at most 20 chars total
+            // (18 chars content + 2 chars prefix = 20 total)
+            for (let i = 1; i < widthWrapped.length; i++) {
+                equal(widthWrapped[i].startsWith("> "), true);
+                ok(widthWrapped[i].length <= 20); // At most 20 chars (last line may be shorter)
+            }
+            // Test prefix signature with direct parameters
+            const directPrefix = string.wrap("This is a test that wraps.", 15, undefined, "> ");
+            equal(directPrefix.length, 2);
+            equal(directPrefix[0], "This is a test");
+            equal(directPrefix[1], "> that wraps.");
+            // Test prefix signature with sizer
+            const withSizer = string.wrap("This is a test.", 10, string.TERM_SIZER, "  ");
+            equal(withSizer.length, 2);
+            equal(withSizer[0], "This is a");
+            equal(withSizer[1], "  test.");
+        });
     });
     describe("box", () => {
         it("color", () => {

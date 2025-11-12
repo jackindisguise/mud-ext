@@ -403,6 +403,28 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 				equal(widthWrapped[i].startsWith("> "), true);
 				ok(widthWrapped[i].length <= 20); // At most 20 chars (last line may be shorter)
 			}
+
+			// Test prefix signature with direct parameters
+			const directPrefix = string.wrap(
+				"This is a test that wraps.",
+				15,
+				undefined,
+				"> "
+			);
+			equal(directPrefix.length, 2);
+			equal(directPrefix[0], "This is a test");
+			equal(directPrefix[1], "> that wraps.");
+
+			// Test prefix signature with sizer
+			const withSizer = string.wrap(
+				"This is a test.",
+				10,
+				string.TERM_SIZER,
+				"  "
+			);
+			equal(withSizer.length, 2);
+			equal(withSizer[0], "This is a");
+			equal(withSizer[1], "  test.");
 		});
 	});
 

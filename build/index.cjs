@@ -197,21 +197,26 @@ function padCenterWithOptions(options) {
   }
   return `${lpad}${options.string}${rpad}`;
 }
-function wrap(options, width, sizer) {
+function wrap(options, width, sizer, prefix) {
   if (typeof options === "string")
     return wrapWithOptions({
       string: options,
       width: width || 0,
-      sizer: sizer || DEFAULT_SIZER
+      sizer: sizer || DEFAULT_SIZER,
+      prefix
     });
   return wrapWithOptions(options);
 }
 function wrapWithOptions(options) {
   const sizer = options.sizer || DEFAULT_SIZER;
+  const prefix = options.prefix || "";
+  const prefixSize = sizer.size(prefix);
+  const effectiveWidth = Math.max(1, options.width - prefixSize);
   const lines = [];
   let pos = 0;
   while (pos < options.string.length) {
-    let cursor = Math.min(pos + options.width, options.string.length);
+    const lineWidth = lines.length === 0 ? options.width : effectiveWidth;
+    let cursor = Math.min(pos + lineWidth, options.string.length);
     if (sizer.unrenderedSequenceLength && sizer.open) {
       for (let i = pos; i <= cursor && i < options.string.length; ) {
         if (options.string[i] === sizer.open) {
@@ -302,6 +307,9 @@ function wrapWithOptions(options) {
       lines.push(options.string.slice(pos, breakpoint - 1) + "-");
       pos = breakpoint - 1;
     }
+  }
+  if (prefix && lines.length > 0) {
+    return lines.map((line, index) => index === 0 ? line : prefix + line);
   }
   return lines;
 }

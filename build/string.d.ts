@@ -179,6 +179,8 @@ export interface WrapOptions {
     width: number;
     /** Describe how to respect unrendered characters. */
     sizer?: Sizer;
+    /** Text to add to the front of each wrapped line (e.g., for indentation or continuation markers). */
+    prefix?: string;
 }
 /**
  * Wraps a string to a given size.
@@ -189,7 +191,16 @@ export interface WrapOptions {
 export declare function wrap(string: string, width: number, sizer?: Sizer): string[];
 /**
  * Wraps a string to a given size.
+ * @param string The string to be wrapped.
+ * @param width The desired width of each line.
+ * @param sizer Optional sizer for respecting unrendered characters.
+ * @param prefix Text to add to the front of each wrapped line after the first (e.g., for indentation or continuation markers).
+ */
+export declare function wrap(string: string, width: number, sizer: Sizer | undefined, prefix: string): string[];
+/**
+ * Wraps a string to a given size.
  * @param options The options for this wrap.
+ * @param options.prefix Optional text to add to the front of each wrapped line (e.g., for indentation or continuation markers).
  * @returns {string[]} The lines of the wrapped string in an array.
  */
 export declare function wrap(options: WrapOptions): string[];

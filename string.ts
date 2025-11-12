@@ -426,6 +426,20 @@ export function wrap(string: string, width: number, sizer?: Sizer): string[];
 
 /**
  * Wraps a string to a given size.
+ * @param string The string to be wrapped.
+ * @param width The desired width of each line.
+ * @param sizer Optional sizer for respecting unrendered characters.
+ * @param prefix Text to add to the front of each wrapped line after the first (e.g., for indentation or continuation markers).
+ */
+export function wrap(
+	string: string,
+	width: number,
+	sizer: Sizer | undefined,
+	prefix: string
+): string[];
+
+/**
+ * Wraps a string to a given size.
  * @param options The options for this wrap.
  * @param options.prefix Optional text to add to the front of each wrapped line (e.g., for indentation or continuation markers).
  * @returns {string[]} The lines of the wrapped string in an array.
@@ -434,13 +448,15 @@ export function wrap(options: WrapOptions): string[];
 export function wrap(
 	options: WrapOptions | string,
 	width?: number,
-	sizer?: Sizer
+	sizer?: Sizer,
+	prefix?: string
 ): string[] {
 	if (typeof options === "string")
 		return wrapWithOptions({
 			string: options,
 			width: width || 0,
-			sizer: sizer || DEFAULT_SIZER
+			sizer: sizer || DEFAULT_SIZER,
+			prefix: prefix
 		});
 	return wrapWithOptions(options);
 }

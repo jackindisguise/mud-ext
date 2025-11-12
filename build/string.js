@@ -167,22 +167,30 @@ function padCenterWithOptions(options) {
     }
     return `${lpad}${options.string}${rpad}`;
 }
-export function wrap(options, width, sizer) {
+export function wrap(options, width, sizer, prefix) {
     if (typeof options === "string")
         return wrapWithOptions({
             string: options,
             width: width || 0,
-            sizer: sizer || DEFAULT_SIZER
+            sizer: sizer || DEFAULT_SIZER,
+            prefix: prefix
         });
     return wrapWithOptions(options);
 }
 function wrapWithOptions(options) {
     const sizer = options.sizer || DEFAULT_SIZER;
+    const prefix = options.prefix || "";
+    const prefixSize = sizer.size(prefix);
+    // Effective width is the total width minus the prefix size (for subsequent lines)
+    // Ensure it's at least 1 to avoid infinite loops
+    const effectiveWidth = Math.max(1, options.width - prefixSize);
     const lines = [];
     let pos = 0;
     while (pos < options.string.length) {
         // Calculate the target cursor position (max width for this line)
-        let cursor = Math.min(pos + options.width, options.string.length);
+        // First line uses full width, subsequent lines use effective width
+        const lineWidth = lines.length === 0 ? options.width : effectiveWidth;
+        let cursor = Math.min(pos + lineWidth, options.string.length);
         // Account for non-rendering elements (expand cursor)
         if (sizer.unrenderedSequenceLength && sizer.open) {
             for (let i = pos; i <= cursor && i < options.string.length;) {
@@ -294,6 +302,10 @@ function wrapWithOptions(options) {
             lines.push(options.string.slice(pos, breakpoint - 1) + "-");
             pos = breakpoint - 1;
         }
+    }
+    // Add prefix to each line after the first if specified
+    if (prefix && lines.length > 0) {
+        return lines.map((line, index) => (index === 0 ? line : prefix + line));
     }
     return lines;
 }
