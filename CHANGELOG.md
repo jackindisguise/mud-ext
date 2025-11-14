@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.12.0](https://github.com/jackindisguise/mud-ext/compare/v2.11.1...v2.12.0) (2025-11-14)
+
+
+### Features
+
+* add indent option to wrap() function ([cbb4264](https://github.com/jackindisguise/mud-ext/commit/cbb4264bdf3d508da8740bed28a75a75ba6ae0e3))
+
 ### [2.11.1](https://github.com/jackindisguise/mud-ext/compare/v2.11.0...v2.11.1) (2025-11-12)
 
 ## [2.11.0](https://github.com/jackindisguise/mud-ext/compare/v2.10.0...v2.11.0) (2025-11-12)
