@@ -197,12 +197,15 @@ function wrap(options, width, sizer, prefix) {
 function wrapWithOptions(options) {
   const sizer = options.sizer || DEFAULT_SIZER;
   const prefix = options.prefix || "";
+  const indent = options.indent || "";
   const prefixSize = sizer.size(prefix);
+  const indentSize = sizer.size(indent);
   const effectiveWidth = Math.max(1, options.width - prefixSize);
+  const firstLineWidth = Math.max(1, options.width - indentSize);
   const lines = [];
   let pos = 0;
   while (pos < options.string.length) {
-    const lineWidth = lines.length === 0 ? options.width : effectiveWidth;
+    const lineWidth = lines.length === 0 ? firstLineWidth : effectiveWidth;
     let cursor = Math.min(pos + lineWidth, options.string.length);
     if (sizer.unrenderedSequenceLength && sizer.open) {
       for (let i = pos; i <= cursor && i < options.string.length; ) {
@@ -299,8 +302,13 @@ function wrapWithOptions(options) {
   if (options.color) {
     result = result.map((line) => options.color(line));
   }
-  if (prefix && result.length > 0) {
-    return result.map((line, index) => index === 0 ? line : prefix + line);
+  if ((indent || prefix) && result.length > 0) {
+    return result.map((line, index) => {
+      if (index === 0) {
+        return indent + line;
+      }
+      return prefix + line;
+    });
   }
   return result;
 }

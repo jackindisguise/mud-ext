@@ -362,6 +362,88 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
             equal(breakColored[1], colors.cyan("Second line"));
             equal(breakColored[2], colors.cyan("that wraps."));
         });
+        it("indent", () => {
+            // Test basic indent - first line has indent, subsequent lines do not
+            const text = "This is a long line that will wrap into multiple lines.";
+            const wrapped = string.wrap({ string: text, width: 20, indent: "  " });
+            equal(wrapped.length, 3);
+            equal(wrapped[0], "  This is a long");
+            equal(wrapped[1], "line that will wrap");
+            equal(wrapped[2], "into multiple lines.");
+            // Test indent with single line (indent should be added)
+            const singleLine = "Short line.";
+            const singleWrapped = string.wrap({
+                string: singleLine,
+                width: 50,
+                indent: "    "
+            });
+            equal(singleWrapped.length, 1);
+            equal(singleWrapped[0], "    Short line.");
+            // Test indent with linebreaks
+            const withBreaks = "First line.\nSecond line that wraps.\nThird line.";
+            const breakWrapped = string.wrap({
+                string: withBreaks,
+                width: 20,
+                indent: "  "
+            });
+            equal(breakWrapped.length, 4);
+            equal(breakWrapped[0], "  First line.");
+            equal(breakWrapped[1], "Second line that");
+            equal(breakWrapped[2], "wraps.");
+            equal(breakWrapped[3], "Third line.");
+            // Test indent respects width calculation
+            const widthTest = "A".repeat(50);
+            const widthWrapped = string.wrap({
+                string: widthTest,
+                width: 20,
+                indent: "  "
+            });
+            // First line should account for indent (18 chars content + 2 chars indent = 20 total)
+            equal(widthWrapped[0].length, 20);
+            equal(widthWrapped[0].startsWith("  "), true);
+            // Subsequent lines should use full width (no indent)
+            for (let i = 1; i < widthWrapped.length; i++) {
+                equal(widthWrapped[i].startsWith("  "), false);
+                ok(widthWrapped[i].length <= 20); // At most 20 chars (last line may be shorter)
+            }
+            // Test indent with prefix - indent on first, prefix on subsequent
+            const withBoth = "This is a long line that wraps.";
+            const bothWrapped = string.wrap({
+                string: withBoth,
+                width: 20,
+                indent: "  ",
+                prefix: "> "
+            });
+            equal(bothWrapped.length, 2);
+            equal(bothWrapped[0], "  This is a long");
+            equal(bothWrapped[1], "> line that wraps.");
+        });
+        it("indent + color", () => {
+            // Test color with indent - indent should NOT be colored
+            const text = "This is a long line that wraps.";
+            const withIndent = string.wrap({
+                string: text,
+                width: 15,
+                indent: "  ",
+                color: colors.yellow
+            });
+            equal(withIndent.length, 3);
+            equal(withIndent[0], "  " + colors.yellow("This is a"));
+            equal(withIndent[1], colors.yellow("long line that"));
+            equal(withIndent[2], colors.yellow("wraps."));
+            // Test color with indent and prefix
+            const withBoth = string.wrap({
+                string: text,
+                width: 15,
+                indent: "  ",
+                prefix: "> ",
+                color: colors.cyan
+            });
+            equal(withBoth.length, 3);
+            equal(withBoth[0], "  " + colors.cyan("This is a"));
+            equal(withBoth[1], "> " + colors.cyan("long line"));
+            equal(withBoth[2], "> " + colors.cyan("that wraps."));
+        });
     });
     describe("box", () => {
         it("color", () => {

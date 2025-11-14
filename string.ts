@@ -443,7 +443,10 @@ export interface WrapOptions {
 	/** Text to add to the front of each wrapped line (e.g., for indentation or continuation markers). */
 	prefix?: string;
 
-	/** A function to transform/color the wrapped text. Applied to each line's content, but not to prefixes. */
+	/** Text to add to the front of the first wrapped line only (e.g., for initial indentation). */
+	indent?: string;
+
+	/** A function to transform/color the wrapped text. Applied to each line's content, but not to prefixes or indents. */
 	color?: StringTransformer;
 }
 
@@ -472,8 +475,9 @@ export function wrap(
 /**
  * Wraps a string to a given size.
  * @param options The options for this wrap.
- * @param options.prefix Optional text to add to the front of each wrapped line (e.g., for indentation or continuation markers).
- * @param options.color Optional function to transform/color the wrapped text. Applied to each line's content, but not to prefixes.
+ * @param options.prefix Optional text to add to the front of each wrapped line after the first (e.g., for indentation or continuation markers).
+ * @param options.indent Optional text to add to the front of the first wrapped line only (e.g., for initial indentation).
+ * @param options.color Optional function to transform/color the wrapped text. Applied to each line's content, but not to prefixes or indents.
  * @returns {string[]} The lines of the wrapped string in an array.
  */
 export function wrap(options: WrapOptions): string[];
@@ -496,17 +500,21 @@ export function wrap(
 function wrapWithOptions(options: WrapOptions): string[] {
 	const sizer = options.sizer || DEFAULT_SIZER;
 	const prefix = options.prefix || "";
+	const indent = options.indent || "";
 	const prefixSize = sizer.size(prefix);
+	const indentSize = sizer.size(indent);
 	// Effective width is the total width minus the prefix size (for subsequent lines)
 	// Ensure it's at least 1 to avoid infinite loops
 	const effectiveWidth = Math.max(1, options.width - prefixSize);
+	// First line width accounts for indent
+	const firstLineWidth = Math.max(1, options.width - indentSize);
 	const lines: string[] = [];
 	let pos = 0;
 
 	while (pos < options.string.length) {
 		// Calculate the target cursor position (max width for this line)
-		// First line uses full width, subsequent lines use effective width
-		const lineWidth = lines.length === 0 ? options.width : effectiveWidth;
+		// First line uses firstLineWidth (accounting for indent), subsequent lines use effective width
+		const lineWidth = lines.length === 0 ? firstLineWidth : effectiveWidth;
 		let cursor = Math.min(pos + lineWidth, options.string.length);
 
 		// Account for non-rendering elements (expand cursor)
@@ -629,16 +637,21 @@ function wrapWithOptions(options: WrapOptions): string[] {
 		}
 	}
 
-	// Apply color transformation if specified, then add prefix
-	// Prefix is added after coloring, so it doesn't get colored
+	// Apply color transformation if specified, then add prefix and indent
+	// Prefix and indent are added after coloring, so they don't get colored
 	let result = lines;
 	if (options.color) {
 		result = result.map((line) => options.color!(line));
 	}
 
-	// Add prefix to each line after the first if specified
-	if (prefix && result.length > 0) {
-		return result.map((line, index) => (index === 0 ? line : prefix + line));
+	// Add indent to first line and prefix to subsequent lines if specified
+	if ((indent || prefix) && result.length > 0) {
+		return result.map((line, index) => {
+			if (index === 0) {
+				return indent + line;
+			}
+			return prefix + line;
+		});
 	}
 
 	return result;

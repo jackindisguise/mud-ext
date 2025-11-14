@@ -197,16 +197,20 @@ export function wrap(options, width, sizer, prefix) {
 function wrapWithOptions(options) {
     const sizer = options.sizer || DEFAULT_SIZER;
     const prefix = options.prefix || "";
+    const indent = options.indent || "";
     const prefixSize = sizer.size(prefix);
+    const indentSize = sizer.size(indent);
     // Effective width is the total width minus the prefix size (for subsequent lines)
     // Ensure it's at least 1 to avoid infinite loops
     const effectiveWidth = Math.max(1, options.width - prefixSize);
+    // First line width accounts for indent
+    const firstLineWidth = Math.max(1, options.width - indentSize);
     const lines = [];
     let pos = 0;
     while (pos < options.string.length) {
         // Calculate the target cursor position (max width for this line)
-        // First line uses full width, subsequent lines use effective width
-        const lineWidth = lines.length === 0 ? options.width : effectiveWidth;
+        // First line uses firstLineWidth (accounting for indent), subsequent lines use effective width
+        const lineWidth = lines.length === 0 ? firstLineWidth : effectiveWidth;
         let cursor = Math.min(pos + lineWidth, options.string.length);
         // Account for non-rendering elements (expand cursor)
         if (sizer.unrenderedSequenceLength && sizer.open) {
@@ -320,15 +324,20 @@ function wrapWithOptions(options) {
             pos = breakpoint - 1;
         }
     }
-    // Apply color transformation if specified, then add prefix
-    // Prefix is added after coloring, so it doesn't get colored
+    // Apply color transformation if specified, then add prefix and indent
+    // Prefix and indent are added after coloring, so they don't get colored
     let result = lines;
     if (options.color) {
         result = result.map((line) => options.color(line));
     }
-    // Add prefix to each line after the first if specified
-    if (prefix && result.length > 0) {
-        return result.map((line, index) => (index === 0 ? line : prefix + line));
+    // Add indent to first line and prefix to subsequent lines if specified
+    if ((indent || prefix) && result.length > 0) {
+        return result.map((line, index) => {
+            if (index === 0) {
+                return indent + line;
+            }
+            return prefix + line;
+        });
     }
     return result;
 }
