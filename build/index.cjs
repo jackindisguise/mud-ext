@@ -388,13 +388,13 @@ function boxWithOptions(options) {
     }));
   }
   const addLine = (line) => {
-    var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2, _j2, _k2, _l2, _m2, _o2, _p2;
+    var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2, _j2, _k2, _l2, _m2, _o2, _p2, _q2, _r2, _s2;
     if (((_a2 = options.style) === null || _a2 === void 0 ? void 0 : _a2.vertical) || ((_b2 = options.style) === null || _b2 === void 0 ? void 0 : _b2.left) || ((_c2 = options.style) === null || _c2 === void 0 ? void 0 : _c2.right)) {
       const leftVert = ((_d2 = options.style) === null || _d2 === void 0 ? void 0 : _d2.left) || ((_e2 = options.style) === null || _e2 === void 0 ? void 0 : _e2.vertical) || "";
-      const leftHPadding = leftVert ? ((_f2 = options.style) === null || _f2 === void 0 ? void 0 : _f2.hPadding) || 1 : 0;
+      const leftHPadding = leftVert ? (_g2 = (_f2 = options.style) === null || _f2 === void 0 ? void 0 : _f2.hPadding) !== null && _g2 !== void 0 ? _g2 : 1 : 0;
       const left = color(leftVert) + " ".repeat(leftHPadding);
-      const rightVert = ((_g2 = options.style) === null || _g2 === void 0 ? void 0 : _g2.right) || ((_h2 = options.style) === null || _h2 === void 0 ? void 0 : _h2.vertical) || "";
-      const rightHPadding = rightVert ? ((_j2 = options.style) === null || _j2 === void 0 ? void 0 : _j2.hPadding) || 1 : 0;
+      const rightVert = ((_h2 = options.style) === null || _h2 === void 0 ? void 0 : _h2.right) || ((_j2 = options.style) === null || _j2 === void 0 ? void 0 : _j2.vertical) || "";
+      const rightHPadding = rightVert ? (_l2 = (_k2 = options.style) === null || _k2 === void 0 ? void 0 : _k2.hPadding) !== null && _l2 !== void 0 ? _l2 : 1 : 0;
       const right = " ".repeat(rightHPadding) + color(rightVert);
       const wrapped = wrap({
         string: line,
@@ -405,7 +405,7 @@ function boxWithOptions(options) {
         lines.push(`${left}${pad({
           string: "",
           width: options.width - sizer.size(left) - sizer.size(right),
-          textAlign: ((_k2 = options.style) === null || _k2 === void 0 ? void 0 : _k2.hAlign) || ALIGN.LEFT,
+          textAlign: ((_m2 = options.style) === null || _m2 === void 0 ? void 0 : _m2.hAlign) || ALIGN.LEFT,
           sizer
         })}${right}`);
       } else {
@@ -413,12 +413,12 @@ function boxWithOptions(options) {
           lines.push(`${left}${pad({
             string: _line,
             width: options.width - sizer.size(left) - sizer.size(right),
-            textAlign: ((_l2 = options.style) === null || _l2 === void 0 ? void 0 : _l2.hAlign) || ALIGN.LEFT,
+            textAlign: ((_o2 = options.style) === null || _o2 === void 0 ? void 0 : _o2.hAlign) || ALIGN.LEFT,
             sizer
           })}${right}`);
       }
     } else {
-      const left = " ".repeat(((_m2 = options.style) === null || _m2 === void 0 ? void 0 : _m2.hPadding) || 0);
+      const left = " ".repeat((_q2 = (_p2 = options.style) === null || _p2 === void 0 ? void 0 : _p2.hPadding) !== null && _q2 !== void 0 ? _q2 : 0);
       const right = left;
       const wrapped = wrap({
         string: line,
@@ -429,7 +429,7 @@ function boxWithOptions(options) {
         lines.push(`${left}${pad({
           string: "",
           width: options.width - left.length - right.length,
-          textAlign: ((_o2 = options.style) === null || _o2 === void 0 ? void 0 : _o2.hAlign) || ALIGN.LEFT,
+          textAlign: ((_r2 = options.style) === null || _r2 === void 0 ? void 0 : _r2.hAlign) || ALIGN.LEFT,
           sizer
         })}${right}`);
       } else {
@@ -437,7 +437,7 @@ function boxWithOptions(options) {
           lines.push(`${left}${pad({
             string: _line,
             width: options.width - left.length - right.length,
-            textAlign: ((_p2 = options.style) === null || _p2 === void 0 ? void 0 : _p2.hAlign) || ALIGN.LEFT,
+            textAlign: ((_s2 = options.style) === null || _s2 === void 0 ? void 0 : _s2.hAlign) || ALIGN.LEFT,
             sizer
           })}${right}`);
       }

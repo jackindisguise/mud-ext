@@ -818,10 +818,10 @@ function boxWithOptions(options: BoxOptions): string[] {
 			options.style?.right
 		) {
 			const leftVert = options.style?.left || options.style?.vertical || "";
-			const leftHPadding = leftVert ? options.style?.hPadding || 1 : 0;
+			const leftHPadding = leftVert ? options.style?.hPadding ?? 1 : 0;
 			const left = color(leftVert) + " ".repeat(leftHPadding);
 			const rightVert = options.style?.right || options.style?.vertical || "";
-			const rightHPadding = rightVert ? options.style?.hPadding || 1 : 0;
+			const rightHPadding = rightVert ? options.style?.hPadding ?? 1 : 0;
 			const right = " ".repeat(rightHPadding) + color(rightVert);
 			const wrapped: string[] = wrap({
 				string: line,
@@ -850,7 +850,7 @@ function boxWithOptions(options: BoxOptions): string[] {
 					);
 			}
 		} else {
-			const left = " ".repeat(options.style?.hPadding || 0);
+			const left = " ".repeat(options.style?.hPadding ?? 0);
 			const right = left;
 			const wrapped: string[] = wrap({
 				string: line,

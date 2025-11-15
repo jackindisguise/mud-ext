@@ -422,15 +422,15 @@ function boxWithOptions(options) {
         }));
     }
     const addLine = (line) => {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s;
         if (((_a = options.style) === null || _a === void 0 ? void 0 : _a.vertical) ||
             ((_b = options.style) === null || _b === void 0 ? void 0 : _b.left) ||
             ((_c = options.style) === null || _c === void 0 ? void 0 : _c.right)) {
             const leftVert = ((_d = options.style) === null || _d === void 0 ? void 0 : _d.left) || ((_e = options.style) === null || _e === void 0 ? void 0 : _e.vertical) || "";
-            const leftHPadding = leftVert ? ((_f = options.style) === null || _f === void 0 ? void 0 : _f.hPadding) || 1 : 0;
+            const leftHPadding = leftVert ? (_g = (_f = options.style) === null || _f === void 0 ? void 0 : _f.hPadding) !== null && _g !== void 0 ? _g : 1 : 0;
             const left = color(leftVert) + " ".repeat(leftHPadding);
-            const rightVert = ((_g = options.style) === null || _g === void 0 ? void 0 : _g.right) || ((_h = options.style) === null || _h === void 0 ? void 0 : _h.vertical) || "";
-            const rightHPadding = rightVert ? ((_j = options.style) === null || _j === void 0 ? void 0 : _j.hPadding) || 1 : 0;
+            const rightVert = ((_h = options.style) === null || _h === void 0 ? void 0 : _h.right) || ((_j = options.style) === null || _j === void 0 ? void 0 : _j.vertical) || "";
+            const rightHPadding = rightVert ? (_l = (_k = options.style) === null || _k === void 0 ? void 0 : _k.hPadding) !== null && _l !== void 0 ? _l : 1 : 0;
             const right = " ".repeat(rightHPadding) + color(rightVert);
             const wrapped = wrap({
                 string: line,
@@ -442,7 +442,7 @@ function boxWithOptions(options) {
                 lines.push(`${left}${pad({
                     string: "",
                     width: options.width - sizer.size(left) - sizer.size(right),
-                    textAlign: ((_k = options.style) === null || _k === void 0 ? void 0 : _k.hAlign) || ALIGN.LEFT,
+                    textAlign: ((_m = options.style) === null || _m === void 0 ? void 0 : _m.hAlign) || ALIGN.LEFT,
                     sizer: sizer
                 })}${right}`);
             }
@@ -451,13 +451,13 @@ function boxWithOptions(options) {
                     lines.push(`${left}${pad({
                         string: _line,
                         width: options.width - sizer.size(left) - sizer.size(right),
-                        textAlign: ((_l = options.style) === null || _l === void 0 ? void 0 : _l.hAlign) || ALIGN.LEFT,
+                        textAlign: ((_o = options.style) === null || _o === void 0 ? void 0 : _o.hAlign) || ALIGN.LEFT,
                         sizer: sizer
                     })}${right}`);
             }
         }
         else {
-            const left = " ".repeat(((_m = options.style) === null || _m === void 0 ? void 0 : _m.hPadding) || 0);
+            const left = " ".repeat((_q = (_p = options.style) === null || _p === void 0 ? void 0 : _p.hPadding) !== null && _q !== void 0 ? _q : 0);
             const right = left;
             const wrapped = wrap({
                 string: line,
@@ -469,7 +469,7 @@ function boxWithOptions(options) {
                 lines.push(`${left}${pad({
                     string: "",
                     width: options.width - left.length - right.length,
-                    textAlign: ((_o = options.style) === null || _o === void 0 ? void 0 : _o.hAlign) || ALIGN.LEFT,
+                    textAlign: ((_r = options.style) === null || _r === void 0 ? void 0 : _r.hAlign) || ALIGN.LEFT,
                     sizer: sizer
                 })}${right}`);
             }
@@ -478,7 +478,7 @@ function boxWithOptions(options) {
                     lines.push(`${left}${pad({
                         string: _line,
                         width: options.width - left.length - right.length,
-                        textAlign: ((_p = options.style) === null || _p === void 0 ? void 0 : _p.hAlign) || ALIGN.LEFT,
+                        textAlign: ((_s = options.style) === null || _s === void 0 ? void 0 : _s.hAlign) || ALIGN.LEFT,
                         sizer: sizer
                     })}${right}`);
             }

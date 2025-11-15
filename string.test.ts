@@ -777,6 +777,50 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
 			equal(generated, expected);
 		});
+
+		it("hPadding can be 0", () => {
+			// Test that hPadding: 0 works correctly (no padding between borders and content)
+			const styleWithZeroPadding: string.BoxStyle = {
+				...string.BOX_STYLES.PLAIN,
+				hPadding: 0
+			};
+
+			const generated = string
+				.box({
+					style: styleWithZeroPadding,
+					input: ["Test line"],
+					width: 12
+				})
+				.join("\n");
+
+			// With hPadding: 0, there should be no space between | and content
+			// Width 12: | (1) + Test line (9) + | (1) + padding (0) = 11 chars
+			// But we need to pad to width 12, so: |Test line | (12 chars)
+			const expected = ["+----------+", "|Test line |", "+----------+"].join(
+				"\n"
+			);
+
+			equal(generated, expected);
+
+			// Also test with vertical borders only (no top/bottom)
+			const styleVerticalOnly: string.BoxStyle = {
+				vertical: "|",
+				hPadding: 0
+			};
+
+			const generatedVertical = string
+				.box({
+					style: styleVerticalOnly,
+					input: ["Content"],
+					width: 9
+				})
+				.join("\n");
+
+			// With hPadding: 0 and only vertical borders, no space between | and content
+			const expectedVertical = ["|Content|"].join("\n");
+
+			equal(generatedVertical, expectedVertical);
+		});
 	});
 
 	it("autocomplete", () => {
