@@ -334,7 +334,7 @@ function wrapWithOptions(options) {
   }
   return result;
 }
-function box(options, width, title, style, sizer, color) {
+function box(options, width, title, style, sizer, color, innerColor) {
   if (Array.isArray(options))
     return boxWithOptions({
       input: options,
@@ -342,7 +342,8 @@ function box(options, width, title, style, sizer, color) {
       title: title || void 0,
       style: style || void 0,
       sizer: sizer || void 0,
-      color: color || void 0
+      color: color || void 0,
+      innerColor: innerColor || void 0
     });
   return boxWithOptions(options);
 }
@@ -350,6 +351,7 @@ function boxWithOptions(options) {
   var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13;
   const sizer = options.sizer || DEFAULT_SIZER;
   const color = options.color || ((str) => str);
+  const innerColor = options.innerColor || ((str) => str);
   const lines = [];
   let topmiddle = ((_b = (_a = options.style) === null || _a === void 0 ? void 0 : _a.top) === null || _b === void 0 ? void 0 : _b.middle) || ((_c = options.style) === null || _c === void 0 ? void 0 : _c.horizontal) || "";
   const topleft = ((_e = (_d = options.style) === null || _d === void 0 ? void 0 : _d.top) === null || _e === void 0 ? void 0 : _e.left) || ((_g = (_f = options.style) === null || _f === void 0 ? void 0 : _f.top) === null || _g === void 0 ? void 0 : _g.corner) || ((_h = options.style) === null || _h === void 0 ? void 0 : _h.corner) || "";
@@ -378,7 +380,7 @@ function boxWithOptions(options) {
       const titled = (start > 0 ? color(safeRule.slice(0, start)) : "") + formattedTitle + (start + safeTitleWidth < ruleWidth ? color(safeRule.slice(start + safeTitleWidth, ruleWidth)) : "");
       lines.push(`${topleft ? color(topleft) : ""}${titled}${topright ? color(topright) : ""}`);
     } else
-      lines.push(`${topleft ? color(topleft) : ""}${safeRule}${topright ? color(topright) : ""}`);
+      lines.push(color(`${topleft ? topleft : ""}${safeRule}${topright ? topright : ""}`));
   } else if (options.title) {
     lines.push(pad({
       string: options.title,
@@ -411,7 +413,7 @@ function boxWithOptions(options) {
       } else {
         for (const _line of wrapped)
           lines.push(`${left}${pad({
-            string: _line,
+            string: innerColor(_line),
             width: options.width - sizer.size(left) - sizer.size(right),
             textAlign: ((_o2 = options.style) === null || _o2 === void 0 ? void 0 : _o2.hAlign) || ALIGN.LEFT,
             sizer
@@ -435,7 +437,7 @@ function boxWithOptions(options) {
       } else {
         for (const _line of wrapped)
           lines.push(`${left}${pad({
-            string: _line,
+            string: innerColor(_line),
             width: options.width - left.length - right.length,
             textAlign: ((_s2 = options.style) === null || _s2 === void 0 ? void 0 : _s2.hAlign) || ALIGN.LEFT,
             sizer

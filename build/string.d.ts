@@ -243,6 +243,8 @@ export interface BoxOptions {
     sizer?: Sizer;
     /** A colorizer that adds unrendered elements to the box elements after calculation. */
     color?: StringTransformer;
+    /** A colorizer that adds unrendered elements to the text content inside the box. */
+    innerColor?: StringTransformer;
 }
 /**
  * Generates a contained box of text.
@@ -258,8 +260,9 @@ export declare function box(options: BoxOptions): string[];
  * @param style The box style.
  * @param sizer A sizer for handling unrendered characters in the input.
  * @param color A colorizer for the borders of the box.
+ * @param innerColor A colorizer for the text content inside the box.
  */
-export declare function box(input: string[], width: number, title?: string, style?: BoxStyle, sizer?: Sizer, color?: StringTransformer): string[];
+export declare function box(input: string[], width: number, title?: string, style?: BoxStyle, sizer?: Sizer, color?: StringTransformer, innerColor?: StringTransformer): string[];
 /**
  * Check if a partial string autocompletes to another string.
  * @param partial A short string.

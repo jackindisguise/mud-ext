@@ -341,7 +341,7 @@ function wrapWithOptions(options) {
     }
     return result;
 }
-export function box(options, width, title, style, sizer, color) {
+export function box(options, width, title, style, sizer, color, innerColor) {
     if (Array.isArray(options))
         return boxWithOptions({
             input: options,
@@ -349,7 +349,8 @@ export function box(options, width, title, style, sizer, color) {
             title: title || undefined,
             style: style || undefined,
             sizer: sizer || undefined,
-            color: color || undefined
+            color: color || undefined,
+            innerColor: innerColor || undefined
         });
     return boxWithOptions(options);
 }
@@ -357,6 +358,7 @@ function boxWithOptions(options) {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13;
     const sizer = options.sizer || DEFAULT_SIZER; // default to string length
     const color = options.color || ((str) => str);
+    const innerColor = options.innerColor || ((str) => str);
     const lines = [];
     // consolidate top elements
     let topmiddle = ((_b = (_a = options.style) === null || _a === void 0 ? void 0 : _a.top) === null || _b === void 0 ? void 0 : _b.middle) || ((_c = options.style) === null || _c === void 0 ? void 0 : _c.horizontal) || "";
@@ -410,7 +412,7 @@ function boxWithOptions(options) {
             // no title -- just a basic rule
         }
         else
-            lines.push(`${topleft ? color(topleft) : ""}${safeRule}${topright ? color(topright) : ""}`);
+            lines.push(color(`${topleft ? topleft : ""}${safeRule}${topright ? topright : ""}`));
         // has a title but no box visual elements
     }
     else if (options.title) {
@@ -449,7 +451,7 @@ function boxWithOptions(options) {
             else {
                 for (const _line of wrapped)
                     lines.push(`${left}${pad({
-                        string: _line,
+                        string: innerColor(_line),
                         width: options.width - sizer.size(left) - sizer.size(right),
                         textAlign: ((_o = options.style) === null || _o === void 0 ? void 0 : _o.hAlign) || ALIGN.LEFT,
                         sizer: sizer
@@ -476,7 +478,7 @@ function boxWithOptions(options) {
             else {
                 for (const _line of wrapped)
                     lines.push(`${left}${pad({
-                        string: _line,
+                        string: innerColor(_line),
                         width: options.width - left.length - right.length,
                         textAlign: ((_s = options.style) === null || _s === void 0 ? void 0 : _s.hAlign) || ALIGN.LEFT,
                         sizer: sizer
