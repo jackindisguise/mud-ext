@@ -678,6 +678,9 @@ export interface BoxOptions {
 
 	/** A colorizer that adds unrendered elements to the box elements after calculation. */
 	color?: StringTransformer;
+
+	/** A colorizer that adds unrendered elements to the text content inside the box. */
+	innerColor?: StringTransformer;
 }
 
 /**
@@ -694,6 +697,7 @@ export function box(options: BoxOptions): string[];
  * @param style The box style.
  * @param sizer A sizer for handling unrendered characters in the input.
  * @param color A colorizer for the borders of the box.
+ * @param innerColor A colorizer for the text content inside the box.
  */
 export function box(
 	input: string[],
@@ -701,7 +705,8 @@ export function box(
 	title?: string,
 	style?: BoxStyle,
 	sizer?: Sizer,
-	color?: StringTransformer
+	color?: StringTransformer,
+	innerColor?: StringTransformer
 ): string[];
 export function box(
 	options: BoxOptions | string[],
@@ -709,7 +714,8 @@ export function box(
 	title?: string,
 	style?: BoxStyle,
 	sizer?: Sizer,
-	color?: StringTransformer
+	color?: StringTransformer,
+	innerColor?: StringTransformer
 ): string[] {
 	if (Array.isArray(options))
 		return boxWithOptions({
@@ -718,7 +724,8 @@ export function box(
 			title: title || undefined,
 			style: style || undefined,
 			sizer: sizer || undefined,
-			color: color || undefined
+			color: color || undefined,
+			innerColor: innerColor || undefined
 		});
 	return boxWithOptions(options);
 }
@@ -726,6 +733,7 @@ export function box(
 function boxWithOptions(options: BoxOptions): string[] {
 	const sizer = options.sizer || DEFAULT_SIZER; // default to string length
 	const color = options.color || ((str: string) => str);
+	const innerColor = options.innerColor || ((str: string) => str);
 	const lines: string[] = [];
 
 	// consolidate top elements
@@ -786,17 +794,13 @@ function boxWithOptions(options: BoxOptions): string[] {
 					? color(safeRule.slice(start + safeTitleWidth, ruleWidth))
 					: "");
 			lines.push(
-				`${topleft ? color(topleft) : ""}${titled}${
-					topright ? color(topright) : ""
-				}`
+				`${topleft ? color(topleft) : ""}${titled}${topright ? color(topright) : ""}`
 			);
 
 			// no title -- just a basic rule
 		} else
 			lines.push(
-				`${topleft ? color(topleft) : ""}${safeRule}${
-					topright ? color(topright) : ""
-				}`
+				color(`${topleft ? topleft : ""}${safeRule}${topright ? topright : ""}`)
 			);
 
 		// has a title but no box visual elements
@@ -842,7 +846,7 @@ function boxWithOptions(options: BoxOptions): string[] {
 				for (const _line of wrapped)
 					lines.push(
 						`${left}${pad({
-							string: _line,
+							string: innerColor(_line),
 							width: options.width - sizer.size(left) - sizer.size(right),
 							textAlign: options.style?.hAlign || ALIGN.LEFT,
 							sizer: sizer
@@ -871,7 +875,7 @@ function boxWithOptions(options: BoxOptions): string[] {
 				for (const _line of wrapped)
 					lines.push(
 						`${left}${pad({
-							string: _line,
+							string: innerColor(_line),
 							width: options.width - left.length - right.length,
 							textAlign: options.style?.hAlign || ALIGN.LEFT,
 							sizer: sizer

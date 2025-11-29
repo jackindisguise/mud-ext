@@ -1,6 +1,6 @@
 import * as string from "./string.js";
 import { equal, ok } from "assert/strict";
-import { describe, it } from "node:test";
+import { describe, it, skip } from "node:test";
 import { deepEqual } from "assert";
 
 // Generic color transformation functions for testing
@@ -608,17 +608,35 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 				color: colors.yellow
 			});
 
-			const expected = [
-				"\x1B[33m+\x1B[39m\x1B[33m-\x1B[39m\x1B[33m<\x1B[39m Go to \x1B[33m\x1B[1mHELL\x1B[22m\x1B[39m \x1B[33m>\x1B[39m\x1B[33m-------------\x1B[39m\x1B[33m+\x1B[39m",
-				"\x1B[33m|\x1B[39m This is a test. This is a  \x1B[33m|\x1B[39m",
-				"\x1B[33m|\x1B[39m test. This is a test. This \x1B[33m|\x1B[39m",
-				"\x1B[33m|\x1B[39m is a test. This is a test. \x1B[33m|\x1B[39m",
-				"\x1B[33m|\x1B[39m This is a test. This is a  \x1B[33m|\x1B[39m",
-				"\x1B[33m|\x1B[39m           test.            \x1B[33m|\x1B[39m",
-				"\x1B[33m+----------------------------+\x1B[39m"
+			const betterExpected = [
+				colors.yellow("+") +
+					colors.yellow("-") +
+					colors.yellow("<") +
+					" Go to " +
+					colors.yellow(colors.bold("HELL")) +
+					" " +
+					colors.yellow(">") +
+					colors.yellow("-".repeat(30 - 17)) +
+					colors.yellow("+"),
+				colors.yellow("|") +
+					" This is a test. This is a  " +
+					colors.yellow("|"),
+				colors.yellow("|") +
+					" test. This is a test. This " +
+					colors.yellow("|"),
+				colors.yellow("|") +
+					" is a test. This is a test. " +
+					colors.yellow("|"),
+				colors.yellow("|") +
+					" This is a test. This is a  " +
+					colors.yellow("|"),
+				colors.yellow("|") +
+					"           test.            " +
+					colors.yellow("|"),
+				colors.yellow("+" + "-".repeat(28) + "+")
 			];
 
-			equal(box.join("\n"), expected.join("\n"));
+			equal(box.join("\n"), betterExpected.join("\n"));
 		});
 
 		it("weird", () => {
@@ -820,6 +838,50 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 			const expectedVertical = ["|Content|"].join("\n");
 
 			equal(generatedVertical, expectedVertical);
+		});
+
+		it("innerColor colors text content", () => {
+			const generated = string
+				.box({
+					style: string.BOX_STYLES.PLAIN,
+					input: ["Line 1", "Line 2", "Line 3"],
+					width: 15,
+					innerColor: colors.green,
+					sizer: string.TERM_SIZER
+				})
+				.join("\n");
+
+			const expected = [
+				"+-------------+",
+				`| ${colors.green("Line 1")}      |`,
+				`| ${colors.green("Line 2")}      |`,
+				`| ${colors.green("Line 3")}      |`,
+				"+-------------+"
+			].join("\n");
+
+			equal(generated, expected);
+		});
+
+		it("innerColor with color (borders and content)", () => {
+			const generated = string
+				.box({
+					style: string.BOX_STYLES.PLAIN,
+					input: ["Test content", "More content"],
+					width: 20,
+					color: colors.yellow,
+					sizer: string.TERM_SIZER,
+					innerColor: colors.cyan
+				})
+				.join("\n");
+
+			const expected = [
+				`${colors.yellow("+" + "-".repeat(18) + "+")}`,
+				`${colors.yellow("|")} ${colors.cyan("Test content")}     ${colors.yellow("|")}`,
+				`${colors.yellow("|")} ${colors.cyan("More content")}     ${colors.yellow("|")}`,
+				`${colors.yellow("+" + "-".repeat(18) + "+")}`
+			].join("\n");
+
+			equal(generated, expected);
 		});
 	});
 
